@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FDFCF5;
+    color: #333333;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  ::selection {
+    background-color: #FFDBE5;
+    color: #333333;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #333333;
+  }
+
+  .font-script {
+    font-family: 'Caveat', 'Dancing Script', cursive;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FDFCF5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E8CCD1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B76E79;
+}
+
+/* Delicate grain overlay */
+.bg-subtle-grain {
+  background-image: radial-gradient(rgba(166, 148, 128, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Shimmer animation for photo loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #FDFCF5 25%, #F2EFEA 50%, #FDFCF5 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Newspaper Card Vintage styling */
+.newspaper-font-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+.newspaper-font-body {
+  font-family: 'Courier Prime', Georgia, serif;
+}
