@@ -176,7 +176,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             className="flex items-center gap-1.5 hover:text-blush-600 transition font-medium cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back to All Gifts</span>
+            <span>{product.category === 'frame' ? 'Back to All Frames' : 'Back to All Gifts'}</span>
           </button>
           <div className="flex items-center gap-2 text-[11px]">
             <span>Category:</span>
@@ -304,7 +304,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
             {/* Dynamic Product Customizer Section based on category */}
             <div className="bg-white rounded-3xl p-5 sm:p-6 border border-roseGold-light/60 shadow-soft">
-              {product.category === 'magazine' && (
+              {(product.category === 'magazine' || product.category === 'mini-magazine') && (
                 <MagazineCustomizer
                   product={product}
                   selectedVariant={selectedVariant}

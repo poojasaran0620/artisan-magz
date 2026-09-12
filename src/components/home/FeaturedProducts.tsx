@@ -20,6 +20,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   const categories = [
     { id: 'all', label: 'All Keepsakes' },
     { id: 'magazine', label: 'Magazines' },
+    { id: 'mini-magazine', label: 'Mini Magazines' },
     { id: 'frame', label: 'Photo Frames' },
     { id: 'newspaper', label: 'Newspaper Cards' },
     { id: 'songbook', label: 'Song Plaques' },
@@ -89,7 +90,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
                   <img
                     src={product.images[0]}
                     alt={product.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                    className="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"
                   />
 
                   {/* Top Badge */}

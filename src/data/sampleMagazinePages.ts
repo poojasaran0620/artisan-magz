@@ -8,7 +8,7 @@ export const SAMPLE_MAGAZINE_PAGES: MagazinePageContent[] = [
     title: 'The Day Forever Began',
     subtitle: 'Celebrating 3 Years of Unfiltered Laughter, Late Night Drives, and Soulmate Harmony.',
     date: 'Est. 14 February 2021',
-    image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1000&q=80',
+    image: '/products/magazine_vogue_cover.jpg',
   },
   {
     id: 'page-2',

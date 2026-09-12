@@ -69,7 +69,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('product', 'prod-frame-01')}
+                  onClick={() => onNavigate('frames')}
                   className="hover:text-roseGold transition cursor-pointer"
                 >
                   Polaroid Collage & Cutout Frames

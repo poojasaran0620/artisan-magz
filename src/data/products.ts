@@ -13,6 +13,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 384,
     badge: 'Best Seller 🔥',
     images: [
+      '/products/magazine_vogue_cover.jpg',
       'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1000&q=80',
       'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1000&q=80',
       '/products/media_1788608467332.jpg',
@@ -298,6 +299,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 640,
     badge: '100% Bespoke 🎁',
     images: [
+      '/products/gift_hamper_curated_box.jpg',
       '/products/media_1788608467331.jpg',
       '/products/media_1788608467334.jpg',
       'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1000&q=80',
@@ -347,6 +349,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 198,
     badge: 'Cute & Portable 🌸',
     images: [
+      '/products/mini_magazine.jpg',
       'https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=1000&q=80',
       'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1000&q=80',
       '/products/media_1788608467332.jpg'
@@ -612,125 +615,394 @@ export const MAGAZINE_TEMPLATES: MagazineTemplate[] = [
 
 export const HAMPER_BOX_OPTIONS: HamperBoxOption[] = [
   {
-    id: 'box-pastel-pink',
-    name: 'Blush Pastel Gift Box',
-    subtitle: 'Matte blush box with gold foil logo and dual satin ribbon tie',
-    price: 349,
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=80',
-    colorHex: '#FED8DC',
-    dimensions: '25 x 20 x 10 cm'
-  },
-  {
-    id: 'box-vintage-crate',
-    name: 'Vintage Rustic Wooden Crate',
-    subtitle: 'Hand-carved pine crate with sliding lid & burned brand stamp',
-    price: 499,
-    image: 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80',
+    id: 'box-cardboard',
+    name: 'Normal Cardboard Box',
+    subtitle: 'Lightweight Tuck-Top Kraft Mailer Box',
+    price: 199,
+    image: '/hamper/real_cardboard_box_open.png',
     colorHex: '#DFCAAD',
-    dimensions: '28 x 22 x 12 cm'
+    dimensions: '25 x 20 x 8 cm'
   },
   {
-    id: 'box-ribbon-hamper',
-    name: 'Bespoke Satin Ribbon Hamper',
-    subtitle: 'Deluxe presentation box wrapped with double French grosgrain ribbon bow',
-    price: 449,
-    image: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?auto=format&fit=crop&w=600&q=80',
+    id: 'box-hardboard',
+    name: 'Hardboard Luxury Box',
+    subtitle: 'Heavyweight Sturdy Rigid Gift Box',
+    price: 399,
+    image: '/hamper/box_flatlay_pink.jpg',
     colorHex: '#461724',
-    dimensions: '26 x 20 x 11 cm'
+    dimensions: '26 x 22 x 10 cm'
+  }
+];
+
+export interface HamperLidTagOption {
+  id: string;
+  label: string;
+  tagline: string;
+  icon: string;
+  previewClass: string;
+}
+
+export const HAMPER_LID_TAGS: HamperLidTagOption[] = [
+  {
+    id: 'tag-birthday',
+    label: 'Happy Birthday',
+    tagline: '★ Happy Birthday Star ★',
+    icon: '🎂',
+    previewClass: 'from-amber-500 to-rose-500 text-white'
   },
   {
-    id: 'box-craft-kraft',
-    name: 'Eco-Chic Ribbed Kraft Box',
-    subtitle: 'Earthy kraft box wrapped with botanical twine & dried baby breath',
-    price: 299,
-    image: 'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=600&q=80',
-    colorHex: '#EBDFCA',
-    dimensions: '24 x 18 x 9 cm'
+    id: 'tag-anniversary',
+    label: 'Happy Anniversary',
+    tagline: '♡ Happy Anniversary Love ♡',
+    icon: '💍',
+    previewClass: 'from-rose-500 to-blush-600 text-white'
+  },
+  {
+    id: 'tag-love',
+    label: 'Made with Love',
+    tagline: '♡ Made with Love & Care ♡',
+    icon: '💖',
+    previewClass: 'from-blush-500 to-roseGold text-white'
+  },
+  {
+    id: 'tag-just-for-you',
+    label: 'Just for You',
+    tagline: '✨ Specially Curated for You ✨',
+    icon: '🌸',
+    previewClass: 'from-charcoal to-taupe-700 text-[#FDFCF5]'
   }
 ];
 
 export const HAMPER_GOODIES: HamperGoodie[] = [
   {
+    id: 'g-mini-frame',
+    name: 'Mini Photo Frame (4×4)',
+    category: 'keepsake',
+    price: 299,
+    image: '/hamper/frame_exact.jpg',
+    detailedImage: '/hamper/frame_exact.jpg',
+    material: 'Solid Wood & Glass',
+    dimensions: '4 × 4 inches (10 × 10 cm)',
+    specs: [
+      'Premium matte black solid wood moulding',
+      'Crystal clear glass front protects photo from dust',
+      'Sturdy easel strut for work desks & bedside tables',
+      'Your custom couple photo printed inside on 300 GSM photo paper'
+    ],
+    description: '4×4 inch glossy black desktop keepsake frame with your custom photo printed inside.',
+    tag: 'Photo Included'
+  },
+  {
+    id: 'g-mirror',
+    name: 'Cute Pink Fluffy Mirror',
+    category: 'accessory',
+    price: 149,
+    image: '/hamper/mirror_exact.jpg',
+    detailedImage: '/hamper/mirror_exact.jpg',
+    material: 'Plush Faux Fur & Polished Alloy',
+    dimensions: 'Compact 8 × 6.5 cm',
+    specs: [
+      'Dual-sided mirrors (1x standard true reflection + 2x magnification)',
+      'Cute plush bunny ears with rhinestone accent',
+      'Sturdy swivel keychain clasp to attach to handbags or backpacks',
+      'Ultra-soft pink faux-fur outer shell'
+    ],
+    description: 'Ultra-soft plush heart pocket mirror & charm keychain.',
+    tag: 'Cute'
+  },
+  {
+    id: 'g-jhumkas',
+    name: 'Handcrafted Kashmiri Jumkhe',
+    category: 'jewelry',
+    price: 249,
+    image: '/hamper/jhumkas_style1_exact.jpg',
+    detailedImage: '/hamper/jhumkas_style1_exact.jpg',
+    material: 'German Oxidized Silver',
+    dimensions: '5.5 cm drop length',
+    specs: [
+      'Official Artisan Magz floral watercolor designer card',
+      'Intricate lotus dome filigree with oxidized antique finish',
+      'Hand-strung jingling silver ghungroos',
+      'Lead and nickel-free, hypoallergenic skin-safe posts'
+    ],
+    description: 'Traditional silver bell-drop jhumkhe with intricate filigree.',
+    tag: 'Bestseller'
+  },
+  {
+    id: 'g-jhumkas-style2',
+    name: 'Handcrafted Kashmiri Jumkhe (Chandbali Apex)',
+    category: 'jewelry',
+    price: 249,
+    image: '/hamper/jhumkas_style2_exact.jpg',
+    detailedImage: '/hamper/jhumkas_style2_exact.jpg',
+    material: 'German Oxidized Silver',
+    dimensions: '5.5 cm drop length',
+    specs: [
+      'Official Artisan Magz floral watercolor designer card',
+      'Intricate chandbali pointed apex filigree with oxidized antique finish',
+      'Hand-strung jingling silver ghungroos',
+      'Lead and nickel-free, hypoallergenic skin-safe posts'
+    ],
+    description: 'Traditional silver pointed apex bell-drop jhumkhe with exquisite filigree.',
+    tag: 'Handcrafted'
+  },
+  {
+    id: 'g-dangles',
+    name: 'Kashmiri Chandelier Dangles',
+    category: 'jewelry',
+    price: 199,
+    image: '/hamper/elephant_earrings_exact.jpg',
+    detailedImage: '/hamper/elephant_earrings_exact.jpg',
+    material: 'Oxidized Silver Alloy',
+    dimensions: '7.5 cm cascading drop',
+    specs: [
+      'Royal embossed elephant motif stud design',
+      'Cascading multi-strand ball chain tassels with ghungroo bells',
+      'Lightweight balance for all-day comfort and dancing',
+      'Packaged on signature Artisan Magz keepsake card'
+    ],
+    description: 'Statement silver ethnic chandelier dangle earrings.',
+    tag: 'Handcrafted'
+  },
+  {
+    id: 'g-hoops',
+    name: 'Silver Floral Hoop Jumkhe',
+    category: 'jewelry',
+    price: 179,
+    image: '/hamper/item_hoops_silver.png',
+    detailedImage: '/hamper/item_hoops_silver.png',
+    material: 'Silver-Toned Brass',
+    dimensions: '4 cm diameter',
+    specs: [
+      'Beaded circular hoop silhouette with filigree border',
+      'Mini dangling silver bell accents',
+      'Easy click-top secure latch closure'
+    ],
+    description: 'Beaded round floral hoop earrings with dangling silver bells.',
+    tag: 'Trending'
+  },
+  {
+    id: 'g-bangles',
+    name: 'Festive Golden Charm Bangles',
+    category: 'jewelry',
+    price: 199,
+    image: '/hamper/bangles_exact.jpg',
+    detailedImage: '/hamper/bangles_exact.jpg',
+    material: 'Anti-Tarnish Golden Polish',
+    dimensions: 'Size 2.4 - 2.6 (Universal Fit)',
+    specs: [
+      'Set of 3 textured golden celebration bangles',
+      'Dangling cluster bell charms (ghungroos) along rim',
+      'Subtle, melodious festive jingling sound',
+      'Protective clear lacquer prevents tarnish & skin discoloration'
+    ],
+    description: 'Gleaming golden party & celebration bangles & charm bracelet set.',
+    tag: 'Festive'
+  },
+  {
+    id: 'g-rose-bracelet',
+    name: 'Rose Crystal Vine Bracelet',
+    category: 'jewelry',
+    price: 249,
+    image: '/hamper/rose_bracelet_exact.jpg',
+    detailedImage: '/hamper/rose_bracelet_exact.jpg',
+    material: '18K Gold Polish & Rose Crystals',
+    dimensions: 'Adjustable 16 - 20 cm',
+    specs: [
+      'Delicate golden vine branch silhouette with leaf motifs',
+      'Hand-set sparkling blush pink oval crystal stones',
+      'Anti-tarnish protective lacquer coat',
+      'Adjustable lobster clasp for comfortable wrist fit'
+    ],
+    description: 'Delicate golden branch bracelet embellished with shimmering rose pink crystal gems.',
+    tag: 'Trending'
+  },
+  {
+    id: 'g-claw',
+    name: 'Peach Flower Hair Claw',
+    category: 'accessory',
+    price: 129,
+    image: '/hamper/item_claw_flower.png',
+    detailedImage: '/hamper/item_claw_flower.png',
+    material: 'Resin Acrylic & Stainless Spring',
+    dimensions: '7.5 cm width',
+    specs: [
+      'Translucent crystal peach blossom petal shape',
+      'Strong dual-row interlocking teeth with high-tension spring',
+      'Smooth edges prevent hair snagging or pulling',
+      'Holds half-up and full updos firmly in place'
+    ],
+    description: 'Delicate translucent peach floral hair claw clip.',
+    tag: 'Aesthetic'
+  },
+  {
     id: 'g-scrunchie',
     name: 'Mulberry Silk Red Scrunchie',
     category: 'accessory',
     price: 149,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
-    description: 'Ultra-gentle 100% pure silk scrunchie in rich festive maroon. Prevents hair breakage.',
-    tag: 'Bestseller'
-  },
-  {
-    id: 'g-jhumkas',
-    name: 'Kashmiri Antique Silver Jhumkas',
-    category: 'jewelry',
-    price: 299,
-    image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=600&q=80',
-    description: 'Intricately handcrafted oxidised silver earrings with delicate bell drops.',
-    tag: 'Handmade'
+    image: '/hamper/scrunchies_exact.jpg',
+    detailedImage: '/hamper/scrunchies_exact.jpg',
+    material: '100% Pure Mulberry Silk',
+    dimensions: '10 cm diameter (Oversized Cloud)',
+    specs: [
+      'Ultra-gentle grade 6A silk protects delicate hair strands',
+      'Zero hair breakage, friction, or crease marks',
+      'Durable double-elastic core retains bounce wash after wash',
+      'Rich royal wine / maroon tone that suits all outfits'
+    ],
+    description: 'Ultra-gentle pure silk scrunchie in rich festive maroon.',
+    tag: 'Cozy'
   },
   {
     id: 'g-presson-nails',
-    name: 'French Glam Press-On Nails Set',
+    name: 'Salon Press-On Nails Set',
     category: 'beauty',
-    price: 249,
-    image: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80',
-    description: 'Salon-ready 24-piece press-on nails with jelly glue tabs. 2-minute application!',
-    tag: 'Customer Pick'
-  },
-  {
-    id: 'g-mini-frame',
-    name: 'Square Desktop Mini Couple Frame',
-    category: 'keepsake',
-    price: 349,
-    image: '/products/media_1788608467334.jpg',
-    description: 'Sleek black glossy mini photo frame featuring your custom couple portrait photo.',
-    tag: 'Photo Included'
-  },
-  {
-    id: 'g-flower-claw',
-    name: 'Crystal Amber Floral Hair Claw',
-    category: 'accessory',
-    price: 179,
-    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80',
-    description: 'Durable resin blossom clip in warm honey amber with strong spring grip.',
-    tag: 'Aesthetic'
-  },
-  {
-    id: 'g-bunny-keychain',
-    name: 'Plush Bunny Fur Bag Charm & Keychain',
-    category: 'accessory',
-    price: 189,
-    image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80',
-    description: 'Fluffy pastel bunny with metallic silver ears and durable lobster clasp.',
-    tag: 'Cute'
-  },
-  {
-    id: 'g-mini-mirror',
-    name: 'Vintage Rose Gold Pocket Mirror',
-    category: 'accessory',
     price: 199,
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80',
-    description: 'Dual-sided compact mirror with 2x magnification and embossed vintage roses.',
-    tag: 'Boutique'
-  },
-  {
-    id: 'g-scented-candle',
-    name: 'Vanilla & Crushed Rose Soy Candle',
-    category: 'treat',
-    price: 249,
-    image: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=600&q=80',
-    description: 'Hand-poured coconut-soy wax candle with natural cotton wick. 25 hrs clean burn.',
-    tag: 'Aromatherapy'
+    image: '/hamper/studio_nails_white.jpg',
+    detailedImage: '/hamper/studio_nails_white.jpg',
+    material: 'Salon ABS Resin & UV Gel Coat',
+    dimensions: '24 tips (12 assorted sizes)',
+    specs: [
+      '24 full cover nail tips to fit every cuticle size perfectly',
+      'Includes 24 jelly adhesive tabs + wooden cuticle stick + buffer',
+      'Natural salon French blush with golden bow accents',
+      'Reusable, non-damaging, applies in 2 minutes flat'
+    ],
+    description: 'Salon-ready 24-piece press-on nails with jelly adhesive tabs.',
+    tag: 'Glam'
   },
   {
     id: 'g-chocolates',
-    name: 'Artisan Hazelnut Pralines Box (4 Pcs)',
+    name: 'KitKat Celebration Treats',
     category: 'treat',
-    price: 199,
-    image: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=600&q=80',
-    description: 'Gourmet Belgian dark & milk chocolate truffles filled with roasted Piedmont hazelnuts.',
+    price: 99,
+    image: '/hamper/box_cardboard_love.jpg',
+    detailedImage: '/hamper/box_cardboard_love.jpg',
+    material: 'Crisp Baked Wafer & Milk Chocolate',
+    dimensions: '2 Bars (Double Pack)',
+    specs: [
+      'Crisp baked wafer fingers coated in smooth milk chocolate',
+      'Nestled inside pink crinkle paper for the sweetest surprise',
+      'Fresh manufacturer sealed packaging'
+    ],
+    description: 'Crisp KitKat chocolate bars nestled inside for a celebratory sweet crunch.',
     tag: 'Sweet'
+  },
+  {
+    id: 'g-small-note',
+    name: 'A Small Note (Rolled Scroll)',
+    category: 'keepsake',
+    price: 0,
+    image: '/hamper/box_empty_center.png',
+    detailedImage: '/hamper/box_empty_center.png',
+    material: 'Textured Parchment & Red Thread',
+    dimensions: '12 × 8 cm rolled parchment',
+    specs: [
+      'Vintage parchment scroll letter tied with crimson cotton ribbon',
+      'Personalized with your custom recipient name and heartfelt message',
+      'Complementary and included with every hamper order at no charge'
+    ],
+    description: 'Handwritten sweet scroll letter tied with delicate red thread. Included complimentary!',
+    tag: 'Included ★'
+  },
+  {
+    id: 'g-greeting-card',
+    name: 'Floating Greeting Card',
+    category: 'keepsake',
+    price: 99,
+    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80',
+    detailedImage: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80',
+    material: '300 GSM Archival Textured Card',
+    dimensions: 'A6 (10.5 × 14.8 cm)',
+    specs: [
+      'Heavyweight 300 GSM textured cardstock',
+      'Custom typography with your words printed clearly',
+      'Matching cream envelope included'
+    ],
+    description: 'Custom message card on textured archival paper with your heartfelt words.',
+    tag: 'Personalized'
+  },
+  {
+    id: 'g-newspaper-card',
+    name: 'Vintage Newspaper Card',
+    category: 'keepsake',
+    price: 149,
+    image: '/products/media_1788608467346.jpg',
+    detailedImage: '/products/media_1788608467346.jpg',
+    material: '250 GSM Matte Newsprint Card',
+    dimensions: '5 × 7 inches',
+    specs: [
+      'Retro newspaper masthead with custom date & headlines',
+      'Custom couple photo printed on front page',
+      'Delightfully nostalgic keepsake gift'
+    ],
+    description: 'Mini retro headline card featuring your milestone date & couple photo.',
+    tag: 'Unique'
   }
+];
+
+export interface HamperInspirationLook {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  image: string;
+  boxId: string;
+  lidTagId: string;
+  includedGoodieIds: string[];
+  price: number;
+  highlight: string;
+}
+
+export const HAMPER_INSPIRATION_LOOKS: HamperInspirationLook[] = [
+  {
+    id: 'look-romantic-love',
+    title: 'The Romantic Love Box',
+    subtitle: 'Polaroid string lights, custom 4x4 frame, KitKat treats & rolled love letter',
+    badge: 'Anniversary Bestseller ♡',
+    image: '/hamper/box_cardboard_love.jpg',
+    boxId: 'box-cardboard',
+    lidTagId: 'tag-love',
+    includedGoodieIds: ['g-mini-frame', 'g-chocolates', 'g-small-note', 'g-greeting-card'],
+    price: 699,
+    highlight: 'Includes 4x4 wood couple frame, KitKat treats, handwritten scroll note & photo card in kraft mailer box.',
+  },
+  {
+    id: 'look-bday-celebration',
+    title: 'Birthday Star Celebration Box',
+    subtitle: 'Balloon foil lid stickers, polaroid memory prints, KitKat & pink bunny mirror',
+    badge: 'Birthday Favorite 🎂',
+    image: '/hamper/box_bday_hamper.jpg',
+    boxId: 'box-cardboard',
+    lidTagId: 'tag-birthday',
+    includedGoodieIds: ['g-mini-frame', 'g-chocolates', 'g-mirror', 'g-small-note'],
+    price: 749,
+    highlight: 'Festive birthday stickers on box lid, 4x4 frame, dual pocket mirror & celebratory treats.',
+  },
+  {
+    id: 'look-box-of-happiness',
+    title: 'The Box of Happiness',
+    subtitle: 'Bunting bows banner, vintage photo cards, golden charm bangles & scroll',
+    badge: 'Customer Top Pick 🌸',
+    image: '/hamper/box_happiness.jpg',
+    boxId: 'box-cardboard',
+    lidTagId: 'tag-just-for-you',
+    includedGoodieIds: ['g-mini-frame', 'g-bangles', 'g-small-note', 'g-greeting-card'],
+    price: 799,
+    highlight: 'Pastel pink ribbon bunting banner with photo cards, charm bangles, and keepsake scroll note.',
+  },
+  {
+    id: 'look-royal-pink-deluxe',
+    title: 'The Royal Keepsake Deluxe',
+    subtitle: 'Heavyweight luxury rigid box packed with silver jhumkhe, nails, scrunchie & bangles',
+    badge: 'Grand Luxury Keepsake 🎁',
+    image: '/hamper/box_flatlay_pink.jpg',
+    boxId: 'box-hardboard',
+    lidTagId: 'tag-love',
+    includedGoodieIds: ['g-mini-frame', 'g-jhumkas', 'g-dangles', 'g-bangles', 'g-claw', 'g-scrunchie', 'g-presson-nails', 'g-mirror'],
+    price: 1899,
+    highlight: 'Heavyweight rigid keepsake box with full boutique jewelry collection, salon nails, silk scrunchie & couple frame.',
+  },
 ];
 
 export const REVIEWS: Review[] = [

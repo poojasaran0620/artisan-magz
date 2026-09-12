@@ -4,11 +4,12 @@ import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
-import { HeroSection } from './components/home/HeroSection';
+import { WelcomeHeader } from './components/home/WelcomeHeader';
 import { ProductCategoriesSection } from './components/home/ProductCategoriesSection';
-import { FeaturedProducts } from './components/home/FeaturedProducts';
-import { TestimonialSection } from './components/home/TestimonialSection';
+import { HowToOrderSection } from './components/home/HowToOrderSection';
 import { InstagramFeedSection } from './components/home/InstagramFeedSection';
+import { AboutUsSection } from './components/home/AboutUsSection';
+import { FeaturedProducts } from './components/home/FeaturedProducts';
 import { ProductDetail } from './components/product/ProductDetail';
 import { HamperBuilder } from './components/hamper/HamperBuilder';
 import { MagazineBuilder } from './components/magazine/MagazineBuilder';
@@ -45,6 +46,14 @@ export const App: React.FC = () => {
       return;
     }
     if (id) {
+      if (id === 'prod-frame-01' || id === 'frames' || id === 'frames-collection') {
+        setCurrentView('frames');
+        return;
+      }
+      if (id === 'prod-hamper-01' || id === 'hamper' || id === 'hampers') {
+        setCurrentView('hamper');
+        return;
+      }
       setSelectedProductId(id);
       setInitialVariantId(undefined);
       setInitialTemplateId(undefined);
@@ -61,8 +70,12 @@ export const App: React.FC = () => {
 
   const handleSelectProduct = (productId: string, templateId?: string, variantId?: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (productId === 'frames' || productId === 'frames-collection') {
+    if (productId === 'frames' || productId === 'frames-collection' || productId === 'prod-frame-01') {
       setCurrentView('frames');
+      return;
+    }
+    if (productId === 'hampers' || productId === 'prod-hamper-01' || productId === 'hamper') {
+      setCurrentView('hamper');
       return;
     }
     setSelectedFrameOption(null);
@@ -98,34 +111,28 @@ export const App: React.FC = () => {
           <main className="flex-grow">
             {currentView === 'home' && (
               <>
-                {/* Brand Logo & Tagline Hero Section with Explore Products trigger */}
-                <HeroSection
+                {/* 1. Top Welcome Header */}
+                <WelcomeHeader
                   onExploreClick={() => {
-                    const el = document.getElementById('product-categories');
+                    const el = document.getElementById('best-selling');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    else handleNavigate('shop');
                   }}
-                  onHamperClick={() => handleNavigate('hamper')}
-                  onProductClick={handleSelectProduct}
                 />
 
-                {/* Front Page Product Categories: Magazines (8 & 20p + Templates), Frames, Hampers, Mini Mag, Newspaper, Combos */}
+                {/* 2. Best Selling & More Products (Clean Minimalist Cards) */}
                 <ProductCategoriesSection
                   onSelectProduct={handleSelectProduct}
                   onHamperClick={() => handleNavigate('hamper')}
                 />
 
-                {/* Bestseller Keepsakes Grid */}
-                <FeaturedProducts
-                  onSelectProduct={handleSelectProduct}
-                  onHamperClick={() => handleNavigate('hamper')}
-                />
+                {/* 3. Process: How to Order & How to Upload Photos */}
+                <HowToOrderSection />
 
-                {/* Real Customer Photos & Reviews */}
-                <TestimonialSection />
-
-                {/* Instagram Feed Grid */}
+                {/* 4. Curated Instagram Feed (Reels & Posts Grid) */}
                 <InstagramFeedSection />
+
+                {/* 5. About Us & Brand Trust Pillars */}
+                <AboutUsSection />
               </>
             )}
 
@@ -166,7 +173,7 @@ export const App: React.FC = () => {
                 initialTitle={selectedFrameOption?.title}
                 initialCollageStyle={selectedFrameOption?.collageStyle}
                 onBack={() => {
-                  if (selectedFrameOption) {
+                  if (selectedFrameOption || selectedProduct.category === 'frame') {
                     setCurrentView('frames');
                   } else {
                     handleNavigate('home');

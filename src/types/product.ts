@@ -48,7 +48,11 @@ export interface HamperGoodie {
   category: 'beauty' | 'jewelry' | 'accessory' | 'keepsake' | 'treat';
   price: number;
   image: string;
+  detailedImage?: string;
   description: string;
+  specs?: string[];
+  material?: string;
+  dimensions?: string;
   tag?: string;
 }
 
@@ -64,14 +68,28 @@ export interface HamperBoxOption {
 
 export interface HamperSelection {
   box: HamperBoxOption;
+  lidTag?: string;
   items: { goodie: HamperGoodie; quantity: number }[];
   card: {
     design: string;
-    waxSealColor: string;
+    waxSealColor?: string;
     recipientName: string;
     message: string;
     senderName: string;
   };
+}
+
+export interface HamperInspirationLook {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  image: string;
+  boxId: string;
+  lidTagId: string;
+  includedGoodieIds: string[];
+  price: number;
+  highlight: string;
 }
 
 export interface CustomizationData {
