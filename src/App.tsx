@@ -24,6 +24,7 @@ import { SavedAddressesModal } from './components/account/SavedAddressesModal';
 import { FramesCollectionPage } from './components/frames/FramesCollectionPage';
 import { FrameOption } from './data/frameOptions';
 import { PRODUCTS } from './data/products';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 
 export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>('home');
@@ -198,6 +199,10 @@ export const App: React.FC = () => {
                 onBackToShop={() => handleNavigate('home')}
                 onSelectProduct={handleSelectProduct}
               />
+            )}
+
+            {currentView === 'admin' && (
+              <AdminDashboard onBack={() => handleNavigate('home')} />
             )}
           </main>
 

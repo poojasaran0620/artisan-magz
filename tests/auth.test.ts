@@ -71,6 +71,7 @@ test('order recording generates valid orderNumber, status, and items', () => {
     deliveryAddress: {
       recipientName: 'Priya Sharma',
       phone: '9876543210',
+      email: 'priya.sharma@gmail.com',
       address: '14th Main Road, Indiranagar',
       city: 'Bengaluru',
       pincode: '560038',
@@ -82,4 +83,6 @@ test('order recording generates valid orderNumber, status, and items', () => {
   assert.equal(createdOrder.totalAmount, 1279);
   assert.equal(createdOrder.items.length, 1);
   assert.equal(createdOrder.deliveryAddress.city, 'Bengaluru');
+  assert.equal(createdOrder.deliveryAddress.email, 'priya.sharma@gmail.com');
 });
+

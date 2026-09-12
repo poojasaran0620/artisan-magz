@@ -1,9 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { User, Package, MapPin, LogOut, ChevronDown } from 'lucide-react';
+import { User, Package, MapPin, LogOut, ChevronDown, ShieldCheck } from 'lucide-react';
 
-export const UserMenuDropdown: React.FC = () => {
-  const { user, signOut, openOrdersModal, openAddressesModal, orders } = useAuth();
+interface UserMenuDropdownProps {
+  onNavigate?: (view: string) => void;
+}
+
+export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ onNavigate }) => {
+  const { user, signOut, openOrdersModal, openAddressesModal, orders, isAdmin } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -58,6 +62,23 @@ export const UserMenuDropdown: React.FC = () => {
 
           {/* Menu Items */}
           <div className="space-y-0.5">
+            {/* Admin Dashboard — visible only to admin users */}
+            {isAdmin && onNavigate && (
+              <>
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    onNavigate('admin');
+                  }}
+                  className="w-full flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium text-charcoal hover:bg-roseGold/10 transition cursor-pointer"
+                >
+                  <ShieldCheck className="w-4 h-4 text-roseGold" />
+                  <span className="font-semibold">Admin Dashboard</span>
+                </button>
+                <div className="mx-2 border-b border-taupe-200/40" />
+              </>
+            )}
+
             <button
               onClick={() => {
                 setIsOpen(false);

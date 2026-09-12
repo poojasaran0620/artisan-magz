@@ -117,7 +117,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
 
             {/* User Auth Trigger */}
             {isAuthenticated ? (
-              <UserMenuDropdown />
+              <UserMenuDropdown onNavigate={onNavigate} />
             ) : (
               <button
                 type="button"

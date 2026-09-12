@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatPrice } from '../../utils/formatters';
+import { sendOrderEmail } from '../../services/emailService';
 import {
   X,
   CheckCircle2,
@@ -97,6 +98,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
       deliveryAddress: {
         recipientName: formData.fullName,
         phone: formData.phone,
+        email: formData.email,
         address: formData.address,
         city: formData.city,
         pincode: formData.pincode,
@@ -105,6 +107,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
 
     setOrderId(recorded.orderNumber);
     setStep('success');
+
+    // Send order confirmation email (fire-and-forget)
+    sendOrderEmail(recorded, 'placed');
 
     confetti({
       particleCount: 100,

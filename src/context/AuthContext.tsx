@@ -1,6 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase, isSupabaseConfigured } from '../services/supabase';
 
+// ── Admin Access Control ───────────────────────────────────────────────
+export const ADMIN_EMAILS: readonly string[] = [
+  'poojasaran0620@gmail.com',
+  'vijayrathod8422@gmail.com',
+  'artisanmagz@gmail.com',
+] as const;
+
+export function isAdminEmail(email: string | undefined | null): boolean {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email.toLowerCase().trim());
+}
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -39,6 +51,7 @@ export interface OrderRecord {
   deliveryAddress: {
     recipientName: string;
     phone: string;
+    email?: string;
     address: string;
     city: string;
     pincode: string;
@@ -48,6 +61,7 @@ export interface OrderRecord {
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   isLoading: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -392,6 +406,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         isAuthenticated: Boolean(user),
+        isAdmin: isAdminEmail(user?.email),
         isLoading,
         signInWithGoogle,
         signOut,
