@@ -48,6 +48,8 @@ export interface OrderRecord {
   status: 'placed' | 'printing' | 'dispatched' | 'delivered';
   items: OrderItemSummary[];
   totalAmount: number;
+  paymentId?: string;
+  paymentMethod?: 'razorpay' | 'cod' | 'whatsapp';
   deliveryAddress: {
     recipientName: string;
     phone: string;
@@ -230,6 +232,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           status: o.status,
           items: o.items || [],
           totalAmount: Number(o.total_amount) || 0,
+          paymentId: o.payment_id || undefined,
+          paymentMethod: o.payment_method || undefined,
           deliveryAddress: o.delivery_address || {
             recipientName: '',
             phone: '',
@@ -435,6 +439,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         items: newOrder.items,
         total_amount: newOrder.totalAmount,
         delivery_address: newOrder.deliveryAddress,
+        payment_id: newOrder.paymentId || null,
+        payment_method: newOrder.paymentMethod || 'cod',
       }).then(({ error }) => {
         if (error) console.warn('Failed to record order into Supabase:', error);
       });

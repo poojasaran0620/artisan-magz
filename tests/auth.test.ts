@@ -68,6 +68,8 @@ test('order recording generates valid orderNumber, status, and items', () => {
       },
     ],
     totalAmount: 1279,
+    paymentId: 'pay_test_123456',
+    paymentMethod: 'razorpay',
     deliveryAddress: {
       recipientName: 'Priya Sharma',
       phone: '9876543210',
@@ -84,5 +86,7 @@ test('order recording generates valid orderNumber, status, and items', () => {
   assert.equal(createdOrder.items.length, 1);
   assert.equal(createdOrder.deliveryAddress.city, 'Bengaluru');
   assert.equal(createdOrder.deliveryAddress.email, 'priya.sharma@gmail.com');
+  assert.equal(createdOrder.paymentId, 'pay_test_123456');
+  assert.equal(createdOrder.paymentMethod, 'razorpay');
 });
 

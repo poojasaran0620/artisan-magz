@@ -8,6 +8,8 @@ import {
   User,
   Clock,
   CheckCircle2,
+  CreditCard,
+  Truck,
 } from 'lucide-react';
 import type { OrderRecord } from '../../context/AuthContext';
 
@@ -194,6 +196,39 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
                     {order.deliveryAddress.address}, {order.deliveryAddress.city} – {order.deliveryAddress.pincode}
                   </span>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Payment Information */}
+          {(order.paymentMethod || order.paymentId) && (
+            <div className="mt-4">
+              <h4 className="text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
+                Payment Details
+              </h4>
+              <div className="bg-cream-50 rounded-xl p-3 border border-taupe-200/40 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-xs">
+                  {order.paymentMethod === 'razorpay' ? (
+                    <>
+                      <CreditCard className="w-3.5 h-3.5 text-roseGold" />
+                      <span className="font-medium text-charcoal">Online Payment</span>
+                      <span className="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded ml-1">
+                        Razorpay
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Truck className="w-3.5 h-3.5 text-roseGold" />
+                      <span className="font-medium text-charcoal">Cash on Delivery</span>
+                    </>
+                  )}
+                </div>
+                {order.paymentId && (
+                  <div className="text-[11px] text-taupe-600">
+                    <span className="text-taupe-400">Payment ID:</span>{' '}
+                    <span className="font-mono font-medium text-charcoal">{order.paymentId}</span>
+                  </div>
+                )}
               </div>
             </div>
           )}

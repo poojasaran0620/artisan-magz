@@ -3,6 +3,7 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatPrice } from '../../utils/formatters';
 import { sendOrderEmail } from '../../services/emailService';
+import { openRazorpayCheckout, isRazorpayConfigured } from '../../services/razorpay';
 import {
   X,
   CheckCircle2,
@@ -10,12 +11,13 @@ import {
   Truck,
   Sparkles,
   CreditCard,
-  QrCode,
   MessageCircle,
   Copy,
   Check,
   MapPin,
   Package,
+  Wallet,
+  Loader2,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -45,8 +47,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
     state: 'Maharashtra',
     pincode: defaultAddress ? defaultAddress.pincode : '400053',
     giftNote: 'Please pack with extra soft shred paper and luxury ribbon bow! 🌸',
-    paymentMethod: 'upi',
+    paymentMethod: 'razorpay',
   });
+
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   // Sync if user logs in or addresses change
   useEffect(() => {
@@ -77,11 +81,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
     }));
   };
 
-  const handleSubmitOrder = (e: React.FormEvent) => {
+  const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Record order in AuthContext history
-    const recorded = recordOrder({
+    // Build order payload (shared between razorpay and COD)
+    const orderPayload = {
       items: cartItems.map((item) => ({
         title: item.product.title,
         variantName: item.selectedVariant?.name,
@@ -103,13 +107,61 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
         city: formData.city,
         pincode: formData.pincode,
       },
-    });
+    };
 
-    setOrderId(recorded.orderNumber);
-    setStep('success');
+    // ── Razorpay Online Payment ─────────────────────────────────
+    if (formData.paymentMethod === 'razorpay') {
+      setIsProcessingPayment(true);
 
-    // Send order confirmation email (fire-and-forget)
-    sendOrderEmail(recorded, 'placed');
+      try {
+        const result = await openRazorpayCheckout({
+          amount: total,
+          description: `Order — ${cartItems.length} keepsake${cartItems.length > 1 ? 's' : ''}`,
+          prefill: {
+            name: formData.fullName,
+            email: formData.email,
+            contact: formData.phone,
+          },
+        });
+
+        if (!result.success) {
+          // Payment cancelled or failed — stay on form
+          setIsProcessingPayment(false);
+          if (result.error && !result.error.includes('cancelled')) {
+            alert(result.error);
+          }
+          return;
+        }
+
+        // Payment succeeded → record order with payment info
+        const recorded = recordOrder({
+          ...orderPayload,
+          paymentId: result.paymentId,
+          paymentMethod: 'razorpay',
+        });
+
+        setOrderId(recorded.orderNumber);
+        setStep('success');
+        sendOrderEmail(recorded, 'placed');
+      } catch (err) {
+        console.error('Payment error:', err);
+        alert('Something went wrong with payment. Please try again.');
+        setIsProcessingPayment(false);
+        return;
+      } finally {
+        setIsProcessingPayment(false);
+      }
+    } else {
+      // ── Cash on Delivery ────────────────────────────────────────
+      const recorded = recordOrder({
+        ...orderPayload,
+        paymentMethod: 'cod',
+      });
+
+      setOrderId(recorded.orderNumber);
+      setStep('success');
+      sendOrderEmail(recorded, 'placed');
+    }
 
     confetti({
       particleCount: 100,
@@ -153,7 +205,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
             </span>
             <div>
               <h3 className="font-serif text-lg font-bold text-wine-900">
-                {step === 'form' ? 'Simulated Secure Checkout' : 'Order Confirmed! 🎉'}
+                {step === 'form' ? 'Secure Checkout' : 'Order Confirmed! 🎉'}
               </h3>
               <p className="text-[11px] text-wine-900/60">
                 {step === 'form' ? 'Enter delivery destination & shipping details' : 'Your keepsake is being handcrafted'}
@@ -329,33 +381,58 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                 2. Select Payment Mode
               </h4>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {[
-                  { id: 'upi', name: 'Instant UPI / QR', icon: QrCode, badge: 'Recommended' },
-                  { id: 'card', name: 'Credit / Debit Card', icon: CreditCard },
-                  { id: 'cod', name: 'Cash On Delivery', icon: Truck },
-                ].map((pm) => (
-                  <button
-                    key={pm.id}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, paymentMethod: pm.id })}
-                    className={`p-3 rounded-2xl border text-left transition flex flex-col justify-between cursor-pointer ${
-                      formData.paymentMethod === pm.id
-                        ? 'border-blush-600 bg-blush-50 ring-1 ring-blush-400'
-                        : 'border-roseGold-light/60 bg-white hover:border-blush-200'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <pm.icon className="w-4 h-4 text-wine-900" />
-                      {pm.badge && (
-                        <span className="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded">
-                          {pm.badge}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-xs font-bold text-wine-900 mt-2">{pm.name}</span>
-                  </button>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* Razorpay Online Payment */}
+                <button
+                  type="button"
+                  disabled={isProcessingPayment}
+                  onClick={() => setFormData({ ...formData, paymentMethod: 'razorpay' })}
+                  className={`p-3.5 rounded-2xl border text-left transition flex flex-col gap-2 cursor-pointer ${
+                    formData.paymentMethod === 'razorpay'
+                      ? 'border-blush-600 bg-blush-50 ring-1 ring-blush-400'
+                      : 'border-roseGold-light/60 bg-white hover:border-blush-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Wallet className="w-4 h-4 text-wine-900" />
+                    <span className="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">
+                      Recommended
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-wine-900">Online Payment</span>
+                  <div className="flex flex-wrap gap-1">
+                    {['UPI', 'Cards', 'Netbanking', 'Wallets'].map((m) => (
+                      <span key={m} className="text-[9px] bg-cream-100 text-wine-900/70 px-1.5 py-0.5 rounded-md font-medium">
+                        {m}
+                      </span>
+                    ))}
+                  </div>
+                  {!isRazorpayConfigured() && (
+                    <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-medium">
+                      🧪 Test / Simulation Mode
+                    </span>
+                  )}
+                </button>
+
+                {/* Cash on Delivery */}
+                <button
+                  type="button"
+                  disabled={isProcessingPayment}
+                  onClick={() => setFormData({ ...formData, paymentMethod: 'cod' })}
+                  className={`p-3.5 rounded-2xl border text-left transition flex flex-col gap-2 cursor-pointer ${
+                    formData.paymentMethod === 'cod'
+                      ? 'border-blush-600 bg-blush-50 ring-1 ring-blush-400'
+                      : 'border-roseGold-light/60 bg-white hover:border-blush-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <Truck className="w-4 h-4 text-wine-900" />
+                  </div>
+                  <span className="text-xs font-bold text-wine-900">Cash on Delivery</span>
+                  <span className="text-[9px] text-wine-900/50 font-medium">
+                    Pay when your keepsake arrives
+                  </span>
+                </button>
               </div>
             </div>
 
@@ -363,14 +440,36 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
             <div className="pt-3 border-t border-roseGold-light/30 space-y-2.5">
               <button
                 type="submit"
-                className="w-full py-3.5 sm:py-4 bg-wine-900 hover:bg-wine-800 text-white rounded-2xl font-semibold text-sm shadow-soft hover:shadow-soft-lg active:scale-95 transition flex items-center justify-center gap-2 cursor-pointer"
+                disabled={isProcessingPayment}
+                className={`w-full py-3.5 sm:py-4 rounded-2xl font-semibold text-sm shadow-soft hover:shadow-soft-lg transition flex items-center justify-center gap-2 cursor-pointer ${
+                  isProcessingPayment
+                    ? 'bg-wine-900/60 text-white/80 cursor-wait'
+                    : formData.paymentMethod === 'razorpay'
+                    ? 'bg-wine-900 hover:bg-wine-800 text-white active:scale-95'
+                    : 'bg-wine-900 hover:bg-wine-800 text-white active:scale-95'
+                }`}
               >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Place Order • {formatPrice(total)}</span>
+                {isProcessingPayment ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Processing Payment…</span>
+                  </>
+                ) : formData.paymentMethod === 'razorpay' ? (
+                  <>
+                    <CreditCard className="w-4 h-4" />
+                    <span>Pay & Place Order • {formatPrice(total)}</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Place COD Order • {formatPrice(total)}</span>
+                  </>
+                )}
               </button>
 
               <button
                 type="button"
+                disabled={isProcessingPayment}
                 onClick={() => {
                   sendWhatsAppOrder(cartItems, {
                     name: formData.fullName,
@@ -388,7 +487,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
               </button>
 
               <p className="text-[10px] text-center text-wine-900/50">
-                🔒 Safe & Encrypted 256-bit simulated checkout • Immediate proof sent to WhatsApp
+                🔒 Secure Checkout via Razorpay • Encrypted 256-bit SSL • Immediate confirmation sent to WhatsApp
               </p>
             </div>
           </form>
