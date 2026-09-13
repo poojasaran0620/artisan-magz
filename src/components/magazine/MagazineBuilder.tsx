@@ -382,18 +382,6 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
           </button>
         </div>
 
-        {/* Step Progress Pill */}
-        <div className="max-w-md mx-auto px-4 pb-2 pt-1">
-          <div className="flex items-center justify-center gap-2 text-[10px] sm:text-[11px] text-taupe-700 font-medium">
-            <span className="text-charcoal font-bold">1. Package</span>
-            <span className="text-taupe-400">→</span>
-            <span className={selectedPages ? 'text-charcoal font-bold' : 'text-taupe-400'}>
-              2. Templates
-            </span>
-            <span className="text-taupe-400">→</span>
-            <span className="text-charcoal font-bold">3. Add-ons</span>
-          </div>
-        </div>
       </header>
 
       {/* Main Content Flow */}
