@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { X, Sparkles, ShieldCheck, Heart, Truck, ArrowRight } from 'lucide-react';
+import { X, Sparkles, ShieldCheck, Heart, Truck, ArrowRight, Mail } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, closeAuthModal, signInWithGoogle, isLoading } = useAuth();
+  const { isAuthModalOpen, closeAuthModal, signInWithGoogle, signInWithEmail, isLoading } = useAuth();
+  const [emailInput, setEmailInput] = useState('');
+  const [nameInput, setNameInput] = useState('');
+  const [showEmailForm, setShowEmailForm] = useState(false);
 
   if (!isAuthModalOpen) return null;
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emailInput.trim()) return;
+    signInWithEmail(emailInput.trim(), nameInput.trim() || undefined);
+  };
+
+  const handleQuickFill = (email: string, name: string) => {
+    setEmailInput(email);
+    setNameInput(name);
+    signInWithEmail(email, name);
+  };
 
   return (
     <div
@@ -13,7 +28,7 @@ export const AuthModal: React.FC = () => {
       onClick={closeAuthModal}
     >
       <div
-        className="bg-[#FFFDF9] rounded-3xl max-w-md w-full overflow-hidden shadow-luxury border border-white/80 p-6 sm:p-8 space-y-6 relative"
+        className="bg-[#FFFDF9] rounded-3xl max-w-md w-full overflow-hidden shadow-luxury border border-white/80 p-6 sm:p-8 space-y-6 relative max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -34,45 +49,36 @@ export const AuthModal: React.FC = () => {
             Artisan Magz
           </h2>
           <p className="text-xs text-taupe-700 max-w-xs mx-auto">
-            Sign in with Google to save your personalized keepsakes and track orders.
+            Sign in to access your personalized keepsakes, track orders, and open the Admin Dashboard.
           </p>
         </div>
 
         {/* Value Perks List */}
-        <div className="bg-cream-100/70 rounded-2xl p-4 space-y-3 border border-taupe-200/50">
-          <div className="flex items-start gap-2.5 text-xs text-charcoal">
-            <div className="w-5 h-5 rounded-full bg-white shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-roseGold">
+        <div className="bg-cream-100/70 rounded-2xl p-3.5 space-y-2.5 border border-taupe-200/50">
+          <div className="flex items-start gap-2 text-xs text-charcoal">
+            <div className="w-4.5 h-4.5 rounded-full bg-white shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-roseGold text-[11px]">
               ⚡
             </div>
             <div>
               <strong className="font-semibold text-charcoal">1-Tap Express Checkout:</strong>
-              <p className="text-[11px] text-taupe-700">Save delivery addresses once and auto-fill anytime.</p>
+              <span className="text-[11px] text-taupe-700 ml-1">Auto-fill saved shipping addresses.</span>
             </div>
           </div>
 
-          <div className="flex items-start gap-2.5 text-xs text-charcoal">
-            <div className="w-5 h-5 rounded-full bg-white shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-roseGold">
+          <div className="flex items-start gap-2 text-xs text-charcoal">
+            <div className="w-4.5 h-4.5 rounded-full bg-white shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-roseGold text-[11px]">
               📦
             </div>
             <div>
-              <strong className="font-semibold text-charcoal">Order & Printing Tracking:</strong>
-              <p className="text-[11px] text-taupe-700">Watch your magazine go from print to dispatch.</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2.5 text-xs text-charcoal">
-            <div className="w-5 h-5 rounded-full bg-white shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-roseGold">
-              💖
-            </div>
-            <div>
-              <strong className="font-semibold text-charcoal">Sync Across Devices:</strong>
-              <p className="text-[11px] text-taupe-700">Your magazine customizer drafts are always saved.</p>
+              <strong className="font-semibold text-charcoal">Real-time Order Tracking:</strong>
+              <span className="text-[11px] text-taupe-700 ml-1">Live updates from print to door.</span>
             </div>
           </div>
         </div>
 
-        {/* 1-Click Google Sign-In Button */}
-        <div className="space-y-3 pt-1">
+        {/* Sign-In Actions */}
+        <div className="space-y-4 pt-1">
+          {/* 1-Click Google Sign-In Button */}
           <button
             type="button"
             onClick={() => signInWithGoogle()}
@@ -102,9 +108,63 @@ export const AuthModal: React.FC = () => {
             <ArrowRight className="w-4 h-4 text-roseGold group-hover:translate-x-1 transition-transform ml-auto" />
           </button>
 
-          <p className="text-[11px] text-center text-taupe-500">
-            Instant 1-Click Sign-In enabled • Seamless checkout & tracking
-          </p>
+          {/* Divider */}
+          <div className="relative flex items-center justify-center">
+            <div className="border-t border-taupe-200/80 w-full" />
+            <span className="bg-[#FFFDF9] px-3 text-[10px] font-bold tracking-widest text-taupe-500 uppercase shrink-0">
+              or sign in with email
+            </span>
+            <div className="border-t border-taupe-200/80 w-full" />
+          </div>
+
+          {/* Direct Email Form */}
+          <form onSubmit={handleEmailSubmit} className="space-y-3">
+            <div>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-taupe-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="email"
+                  required
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="Enter email (e.g. artisanmagz@gmail.com)"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-taupe-200/90 rounded-xl text-xs text-charcoal placeholder:text-taupe-400 focus:outline-none focus:ring-1 focus:ring-roseGold"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading || !emailInput.trim()}
+              className="w-full py-2.5 px-4 bg-charcoal hover:bg-charcoal-dark text-white rounded-xl font-bold text-xs shadow-soft active:scale-98 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
+            >
+              <span>Instant Sign In</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </form>
+
+          {/* Quick Admin Profile Shortcuts */}
+          <div className="pt-1">
+            <div className="text-[10px] text-taupe-500 font-semibold uppercase tracking-wider mb-1.5 text-center">
+              Quick Admin Access
+            </div>
+            <div className="flex items-center justify-center gap-1.5 flex-wrap">
+              <button
+                type="button"
+                onClick={() => handleQuickFill('artisanmagz@gmail.com', 'Artisan Magz')}
+                className="px-2.5 py-1 rounded-full bg-cream-100 hover:bg-roseGold/10 border border-taupe-200 text-[10px] font-medium text-charcoal transition cursor-pointer"
+              >
+                artisanmagz@gmail.com 🛡️
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickFill('poojasaran0620@gmail.com', 'Pooja Saran')}
+                className="px-2.5 py-1 rounded-full bg-cream-100 hover:bg-roseGold/10 border border-taupe-200 text-[10px] font-medium text-charcoal transition cursor-pointer"
+              >
+                poojasaran0620@gmail.com 🛡️
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -64,6 +64,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isLoading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, name?: string) => Promise<void>;
   signOut: () => Promise<void>;
   
   // Modal visibility controls
@@ -319,6 +320,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signInWithEmail = async (email: string, name?: string) => {
+    setIsLoading(true);
+    try {
+      const trimmedEmail = email.trim().toLowerCase();
+      const userName = name?.trim() || trimmedEmail.split('@')[0].replace(/[._]/g, ' ') || 'Keepsake Lover';
+      const formattedName = userName
+        .split(' ')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+
+      const loggedUser: AuthUser = {
+        id: `usr-${Date.now()}`,
+        email: trimmedEmail,
+        name: formattedName,
+        avatarUrl: `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(formattedName)}`,
+        phone: '9876543210',
+      };
+
+      setUser(loggedUser);
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(loggedUser));
+
+      if (supabase && isSupabaseConfigured) {
+        try {
+          await supabase.from('profiles').upsert({
+            id: loggedUser.id,
+            email: loggedUser.email,
+            full_name: loggedUser.name,
+            avatar_url: loggedUser.avatarUrl,
+            phone: loggedUser.phone,
+          }, { onConflict: 'email' });
+        } catch (e) {
+          console.warn('Profile upsert fallback:', e);
+        }
+      }
+
+      setIsAuthModalOpen(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const signOut = async () => {
     if (supabase && isSupabaseConfigured) {
       await supabase.auth.signOut();
@@ -409,6 +451,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAdmin: isAdminEmail(user?.email),
         isLoading,
         signInWithGoogle,
+        signInWithEmail,
         signOut,
         isAuthModalOpen,
         openAuthModal,
