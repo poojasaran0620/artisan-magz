@@ -22,10 +22,11 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
   const moreProducts = [
     {
       id: 'mini-magazine',
-      title: 'Mini Magazine',
+      title: 'Mini Magazines',
       image: '/products/mini_magazine.jpg',
-      alt: 'Personalized Mini Magazine',
+      alt: 'Personalized Mini Pocket Magazine',
       onClick: () => miniMagazineProduct && onSelectProduct(miniMagazineProduct.id),
+      position: 'object-center',
     },
     {
       id: 'frames',
@@ -33,6 +34,7 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
       image: '/products/playing_cards_frame.jpg',
       alt: 'Personalized Photo Frames',
       onClick: () => onSelectProduct('frames'),
+      position: 'object-center',
     },
     {
       id: 'hampers',
@@ -40,6 +42,7 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
       image: '/products/gift_hamper_curated_box.jpg',
       alt: 'Curated Gift Hampers',
       onClick: onHamperClick,
+      position: 'object-center',
     },
     {
       id: 'song-album',
@@ -47,6 +50,7 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
       image: songProduct?.images[0] || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
       alt: 'Song Book & Spotify Plaque',
       onClick: () => songProduct && onSelectProduct(songProduct.id),
+      position: 'object-center',
     },
     {
       id: 'newspaper',
@@ -54,6 +58,7 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
       image: '/products/media_1788608467346.jpg',
       alt: 'Vintage Newspaper Frame',
       onClick: () => newspaperProduct && onSelectProduct(newspaperProduct.id),
+      position: 'object-top',
     },
   ];
 
@@ -176,24 +181,22 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
             <div
               key={prod.id}
               onClick={prod.onClick}
-              className="bg-white rounded-3xl p-3 sm:p-4 border border-taupe-200/80 shadow-luxury hover:shadow-soft-lg transition-all duration-300 flex flex-col justify-between group cursor-pointer text-center hover:-translate-y-1"
+              className="bg-white rounded-3xl p-2.5 sm:p-3 border border-taupe-200/80 shadow-luxury hover:shadow-soft-lg transition-all duration-300 flex flex-col group cursor-pointer text-center hover:-translate-y-1"
             >
-              <div className="space-y-2.5">
-                {/* Product Photo - full uncropped view */}
-                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#FAF8F5] shadow-xs border border-taupe-200/50 flex items-center justify-center p-1.5">
-                  <img
-                    src={prod.image}
-                    alt={prod.alt}
-                    className="w-full h-full object-contain group-hover:scale-105 transition duration-500"
-                  />
-                </div>
+              {/* Product Photo - flush fit without empty whitespace */}
+              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cream-100 shadow-xs border border-taupe-200/50">
+                <img
+                  src={prod.image}
+                  alt={prod.alt}
+                  className={`w-full h-full object-cover ${prod.position || 'object-center'} group-hover:scale-105 transition duration-500`}
+                />
+              </div>
 
-                {/* Product Label */}
-                <div>
-                  <h3 className="font-serif text-sm sm:text-base font-bold text-charcoal group-hover:text-roseGold transition-colors leading-tight">
-                    {prod.title}
-                  </h3>
-                </div>
+              {/* Product Label */}
+              <div className="pt-2.5 pb-1">
+                <h3 className="font-serif text-sm sm:text-base font-bold text-charcoal group-hover:text-roseGold transition-colors leading-tight">
+                  {prod.title}
+                </h3>
               </div>
             </div>
           ))}
