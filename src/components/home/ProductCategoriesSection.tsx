@@ -166,7 +166,7 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
             More Products
           </h2>
           <p className="text-[10px] sm:text-xs font-bold tracking-[0.22em] text-taupe-700 uppercase">
-            ★ Turn Your Memories Into Something Special ★
+            ★ Let Us Make Your Memories Last Forever ★
           </p>
         </div>
 
