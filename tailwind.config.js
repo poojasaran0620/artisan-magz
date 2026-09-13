@@ -76,11 +76,9 @@ export default {
         },
       },
       fontFamily: {
-        logo: ['"Alex Brush"', '"Allura"', '"Great Vibes"', 'cursive'],
-        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-        script: ['"Caveat"', '"Dancing Script"', 'cursive'],
-        mono: ['Courier Prime', 'monospace']
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {
         'soft': '0 4px 20px -2px rgba(51, 51, 51, 0.05), 0 2px 6px -1px rgba(183, 110, 121, 0.06)',

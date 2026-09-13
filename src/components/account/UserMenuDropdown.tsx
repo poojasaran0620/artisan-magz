@@ -91,7 +91,7 @@ export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ onNavigate }
                 <span>My Orders</span>
               </span>
               {orders.length > 0 && (
-                <span className="bg-blush-100 text-charcoal font-bold text-[10px] px-2 py-0.5 rounded-full font-mono">
+                <span className="bg-blush-100 text-charcoal font-bold text-[10px] px-2 py-0.5 rounded-full font-sans tabular-nums">
                   {orders.length}
                 </span>
               )}

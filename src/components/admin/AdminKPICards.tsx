@@ -96,7 +96,7 @@ export const AdminKPICards: React.FC<AdminKPICardsProps> = ({ orders }) => {
               {card.label}
             </span>
           </div>
-          <div className={`${card.color} font-serif text-xl sm:text-2xl font-bold`}>
+          <div className={`${card.color} font-sans font-bold tabular-nums text-xl sm:text-2xl`}>
             {card.value}
           </div>
         </div>

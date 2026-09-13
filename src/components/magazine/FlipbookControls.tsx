@@ -58,7 +58,7 @@ export const FlipbookControls: React.FC<FlipbookControlsProps> = ({
           <span className="text-xs font-semibold text-[#FDFCF5] whitespace-nowrap">
             {spreadLabel}
           </span>
-          <span className="text-[10px] text-taupe-300 font-mono hidden sm:inline">
+          <span className="text-[10px] text-taupe-300 font-sans tabular-nums hidden sm:inline">
             ({currentSpreadIndex + 1}/{totalSpreads})
           </span>
         </div>

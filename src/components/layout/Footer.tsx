@@ -19,7 +19,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
                 <img src="/artisan_logo_horizontal.png" alt="Artisan Magz Logo" className="w-full h-full object-cover scale-110" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="font-logo text-3xl text-[#FDFCF5] tracking-wide font-normal">
+                <span className="font-serif italic text-3xl text-[#FDFCF5] tracking-wide font-normal">
                   Artisan
                 </span>
                 <span className="text-[10px] tracking-[0.28em] uppercase text-roseGold font-bold ml-1">
@@ -50,7 +50,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
                 <MessageCircle className="w-4 h-4" />
               </a>
             </div>
-            <p className="text-[11px] text-taupe-400 font-mono">
+            <p className="text-[11px] text-taupe-400 font-sans">
               DM us on Instagram: @artisan.magz
             </p>
           </div>

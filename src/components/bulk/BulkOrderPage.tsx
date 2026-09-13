@@ -133,7 +133,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
         {/* 1. Introductory Info Card */}
         <div className="bg-gradient-to-br from-white via-[#FFFDF9] to-[#FAF6F0] rounded-[2.5rem] p-6 sm:p-10 shadow-luxury border border-roseGold-light/50 text-center space-y-5">
-          <h1 className="font-script text-4xl sm:text-5xl md:text-6xl text-[#D97C90] font-normal tracking-wide drop-shadow-xs">
+          <h1 className="font-serif italic text-4xl sm:text-5xl md:text-6xl text-[#D97C90] font-normal tracking-wide drop-shadow-xs">
             Bulk Orders ✨
           </h1>
 

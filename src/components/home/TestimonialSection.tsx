@@ -47,7 +47,7 @@ export const TestimonialSection: React.FC = () => {
                   ))}
                 </div>
 
-                <p className="text-xs text-charcoal/90 leading-relaxed italic">
+                <p className="font-serif italic text-xs text-charcoal/90 leading-relaxed">
                   "{review.comment}"
                 </p>
               </div>

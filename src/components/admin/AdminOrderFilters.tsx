@@ -67,7 +67,7 @@ export const AdminOrderFilters: React.FC<AdminOrderFiltersProps> = ({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-[10px] text-taupe-500 font-mono">{totalCount} orders</span>
+          <span className="text-[10px] text-taupe-500 font-sans tabular-nums">{totalCount} orders</span>
           <button
             onClick={() => onSortOrderChange(sortOrder === 'newest' ? 'oldest' : 'newest')}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white border border-taupe-200/60 text-[11px] text-taupe-600 hover:bg-cream-100 transition cursor-pointer"

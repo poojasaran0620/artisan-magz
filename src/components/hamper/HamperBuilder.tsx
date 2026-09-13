@@ -493,7 +493,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                       <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white text-charcoal border border-taupe-200">
                         {box.id === 'box-cardboard' ? 'Popular Value' : 'Luxury Keepsake'}
                       </span>
-                      <span className="font-serif font-bold text-base sm:text-lg text-roseGold">
+                      <span className="font-sans font-bold text-base sm:text-lg text-roseGold tabular-nums">
                         {formatPrice(box.price)}
                       </span>
                     </div>
@@ -503,7 +503,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                     <p className="text-[11px] text-charcoal/70 truncate mt-0.5">
                       {box.subtitle}
                     </p>
-                    <div className="text-[10px] text-taupe-500 font-mono mt-0.5 flex items-center justify-between">
+                    <div className="text-[10px] text-taupe-500 font-sans mt-0.5 flex items-center justify-between">
                       <span>{box.dimensions}</span>
                       <span className="font-bold text-roseGold">
                         {isSelected ? '✓ Selected' : 'Click to Pick'}
@@ -1180,7 +1180,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                       </span>
 
                       {/* Price Tag Top Right */}
-                      <span className="absolute top-3.5 right-3.5 px-3 py-1 rounded-full bg-charcoal/90 backdrop-blur-xs text-white text-xs font-serif font-bold shadow-sm">
+                      <span className="absolute top-3.5 right-3.5 px-3 py-1 rounded-full bg-charcoal/90 backdrop-blur-xs text-white text-xs font-sans font-bold tabular-nums shadow-sm">
                         Total {formatPrice(look.price)}
                       </span>
 
@@ -1198,7 +1198,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                     {/* Body Details */}
                     <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                       <div className="space-y-3">
-                        <p className="text-xs text-charcoal/80 leading-relaxed bg-[#FAF8F5] p-3 rounded-2xl border border-taupe-200/60 italic">
+                        <p className="font-serif italic text-xs text-charcoal/80 leading-relaxed bg-[#FAF8F5] p-3 rounded-2xl border border-taupe-200/60">
                           "{look.highlight}"
                         </p>
 
@@ -1502,7 +1502,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                     rows={4}
                     value={cardMessage}
                     onChange={(e) => setCardMessage(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-taupe-300 focus:outline-none focus:ring-2 focus:ring-roseGold resize-none"
+                    className="w-full px-3.5 py-2 rounded-xl border border-taupe-300 focus:outline-none focus:ring-2 focus:ring-roseGold resize-none font-serif italic text-charcoal"
                     placeholder="Write your sweet words here..."
                   />
                 </div>
@@ -1570,7 +1570,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
 
                   <div className="space-y-3">
                     <div>
-                      <span className="text-xs font-serif font-bold text-roseGold">
+                      <span className="text-xs font-sans font-bold text-roseGold tabular-nums">
                         {inspectingGoodie.price > 0
                           ? formatPrice(inspectingGoodie.price)
                           : 'Included with Hamper'}
@@ -1596,7 +1596,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                       {inspectingGoodie.dimensions && (
                         <div className="flex items-center justify-between">
                           <span className="text-taupe-500">Dimensions:</span>
-                          <span className="font-mono text-charcoal">
+                          <span className="font-sans font-medium text-charcoal">
                             {inspectingGoodie.dimensions}
                           </span>
                         </div>
@@ -1686,7 +1686,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                 Real-Time Hamper Total
               </span>
               <div className="flex items-baseline gap-2">
-                <span className="font-serif text-xl sm:text-2xl font-bold text-charcoal">
+                <span className="font-sans text-xl sm:text-2xl font-bold text-charcoal tabular-nums">
                   {formatPrice(hamperTotal)}
                 </span>
                 <span className="text-xs text-taupe-500">

@@ -343,7 +343,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
             }`}
           >
             <span>Customer Orders</span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/20 font-bold font-mono">
+            <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/20 font-bold font-sans tabular-nums">
               {orders.length}
             </span>
           </button>
@@ -362,7 +362,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
           >
             <span>Bulk Inquiries ✨</span>
             {bulkInquiries.length > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/30 text-white font-bold font-mono">
+              <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/30 text-white font-bold font-sans tabular-nums">
                 {bulkInquiries.length}
               </span>
             )}

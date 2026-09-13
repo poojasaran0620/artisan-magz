@@ -91,7 +91,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onBackToShop, onSelect
                   ))}
                 </div>
 
-                <p className="text-xs text-charcoal/90 leading-relaxed italic">
+                <p className="font-serif italic text-xs text-charcoal/90 leading-relaxed">
                   "{rev.comment}"
                 </p>
               </div>

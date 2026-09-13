@@ -276,7 +276,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             <div className="p-4 bg-cream-50 rounded-2xl border border-roseGold-light/50 flex items-baseline justify-between">
               <div>
                 <div className="flex items-baseline gap-2.5">
-                  <span className="font-serif text-3xl font-bold text-wine-900">
+                  <span className="font-sans text-3xl font-bold text-wine-900 tabular-nums">
                     {formatPrice(currentPrice)}
                   </span>
                   {originalPrice && (
@@ -393,7 +393,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                   <Truck className="w-4 h-4 text-roseGold" />
                   <span>Check Estimated Delivery Date</span>
                 </span>
-                <span className="text-[10px] text-charcoal/60 font-mono">Pan-India Express</span>
+                <span className="text-[10px] text-charcoal/60 font-sans">Pan-India Express</span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -613,7 +613,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           />
           <div className="min-w-0">
             <div className="flex items-baseline gap-1">
-              <span className="font-serif text-sm font-bold text-charcoal">
+              <span className="font-sans text-sm font-bold text-charcoal tabular-nums">
                 {formatPrice(currentPrice)}
               </span>
               {originalPrice && (

@@ -74,7 +74,7 @@ export const MagazinePageSpread: React.FC<MagazinePageSpreadProps> = ({
             <span className="text-[10px] tracking-[0.32em] uppercase font-bold text-roseGold-light block mb-1">
               Bespoke Edition • Volume IV
             </span>
-            <h2 className="font-logo text-4xl sm:text-5xl md:text-6xl tracking-wider text-[#FDFCF5] drop-shadow-md">
+            <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl tracking-wider text-[#FDFCF5] drop-shadow-md">
               ARTISAN
             </h2>
             <span className="text-[9px] tracking-[0.4em] uppercase text-roseGold-light/90 block -mt-1 font-semibold">
@@ -98,7 +98,7 @@ export const MagazinePageSpread: React.FC<MagazinePageSpreadProps> = ({
                 {page.subtitle}
               </p>
             )}
-            <div className="flex items-center justify-between pt-2 border-t border-white/20 text-[10px] text-[#FDFCF5]/70 font-mono">
+            <div className="flex items-center justify-between pt-2 border-t border-white/20 text-[10px] text-[#FDFCF5]/70 font-sans">
               <span>{page.date || 'Est. 2024'}</span>
               <span>Glossy Foil Print</span>
             </div>
@@ -166,7 +166,7 @@ export const MagazinePageSpread: React.FC<MagazinePageSpreadProps> = ({
                 <div className="aspect-[4/5] rounded-xl overflow-hidden shadow-soft border border-white bg-cream-100 p-1">
                   <img src={page.image} alt="Collage 1" className="w-full h-full object-cover rounded-lg" />
                 </div>
-                <p className="text-[9px] font-script text-roseGold italic text-center">
+                <p className="text-[9px] font-serif text-roseGold italic text-center">
                   "Our favorite sunset"
                 </p>
               </div>

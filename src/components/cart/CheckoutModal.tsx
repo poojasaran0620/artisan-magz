@@ -243,7 +243,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
               <span className="text-wine-900/70">
                 {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in bag
               </span>
-              <span className="font-serif text-base font-bold text-wine-900">
+              <span className="font-sans text-base font-bold text-wine-900 tabular-nums">
                 {formatPrice(total)}
               </span>
             </div>
@@ -309,7 +309,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                   Includes personalized custom design proofs
                 </p>
               </div>
-              <span className="font-serif text-lg font-bold text-wine-900">
+              <span className="font-sans text-lg font-bold text-wine-900 tabular-nums">
                 {formatPrice(total)}
               </span>
             </div>
@@ -365,7 +365,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
+                    className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400 font-mono"
                   />
                 </div>
               </div>
@@ -628,7 +628,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                 </div>
                 <div className="flex justify-between">
                   <span>Total Amount:</span>
-                  <span className="font-bold text-wine-900">{formatPrice(total)}</span>
+                  <span className="font-sans font-bold text-wine-900 tabular-nums">{formatPrice(total)}</span>
                 </div>
               </div>
             </div>

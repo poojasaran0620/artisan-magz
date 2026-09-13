@@ -324,7 +324,7 @@ export const MagazineCustomizer: React.FC<MagazineCustomizerProps> = ({
 
               {/* Masthead */}
               <div className="relative z-10 text-center">
-                <p className="text-[9px] uppercase tracking-[0.3em] text-white/80 font-mono">
+                <p className="text-[9px] uppercase tracking-[0.3em] text-white/80 font-sans">
                   {customization.occasion || 'SPECIAL EDITION'}
                 </p>
                 <h2 className="font-serif text-3xl font-bold tracking-widest text-white uppercase mt-0.5 drop-shadow-md">
@@ -341,7 +341,7 @@ export const MagazineCustomizer: React.FC<MagazineCustomizerProps> = ({
                 <h3 className="font-serif text-lg font-bold leading-tight drop-shadow-lg">
                   {customization.headline || 'The Girl Who Stole My Heart'}
                 </h3>
-                <p className="text-[9px] text-white/80 line-clamp-2 drop-shadow">
+                <p className="text-[9px] font-serif italic text-white/80 line-clamp-2 drop-shadow">
                   {customization.storyMessage || 'A retrospective of laughter, late-night coffees, and adventures together.'}
                 </p>
                 {customization.spotifyLink && (

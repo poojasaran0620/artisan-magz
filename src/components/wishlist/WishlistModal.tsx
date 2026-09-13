@@ -68,7 +68,7 @@ export const WishlistModal: React.FC<WishlistModalProps> = ({
                     <h5 className="font-serif text-xs font-bold text-wine-900 truncate">
                       {p.title}
                     </h5>
-                    <p className="text-[11px] text-blush-700 font-semibold mt-0.5">
+                    <p className="font-sans text-[11px] text-blush-700 font-semibold tabular-nums mt-0.5">
                       {formatPrice(p.basePrice)}
                     </p>
                   </div>

@@ -175,7 +175,7 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel, isGlobalMuted, onToggleMute }
 
         {/* Top Badges Overlay (Sequence & Mute Button) */}
         <div className="absolute top-3 inset-x-3 flex items-center justify-between z-20 pointer-events-none">
-          <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-mono font-bold shadow-xs">
+          <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-sans font-bold tabular-nums shadow-xs">
             0{reel.sequence}
           </span>
 
@@ -396,7 +396,7 @@ export const InstagramFeedSection: React.FC = () => {
                 />
               ))}
             </div>
-            <span className="text-xs font-mono text-charcoal/50 ml-1">
+            <span className="text-xs font-sans tabular-nums text-charcoal/50 ml-1">
               0{activeIndex + 1} / 0{BEST_PERFORMING_REELS.length}
             </span>
           </div>

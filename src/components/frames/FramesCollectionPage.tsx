@@ -182,10 +182,10 @@ export const FramesCollectionPage: React.FC<FramesCollectionPageProps> = ({
                     {frame.title}
                   </h3>
                   <div className="flex items-center justify-center gap-2 mt-1">
-                    <span className="text-xs sm:text-sm text-charcoal font-bold">
+                    <span className="font-sans text-xs sm:text-sm text-charcoal font-bold tabular-nums">
                       {formatPrice(frame.price)}
                     </span>
-                    <span className="text-[10px] sm:text-xs text-taupe-500 line-through">
+                    <span className="font-sans text-[10px] sm:text-xs text-taupe-500 line-through tabular-nums">
                       {formatPrice(frame.originalPrice)}
                     </span>
                   </div>

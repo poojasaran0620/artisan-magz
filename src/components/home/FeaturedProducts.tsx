@@ -155,11 +155,11 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
                   <div className="pt-3 border-t border-taupe-200/60 flex items-center justify-between">
                     <div>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-lg font-bold text-charcoal">
+                        <span className="font-sans text-lg font-bold text-charcoal tabular-nums">
                           {formatPrice(product.basePrice)}
                         </span>
                         {product.originalPrice && (
-                          <span className="text-xs text-charcoal/40 line-through">
+                          <span className="font-sans text-xs text-charcoal/40 line-through tabular-nums">
                             {formatPrice(product.originalPrice)}
                           </span>
                         )}

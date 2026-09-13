@@ -180,7 +180,7 @@ export const MyOrdersModal: React.FC = () => {
                           )}
                         </div>
                         <div className="text-right shrink-0">
-                          <span className="font-bold text-charcoal font-mono">
+                          <span className="font-bold text-charcoal font-sans tabular-nums">
                             {formatPrice(item.price)}
                           </span>
                           <span className="text-[10px] text-taupe-500 block">Qty: {item.quantity}</span>

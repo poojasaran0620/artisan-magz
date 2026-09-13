@@ -159,7 +159,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToDirectCheckou
                         )}
 
                         <div className="flex items-center justify-between mt-2">
-                          <span className="font-bold text-xs text-wine-900 font-serif">
+                          <span className="font-sans font-bold text-xs text-wine-900 tabular-nums">
                             {formatPrice(item.totalPrice)}
                           </span>
 
@@ -305,7 +305,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToDirectCheckou
                   </span>
                 </div>
 
-                <div className="flex justify-between text-sm font-bold text-wine-900 font-serif pt-2 border-t border-roseGold-light/30">
+                <div className="flex justify-between text-sm font-sans font-bold text-wine-900 tabular-nums pt-2 border-t border-roseGold-light/30">
                   <span>Estimated Total:</span>
                   <span>{formatPrice(total)}</span>
                 </div>

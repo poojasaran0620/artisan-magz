@@ -367,7 +367,7 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
             <span className="font-serif text-base sm:text-lg font-bold text-charcoal tracking-wide">
               Artisan Magz
             </span>
-            <span className="hidden sm:inline-block text-[11px] text-taupe-600 font-mono ml-2">
+            <span className="hidden sm:inline-block text-[11px] text-taupe-600 font-sans ml-2">
               • Custom Magazine Studio
             </span>
           </div>
@@ -481,7 +481,7 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
                           {pkg.pages} PAGES
                         </h4>
                         <div className="mt-1">
-                          <span className="inline-block bg-cream-100 text-charcoal px-2.5 py-0.5 rounded-full text-xs font-extrabold shadow-2xs font-mono">
+                          <span className="inline-block bg-cream-100 text-charcoal px-2.5 py-0.5 rounded-full text-xs font-extrabold shadow-2xs font-sans tabular-nums">
                             {formatPrice(price)}
                           </span>
                         </div>
@@ -585,7 +585,7 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
                     <strong>{maxTemplatesAllowed} layout spreads</strong>
                   </span>
                 </div>
-                <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+                <span className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full font-sans tabular-nums">
                   {selectedTemplates.length} / {maxTemplatesAllowed}
                 </span>
               </div>
@@ -600,7 +600,7 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
                 <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em] text-[#FFDBE5] block">
                   RIGHT - LEFT SIDE TEMPLATES
                 </span>
-                <span className="text-xs text-[#FDFCF5]/80 font-mono font-bold">
+                <span className="text-xs text-[#FDFCF5]/80 font-sans font-bold tabular-nums">
                   {selectedTemplates.length} OF {maxTemplatesAllowed || 1} SELECTED
                 </span>
               </div>
@@ -649,7 +649,7 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
                           alt={tmpl.spreadTitle}
                           className="w-full h-full object-cover"
                         />
-                        <span className="absolute bottom-1.5 left-1.5 bg-charcoal/80 backdrop-blur-xs text-white text-[9px] px-2 py-0.5 rounded-md font-mono">
+                        <span className="absolute bottom-1.5 left-1.5 bg-charcoal/80 backdrop-blur-xs text-white text-[9px] px-2 py-0.5 rounded-md font-sans font-medium">
                           {tmpl.category}
                         </span>
                       </div>
@@ -769,7 +769,7 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
                           {addon.title}
                         </h4>
                         <div>
-                          <span className="inline-block bg-cream-100 text-charcoal px-2.5 py-0.5 rounded-full text-xs font-extrabold font-mono shadow-2xs">
+                          <span className="inline-block bg-cream-100 text-charcoal px-2.5 py-0.5 rounded-full text-xs font-extrabold font-sans tabular-nums shadow-2xs">
                             {formatPrice(addon.price)}
                           </span>
                         </div>
@@ -829,7 +829,7 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
                 Total Keepsake Price
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className="font-serif text-xl sm:text-2xl font-bold text-charcoal font-mono">
+                <span className="font-sans text-xl sm:text-2xl font-bold tabular-nums text-charcoal">
                   {formatPrice(totalPrice)}
                 </span>
                 {selectedAddOn && (
@@ -973,7 +973,7 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
                     {previewingAddOn.title}
                   </h3>
                 </div>
-                <span className="font-serif font-bold text-base text-charcoal font-mono bg-cream-100 px-3 py-1 rounded-full">
+                <span className="font-sans font-bold tabular-nums text-base text-charcoal bg-cream-100 px-3 py-1 rounded-full">
                   {formatPrice(previewingAddOn.price)}
                 </span>
               </div>

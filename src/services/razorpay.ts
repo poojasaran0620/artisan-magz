@@ -199,7 +199,7 @@ function showSimulatedCheckoutUI(
       background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);
       display:flex;align-items:center;justify-content:center;
       animation:rzpFadeIn .25s ease;
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      font-family:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     `;
 
     const paise = Math.round(options.amount * 100);
@@ -272,7 +272,7 @@ function showSimulatedCheckoutUI(
             <div style="font-size:12px;color:#666;margin-bottom:10px;">Enter UPI ID</div>
             <div style="display:flex;gap:8px;">
               <input id="rzp-upi-input" type="text" value="success@razorpay" 
-                style="flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;font-family:monospace;" 
+                style="flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;font-family:'JetBrains Mono', monospace;" 
                 readonly />
             </div>
             <div style="font-size:10px;color:#999;margin-top:8px;">

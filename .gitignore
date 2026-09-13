@@ -35,3 +35,4 @@ scratch
 supabase/.temp
 .vercel
 .env*
+.agents

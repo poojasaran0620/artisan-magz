@@ -327,7 +327,7 @@ export const InteractiveFlipbook: React.FC<InteractiveFlipbookProps> = ({
               {thumbImg && (
                 <img src={thumbImg} alt={spr.label} className="w-full h-full object-cover" />
               )}
-              <span className="absolute bottom-0 inset-x-0 bg-black/70 text-white text-[7px] text-center font-mono py-0.2 truncate px-0.5">
+              <span className="absolute bottom-0 inset-x-0 bg-black/70 text-white text-[7px] text-center font-sans font-medium py-0.2 truncate px-0.5">
                 {idx === 0 ? 'Cover' : idx + 1}
               </span>
             </button>

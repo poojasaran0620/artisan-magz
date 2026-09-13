@@ -176,7 +176,7 @@ export const SongBookCustomizer: React.FC<SongBookCustomizerProps> = ({
               <h4 className="font-bold text-sm truncate">{songTitle}</h4>
               <p className="text-xs text-white/70 truncate">{artistName}</p>
               {customization.playlistDedication && (
-                <p className="text-[10px] text-blush-200 italic mt-1 truncate">
+                <p className="font-serif italic text-[10px] text-blush-200 mt-1 truncate">
                   "{customization.playlistDedication}"
                 </p>
               )}

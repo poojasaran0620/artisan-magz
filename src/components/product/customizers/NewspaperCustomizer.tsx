@@ -190,7 +190,7 @@ export const NewspaperCustomizer: React.FC<NewspaperCustomizerProps> = ({
               placeholder="Describe how you met, your favorite date memories, the proposal day, or funny quirks..."
               value={customization.articleStory || ''}
               onChange={(e) => onChange({ articleStory: e.target.value })}
-              className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blush-400 font-mono"
+              className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blush-400 font-sans"
             />
           </div>
 

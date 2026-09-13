@@ -91,7 +91,7 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
           <div className="max-w-7xl mx-auto relative z-10 space-y-6">
             {/* Header: Script Cursive "Best Selling" */}
             <div className="text-center space-y-1">
-              <h2 className="font-script text-3xl sm:text-4xl md:text-5xl text-[#FDFCF5] font-normal tracking-wide drop-shadow-sm">
+              <h2 className="font-serif italic text-3xl sm:text-4xl md:text-5xl text-[#FDFCF5] font-normal tracking-wide drop-shadow-sm">
                 Best Selling
               </h2>
               <p className="text-xs text-[#FDFCF5]/85 max-w-md mx-auto">

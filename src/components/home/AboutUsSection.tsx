@@ -59,7 +59,7 @@ export const AboutUsSection: React.FC<AboutUsSectionProps> = ({ onBack }) => {
         )}
         {/* Header: Meet the Founders in cute pink text */}
         <div className="text-center">
-          <h2 className="font-script text-4xl sm:text-5xl md:text-6xl text-[#D97C90] font-normal tracking-wide drop-shadow-xs">
+          <h2 className="font-serif italic text-4xl sm:text-5xl md:text-6xl text-[#D97C90] font-normal tracking-wide drop-shadow-xs">
             Meet the Founders
           </h2>
         </div>
@@ -106,7 +106,7 @@ export const AboutUsSection: React.FC<AboutUsSectionProps> = ({ onBack }) => {
         {/* 3. Our Story Narrative Box */}
         <div className="bg-white/95 rounded-[2.5rem] p-7 sm:p-12 shadow-luxury border border-roseGold-light/40 space-y-8 max-w-4xl mx-auto text-charcoal/80 leading-relaxed text-sm sm:text-base">
           <div className="text-center space-y-2 pb-2 border-b border-taupe-200/50">
-            <h3 className="font-script text-4xl sm:text-5xl md:text-6xl text-[#D97C90] font-normal tracking-wide drop-shadow-xs">
+            <h3 className="font-serif italic text-4xl sm:text-5xl md:text-6xl text-[#D97C90] font-normal tracking-wide drop-shadow-xs">
               Our Story
             </h3>
             <p className="font-serif italic text-base sm:text-lg text-roseGold">

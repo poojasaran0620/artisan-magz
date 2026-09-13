@@ -127,7 +127,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
         <div className="border-t border-taupe-200/50 px-4 sm:px-5 pb-4 sm:pb-5">
           {/* Items */}
           <div className="mt-4">
-            <h4 className="text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
+            <h4 className="font-sans text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
               Order Items
             </h4>
             <div className="space-y-2">
@@ -172,7 +172,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
           {/* Delivery Address */}
           {order.deliveryAddress && (
             <div className="mt-4">
-              <h4 className="text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
+              <h4 className="font-sans text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
                 Delivery Address & Contact
               </h4>
               <div className="bg-cream-50 rounded-xl p-3 border border-taupe-200/40 space-y-1">
@@ -188,7 +188,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
                 )}
                 <div className="flex items-center gap-1.5 text-[11px] text-taupe-600">
                   <Phone className="w-3.5 h-3.5 text-roseGold" />
-                  {order.deliveryAddress.phone}
+                  <span className="font-mono">{order.deliveryAddress.phone}</span>
                 </div>
                 <div className="flex items-start gap-1.5 text-[11px] text-taupe-600">
                   <MapPin className="w-3.5 h-3.5 text-roseGold shrink-0 mt-0.5" />
@@ -203,7 +203,7 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
           {/* Payment Information */}
           {(order.paymentMethod || order.paymentId) && (
             <div className="mt-4">
-              <h4 className="text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
+              <h4 className="font-sans text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
                 Payment Details
               </h4>
               <div className="bg-cream-50 rounded-xl p-3 border border-taupe-200/40 space-y-1.5">
@@ -244,11 +244,11 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
                 value={trackingInput}
                 onChange={(e) => setTrackingInput(e.target.value)}
                 placeholder="e.g. BlueDart AWB: 123456789 or https://track.shiprocket.in/..."
-                className="w-full text-xs bg-white border border-taupe-200/80 rounded-xl px-3 py-2 text-charcoal placeholder:text-taupe-400 focus:outline-none focus:ring-1 focus:ring-roseGold"
+                className="w-full text-xs bg-white border border-taupe-200/80 rounded-xl px-3 py-2 text-charcoal placeholder:text-taupe-400 focus:outline-none focus:ring-1 focus:ring-roseGold font-mono"
               />
             </div>
             <div>
-              <h4 className="text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
+              <h4 className="font-sans text-[11px] font-bold text-charcoal uppercase tracking-wider mb-2">
                 Update Status & Notify Customer
               </h4>
               <div className="flex items-center gap-2 flex-wrap">
