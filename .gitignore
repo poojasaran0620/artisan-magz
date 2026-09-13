@@ -33,3 +33,5 @@ dist-ssr
 scratch
 .gemini
 supabase/.temp
+.vercel
+.env*
