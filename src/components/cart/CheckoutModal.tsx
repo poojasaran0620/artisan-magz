@@ -18,6 +18,7 @@ import {
   Package,
   Wallet,
   Loader2,
+  LogIn,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -29,7 +30,7 @@ interface CheckoutModalProps {
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
   const { cartItems, total, subtotal, shippingFee, discountAmount, discountCode, clearCart, sendWhatsAppOrder } =
     useCart();
-  const { user, savedAddresses, recordOrder, openOrdersModal } = useAuth();
+  const { user, isAuthenticated, savedAddresses, recordOrder, openOrdersModal, openAuthModal, signInWithGoogle, signInWithEmail } = useAuth();
 
   const [step, setStep] = useState<'form' | 'success'>('form');
   const [orderId, setOrderId] = useState('');
@@ -205,10 +206,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
             </span>
             <div>
               <h3 className="font-serif text-lg font-bold text-wine-900">
-                {step === 'form' ? 'Secure Checkout' : 'Order Confirmed! 🎉'}
+                {step === 'success' ? 'Order Confirmed! 🎉' : !isAuthenticated ? 'Sign In Required' : 'Secure Checkout'}
               </h3>
               <p className="text-[11px] text-wine-900/60">
-                {step === 'form' ? 'Enter delivery destination & shipping details' : 'Your keepsake is being handcrafted'}
+                {step === 'success' ? 'Your keepsake is being handcrafted' : !isAuthenticated ? 'Quick sign in to proceed with checkout' : 'Enter delivery destination & shipping details'}
               </p>
             </div>
           </div>
@@ -221,7 +222,82 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
           </button>
         </div>
 
-        {step === 'form' ? (
+        {!isAuthenticated && step === 'form' ? (
+          /* LOGIN GATE — must sign in before checkout */
+          <div className="p-6 sm:p-8 space-y-5 text-center animate-fadeIn">
+            <div className="w-14 h-14 rounded-full bg-blush-100 text-blush-600 mx-auto flex items-center justify-center">
+              <LogIn className="w-7 h-7" />
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="font-serif text-xl font-bold text-wine-900">
+                Sign In to Continue
+              </h3>
+              <p className="text-xs text-wine-900/60 max-w-xs mx-auto">
+                Please sign in so we can save your order, send confirmation emails, and let you track your keepsake.
+              </p>
+            </div>
+
+            {/* Order Summary Peek */}
+            <div className="p-3 bg-cream-100/70 rounded-xl border border-cream-300 text-xs flex items-center justify-between">
+              <span className="text-wine-900/70">
+                {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in bag
+              </span>
+              <span className="font-serif text-base font-bold text-wine-900">
+                {formatPrice(total)}
+              </span>
+            </div>
+
+            {/* Google Sign In */}
+            <button
+              type="button"
+              onClick={() => signInWithGoogle()}
+              className="w-full py-3 bg-white border border-taupe-200 hover:border-blush-300 rounded-2xl font-semibold text-sm text-charcoal shadow-soft transition flex items-center justify-center gap-3 cursor-pointer"
+            >
+              <svg width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.5 0 6.7 1.2 9.2 3.6l6.9-6.9C36.1 2.5 30.5 0 24 0 14.6 0 6.6 5.5 2.7 13.5l8 6.2C12.7 13 17.9 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.8-2.2 5.2-4.6 6.8l7.3 5.6c4.2-3.9 6.9-9.6 6.9-16.9z"/>
+                <path fill="#FBBC05" d="M10.7 28.3c-1-2.8-1-5.8 0-8.6l-8-6.2c-3.6 7.1-3.6 15.5 0 22.6l8-6.2c-.2-.5-.3-1-.3-1.6z"/>
+                <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.3-5.6c-2.2 1.5-5 2.4-8.6 2.4-6.1 0-11.3-3.5-13.3-10.2l-8 6.2C6.6 42.5 14.6 48 24 48z"/>
+              </svg>
+              Continue with Google
+            </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 border-t border-taupe-200/60" />
+              <span className="text-[10px] text-wine-900/40 uppercase tracking-wider">or sign in with email</span>
+              <div className="flex-1 border-t border-taupe-200/60" />
+            </div>
+
+            {/* Quick Email Sign-in */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const input = (e.target as HTMLFormElement).querySelector('input');
+                if (input?.value) signInWithEmail(input.value);
+              }}
+              className="flex gap-2"
+            >
+              <input
+                type="email"
+                required
+                placeholder="your.email@gmail.com"
+                className="flex-1 text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2.5 focus:ring-1 focus:ring-blush-400"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2.5 bg-wine-900 hover:bg-wine-800 text-white rounded-xl text-xs font-semibold transition cursor-pointer"
+              >
+                Sign In
+              </button>
+            </form>
+
+            <p className="text-[10px] text-wine-900/40">
+              🔒 We only use your email for order updates & tracking
+            </p>
+          </div>
+        ) : step === 'form' ? (
           <form onSubmit={handleSubmitOrder} className="p-5 sm:p-6 space-y-5 max-h-[75vh] overflow-y-auto">
             {/* Order Brief Summary */}
             <div className="p-3.5 bg-cream-100/70 rounded-2xl border border-cream-300 text-xs flex items-center justify-between">
