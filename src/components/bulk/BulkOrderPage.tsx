@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, CheckCircle, Send } from 'lucide-react';
 import { WhatsAppIcon } from '../ui/Icons';
 import { supabase, isSupabaseConfigured } from '../../services/supabase';
+import { sendBulkInquiryEmail } from '../../services/emailService';
 
 interface BulkOrderPageProps {
   onBack: () => void;
@@ -29,12 +30,12 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
       setErrorMsg('Please enter your Name.');
       return;
     }
-    if (!email.trim()) {
-      setErrorMsg('Please enter your Email Address.');
+    if (!email.trim() || !email.includes('@')) {
+      setErrorMsg('Please enter a valid Email Address.');
       return;
     }
     if (!phoneNumber.trim()) {
-      setErrorMsg('Please enter your Phone Number.');
+      setErrorMsg('Please enter your WhatsApp Phone Number.');
       return;
     }
     if (!occasion.trim()) {
@@ -75,7 +76,19 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
       }
     }
 
-    // 2. Save lead to local storage as backup
+    // 2. Send confirmation email to customer (fire-and-forget)
+    sendBulkInquiryEmail({
+      name: name.trim(),
+      email: email.trim(),
+      phone: formattedPhone,
+      occasion: occasion.trim(),
+      estimatedQuantity: estimatedQuantity.trim(),
+      kindOfGifts: kindOfGifts.trim(),
+      specialRequirements: specialRequirements.trim() || undefined,
+      anyQuestions: anyQuestions.trim() || undefined,
+    });
+
+    // 3. Save lead to local storage as backup
     const newInquiry = {
       id: `bulk-${Date.now()}`,
       date: new Date().toISOString(),
@@ -154,7 +167,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
                 Inquiry Received! ✨
               </h2>
               <p className="text-sm text-charcoal/70 max-w-md mx-auto leading-relaxed">
-                Thank you, <strong className="text-charcoal">{name}</strong>! Your bulk order inquiry has been submitted into our database. Our team will review your requirements and respond within 24 hours.
+                Thank you, <strong className="text-charcoal">{name}</strong>! We have sent a confirmation email to <strong className="text-charcoal">{email}</strong>. Our team will review your requirements and respond within 24 hours.
               </p>
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button

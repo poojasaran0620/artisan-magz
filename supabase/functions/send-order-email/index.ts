@@ -22,14 +22,25 @@ interface OrderItem {
   image?: string;
 }
 
+interface BulkInquiryDetails {
+  occasion: string;
+  estimatedQuantity: string;
+  kindOfGifts: string;
+  phone: string;
+  specialRequirements?: string;
+  anyQuestions?: string;
+}
+
 interface EmailPayload {
+  type?: 'order' | 'bulk_inquiry';
   to: string;
   customerName: string;
-  orderNumber: string;
-  status: 'placed' | 'printing' | 'dispatched' | 'delivered';
-  items: OrderItem[];
-  totalAmount: number;
+  orderNumber?: string;
+  status?: 'placed' | 'printing' | 'dispatched' | 'delivered';
+  items?: OrderItem[];
+  totalAmount?: number;
   trackingInfo?: string;
+  bulkDetails?: BulkInquiryDetails;
 }
 
 function formatINR(amount: number): string {
@@ -42,11 +53,15 @@ function getStatusEmoji(status: string): string {
     printing: '🎨',
     dispatched: '📦',
     delivered: '💝',
+    bulk_inquiry: '💌',
   };
   return map[status] || '📋';
 }
 
-function getSubjectLine(status: string, orderNumber: string): string {
+function getSubjectLine(status: string, orderNumber?: string): string {
+  if (status === 'bulk_inquiry') {
+    return `✨ Bulk Order Inquiry Received · Artisan Magz`;
+  }
   const subjects: Record<string, string> = {
     placed: `✨ Order Confirmed! #${orderNumber}`,
     printing: `🎨 Your keepsake is being crafted! #${orderNumber}`,
@@ -62,6 +77,10 @@ function buildEmailHTML(payload: EmailPayload): string {
   const { customerName, orderNumber, status, items, totalAmount, trackingInfo } = payload;
   const firstName = customerName ? customerName.split(' ')[0] : 'Customer';
   const emoji = getStatusEmoji(status);
+
+  if (status === 'bulk_inquiry' || payload.type === 'bulk_inquiry') {
+    return buildBulkInquiryEmailHTML(payload);
+  }
 
   const statusConfig: Record<string, { heading: string; message: string; color: string; badgeBg: string }> = {
     placed: {
@@ -90,10 +109,10 @@ function buildEmailHTML(payload: EmailPayload): string {
     },
   };
 
-  const config = statusConfig[status] || statusConfig.placed;
+  const config = statusConfig[status || 'placed'] || statusConfig.placed;
 
   // Build items rows
-  const itemRows = items
+  const itemRows = (items || [])
     .map(
       (item) => `
       <tr>
@@ -347,6 +366,163 @@ function buildEmailHTML(payload: EmailPayload): string {
 </html>`;
 }
 
+// ── Bulk Inquiry Email HTML Builder ───────────────────────────────────
+
+function buildBulkInquiryEmailHTML(payload: EmailPayload): string {
+  const { customerName, bulkDetails } = payload;
+  const firstName = customerName ? customerName.split(' ')[0] : 'there';
+  const occasion = bulkDetails?.occasion || 'Special Event';
+  const quantity = bulkDetails?.estimatedQuantity || 'Bulk';
+  const gifts = bulkDetails?.kindOfGifts || 'Personalised Magazines & Gifts';
+  const phone = bulkDetails?.phone || '—';
+  const specialReqs = bulkDetails?.specialRequirements || 'None';
+  const questions = bulkDetails?.anyQuestions || 'None';
+
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulk Order Inquiry Received · Artisan Magz</title>
+</head>
+<body bgcolor="#F8F6F0" style="margin: 0; padding: 0; background-color: #F8F6F0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+  
+  <table width="100%" bgcolor="#F8F6F0" cellpadding="0" cellspacing="0" border="0" style="background-color: #F8F6F0; width: 100%; table-layout: fixed;">
+    <tr>
+      <td align="center" style="padding: 24px 12px;">
+        
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="max-width: 560px; width: 100%; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E5DFD5; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          
+          <!-- Header Banner -->
+          <tr>
+            <td align="center" bgcolor="#B76E79" style="background-color: #B76E79; background: linear-gradient(135deg, #B76E79 0%, #9E7864 50%, #C99E5C 100%); padding: 32px 20px; text-align: center;">
+              <div style="font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #FFFFFF; opacity: 0.85; margin-bottom: 6px;">✦ &nbsp; ✦ &nbsp; ✦</div>
+              <h1 style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: bold; color: #FFFFFF; letter-spacing: 1px;">
+                Artisan Magz
+              </h1>
+              <div style="margin: 6px 0 0; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 11px; color: #FFFFFF; opacity: 0.85; letter-spacing: 2px; text-transform: uppercase;">
+                Bespoke Bulk & Event Gifting Studio
+              </div>
+            </td>
+          </tr>
+
+          <!-- Heading & Message -->
+          <tr>
+            <td style="padding: 32px 24px 20px 24px; text-align: center;">
+              <div style="font-size: 40px; line-height: 1; margin-bottom: 12px;">💌</div>
+              <h2 style="margin: 0 0 10px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: bold; color: #B76E79;">
+                Inquiry Received, ${firstName}!
+              </h2>
+              <p style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 14px; line-height: 1.7; color: #4A4A4A;">
+                Thank you for reaching out to us for your special occasion. We’ve received your bulk inquiry and our team is already reviewing your vision to craft unforgettable personalized keepsakes for your guests.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Summary Card -->
+          <tr>
+            <td style="padding: 0 24px 24px 24px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FDFCF5" style="background-color: #FDFCF5; border-radius: 12px; border: 1px solid #F0EDE5; padding: 20px;">
+                <tr>
+                  <td>
+                    <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-weight: bold; color: #1F1F1F; margin-bottom: 14px; border-bottom: 1px solid #EAE5D9; padding-bottom: 8px;">
+                      📋 Inquiry Summary
+                    </div>
+                    
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 13px; line-height: 1.8; color: #4A4A4A;">
+                      <tr>
+                        <td width="40%" style="color: #8C7B6D; font-weight: 600; padding: 4px 0;">Occasion:</td>
+                        <td width="60%" style="color: #1F1F1F; font-weight: 500; padding: 4px 0;">${occasion}</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #8C7B6D; font-weight: 600; padding: 4px 0;">Estimated Quantity:</td>
+                        <td style="color: #1F1F1F; font-weight: 500; padding: 4px 0;">${quantity}</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #8C7B6D; font-weight: 600; padding: 4px 0;">Gifts Needed:</td>
+                        <td style="color: #1F1F1F; font-weight: 500; padding: 4px 0;">${gifts}</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #8C7B6D; font-weight: 600; padding: 4px 0;">Contact Phone:</td>
+                        <td style="color: #1F1F1F; font-weight: 500; padding: 4px 0;">${phone}</td>
+                      </tr>
+                      ${specialReqs !== 'None' ? `
+                      <tr>
+                        <td style="color: #8C7B6D; font-weight: 600; padding: 4px 0; vertical-align: top;">Special Requests:</td>
+                        <td style="color: #1F1F1F; font-weight: 500; padding: 4px 0;">${specialReqs}</td>
+                      </tr>` : ''}
+                      ${questions !== 'None' ? `
+                      <tr>
+                        <td style="color: #8C7B6D; font-weight: 600; padding: 4px 0; vertical-align: top;">Questions:</td>
+                        <td style="color: #1F1F1F; font-weight: 500; padding: 4px 0;">${questions}</td>
+                      </tr>` : ''}
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Next Steps Box -->
+          <tr>
+            <td style="padding: 0 24px 24px 24px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF9F0" style="background-color: #FFF9F0; border-radius: 12px; border: 1px solid #F0E6D6; padding: 18px;">
+                <tr>
+                  <td>
+                    <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 14px; font-weight: bold; color: #1F1F1F; margin-bottom: 8px;">
+                      ⏳ What Happens Next?
+                    </div>
+                    <div style="font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 12.5px; color: #5C4E43; line-height: 1.8;">
+                      • Our bespoke bulk concierge will review your quantity and deadline<br />
+                      • We will share custom volume-discounted quotation and catalog proofs<br />
+                      • We will reach out via WhatsApp / Email within <strong>24 business hours</strong>!
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- WhatsApp Connect Button -->
+          <tr>
+            <td align="center" style="padding: 0 24px 28px 24px;">
+              <table align="center" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" bgcolor="#25D366" style="background-color: #25D366; border-radius: 20px; padding: 10px 24px;">
+                    <a href="https://wa.me/919876543210?text=Hi!%20I%20just%20submitted%20a%20bulk%20order%20inquiry%20for%20${encodeURIComponent(occasion)}" style="color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">
+                      💬 Chat with Us on WhatsApp
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" bgcolor="#2B2826" style="background-color: #2B2826; padding: 24px 20px; text-align: center;">
+              <p style="margin: 0 0 6px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: #F0EDE5;">
+                Handcrafted with love by the Saran Sisters 💕
+              </p>
+              <p style="margin: 0 0 10px 0; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 11px; color: #A69480;">
+                Artisan Magz Keepsake Studio • Bengaluru, India
+              </p>
+              <p style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 10px; color: #736352;">
+                You received this email because you submitted a bulk inquiry on Artisan Magz.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`;
+}
+
 // ── Robust Base64 Helpers ────────────────────────────────────────────
 
 function toBase64(str: string): string {
@@ -481,12 +657,23 @@ serve(async (req: Request) => {
   try {
     const payload: EmailPayload = await req.json();
 
-    if (!payload.to || !payload.orderNumber || !payload.status) {
+    const isBulkInquiry = payload.type === 'bulk_inquiry' || payload.status === 'bulk_inquiry';
+
+    if (!payload.to) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required field: to' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!isBulkInquiry && (!payload.orderNumber || !payload.status)) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields: to, orderNumber, status' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
+
+    const effectiveStatus = isBulkInquiry ? 'bulk_inquiry' : (payload.status || 'placed');
 
     const gmailUser = Deno.env.get('GMAIL_USER') || 'artisanmagz@gmail.com';
     const gmailAppPassword = Deno.env.get('GMAIL_APP_PASSWORD');
@@ -498,21 +685,40 @@ serve(async (req: Request) => {
       );
     }
 
-    const subject = getSubjectLine(payload.status, payload.orderNumber);
-    const htmlBody = buildEmailHTML(payload);
+    const subject = getSubjectLine(effectiveStatus, payload.orderNumber);
+    const htmlBody = buildEmailHTML({ ...payload, status: effectiveStatus as any });
 
-    const plainText = [
-      subject,
-      '',
-      `Hi ${payload.customerName || 'Customer'},`,
-      '',
-      `Thank you for your order #${payload.orderNumber}!`,
-      `Status: ${payload.status.toUpperCase()}`,
-      `Total: ${formatINR(payload.totalAmount)}`,
-      '',
-      payload.trackingInfo ? `Tracking: ${payload.trackingInfo}\n` : '',
-      'Made with love by the Saran Sisters at Artisan Magz.',
-    ].join('\n');
+    let plainText = '';
+    if (isBulkInquiry) {
+      plainText = [
+        subject,
+        '',
+        `Hi ${payload.customerName || 'there'},`,
+        '',
+        `Thank you for your bulk inquiry with Artisan Magz!`,
+        `Occasion: ${payload.bulkDetails?.occasion || 'Special Event'}`,
+        `Estimated Quantity: ${payload.bulkDetails?.estimatedQuantity || 'Bulk'}`,
+        `Kind of Gifts: ${payload.bulkDetails?.kindOfGifts || 'Personalised Magazines & Gifts'}`,
+        `Phone: ${payload.bulkDetails?.phone || '—'}`,
+        '',
+        'Our concierge will reach out to you within 24 hours with custom quotes & proofs.',
+        '',
+        'Handcrafted with love by the Saran Sisters at Artisan Magz.',
+      ].join('\n');
+    } else {
+      plainText = [
+        subject,
+        '',
+        `Hi ${payload.customerName || 'Customer'},`,
+        '',
+        `Thank you for your order #${payload.orderNumber}!`,
+        `Status: ${effectiveStatus.toUpperCase()}`,
+        `Total: ${formatINR(payload.totalAmount || 0)}`,
+        '',
+        payload.trackingInfo ? `Tracking: ${payload.trackingInfo}\n` : '',
+        'Made with love by the Saran Sisters at Artisan Magz.',
+      ].join('\n');
+    }
 
     const result = await sendViaGmailSMTP(
       payload.to,
