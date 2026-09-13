@@ -53,13 +53,13 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onBackToShop, onSelect
 
           <div className="flex items-center gap-3">
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/artisan.magz?stkn=bXVmN2RsanZlMGdp"
               target="_blank"
               rel="noreferrer"
               className="px-5 py-2.5 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] rounded-full text-xs font-semibold shadow-luxury flex items-center gap-1.5 transition cursor-pointer"
             >
               <InstagramIcon className="w-4 h-4 text-roseGold-light" />
-              <span>Tag us @artisanmagz.studio</span>
+              <span>Tag us @artisan.magz</span>
             </a>
           </div>
         </div>

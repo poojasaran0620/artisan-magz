@@ -26,6 +26,7 @@ import { FrameOption } from './data/frameOptions';
 import { PRODUCTS } from './data/products';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { BulkOrderPage } from './components/bulk/BulkOrderPage';
+import { FAQSection } from './components/home/FAQSection';
 
 export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>('home');
@@ -145,6 +146,10 @@ export const App: React.FC = () => {
 
             {(currentView === 'bulk-order' || currentView === 'bulk') && (
               <BulkOrderPage onBack={() => handleNavigate('home')} />
+            )}
+
+            {(currentView === 'faq' || currentView === 'faqs') && (
+              <FAQSection onBack={() => handleNavigate('home')} />
             )}
 
             {currentView === 'shop' && (

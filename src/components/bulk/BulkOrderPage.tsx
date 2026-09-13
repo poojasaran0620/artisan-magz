@@ -138,19 +138,19 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
           </h1>
 
           <div className="max-w-xl mx-auto space-y-4 text-charcoal/80 text-sm sm:text-base leading-relaxed">
-            <p className="font-serif text-lg sm:text-xl text-charcoal font-medium">
+            <p>
               Planning a special event or need gifts in bulk?
             </p>
             <p>
               Artisan Magz can create personalised magazines in quantities to match your needs. 💌
             </p>
-            <p className="font-serif italic text-roseGold font-medium">
+            <p>
               Perfect for weddings, birthdays, corporate events, farewell parties & more.
             </p>
             <p>
               Share your requirements with us, and we’ll take care of the customisation, design & delivery. 🤍
             </p>
-            <p className="font-serif text-base sm:text-lg font-bold text-charcoal pt-2">
+            <p className="pt-2 font-medium text-charcoal">
               Have a bulk order? Let’s create something memorable together! ✨
             </p>
           </div>
@@ -215,7 +215,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
               {/* Name */}
               <div className="space-y-1.5">
-                <label className="block font-serif text-xs sm:text-sm text-charcoal font-medium">
+                <label className="block text-xs sm:text-sm text-charcoal font-medium">
                   Name<span className="text-roseGold">*</span>
                 </label>
                 <input
@@ -230,7 +230,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
               {/* Email */}
               <div className="space-y-1.5">
-                <label className="block font-serif text-xs sm:text-sm text-charcoal font-medium">
+                <label className="block text-xs sm:text-sm text-charcoal font-medium">
                   Email<span className="text-roseGold">*</span>
                 </label>
                 <input
@@ -245,7 +245,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
               {/* Phone Number */}
               <div className="space-y-1.5">
-                <label className="block font-serif text-xs sm:text-sm text-charcoal font-medium">
+                <label className="block text-xs sm:text-sm text-charcoal font-medium">
                   Phone Number<span className="text-roseGold">*</span>
                 </label>
                 <div className="grid grid-cols-12 gap-2.5">
@@ -278,7 +278,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
               {/* Occasion */}
               <div className="space-y-1.5 pt-1">
-                <label className="block font-serif text-xs sm:text-sm text-charcoal font-medium">
+                <label className="block text-xs sm:text-sm text-charcoal font-medium">
                   Occasion<span className="text-roseGold">*</span>
                 </label>
                 <input
@@ -293,7 +293,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
               {/* Estimated Quantity */}
               <div className="space-y-1.5 pt-1">
-                <label className="block font-serif text-xs sm:text-sm text-charcoal font-medium">
+                <label className="block text-xs sm:text-sm text-charcoal font-medium">
                   Estimated Quantity<span className="text-roseGold">*</span>
                 </label>
                 <input
@@ -308,7 +308,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
               {/* What Kind of Gifts? */}
               <div className="space-y-1.5 pt-1">
-                <label className="block font-serif text-xs sm:text-sm text-charcoal font-medium">
+                <label className="block text-xs sm:text-sm text-charcoal font-medium">
                   What Kind of Gifts?<span className="text-roseGold">*</span>
                 </label>
                 <input
@@ -323,7 +323,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
               {/* Special Requirements */}
               <div className="space-y-1.5 pt-1">
-                <label className="block font-serif text-xs sm:text-sm text-charcoal font-medium">
+                <label className="block text-xs sm:text-sm text-charcoal font-medium">
                   Special Requirements
                 </label>
                 <textarea
@@ -337,7 +337,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
               {/* Any Questions */}
               <div className="space-y-1.5 pt-1">
-                <label className="block font-serif text-xs sm:text-sm text-charcoal font-medium">
+                <label className="block text-xs sm:text-sm text-charcoal font-medium">
                   Any Questions
                 </label>
                 <textarea
@@ -370,7 +370,7 @@ export const BulkOrderPage: React.FC<BulkOrderPageProps> = ({ onBack }) => {
 
       {/* Floating WhatsApp Quick Action Button (As seen in screenshot) */}
       <a
-        href="https://wa.me/919876543210?text=Hi%20Artisan%20Magz!%20I%20have%20an%20inquiry%20regarding%20Bulk%20Orders."
+        href="https://wa.me/917000041053?text=Hi%20Artisan%20Magz!%20I%20have%20an%20inquiry%20regarding%20Bulk%20Orders."
         target="_blank"
         rel="noreferrer"
         aria-label="Direct WhatsApp Chat"

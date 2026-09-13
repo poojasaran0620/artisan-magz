@@ -32,7 +32,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/artisan.magz?stkn=bXVmN2RsanZlMGdp"
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 rounded-full bg-white/10 hover:bg-roseGold flex items-center justify-center text-[#FDFCF5] transition"
@@ -41,7 +41,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
                 <InstagramIcon className="w-4 h-4" />
               </a>
               <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/917000041053"
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 rounded-full bg-sage-700 hover:bg-sage flex items-center justify-center text-white transition"
@@ -51,7 +51,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
               </a>
             </div>
             <p className="text-[11px] text-taupe-400 font-mono">
-              DM us on Instagram: @artisanmagz.studio
+              DM us on Instagram: @artisan.magz
             </p>
           </div>
 
@@ -167,7 +167,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
               </li>
               <li>
                 <button
-                  onClick={() => onOpenPolicy('faq')}
+                  onClick={() => onNavigate('faq')}
                   className="hover:text-roseGold transition cursor-pointer"
                 >
                   Frequently Asked Questions (FAQ)
@@ -175,13 +175,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
               </li>
               <li className="pt-2">
                 <a
-                  href="https://wa.me/919876543210"
+                  href="https://wa.me/917000041053"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 text-[11px] bg-sage-800/80 hover:bg-sage text-[#FDFCF5] hover:text-charcoal px-3 py-1.5 rounded-lg transition"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
-                  <span>WhatsApp Help: +91 98765 43210</span>
+                  <span>WhatsApp Help: +91 70000 41053</span>
                 </a>
               </li>
             </ul>

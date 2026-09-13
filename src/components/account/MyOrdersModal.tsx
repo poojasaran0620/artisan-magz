@@ -44,7 +44,7 @@ export const MyOrdersModal: React.FC = () => {
     const text = encodeURIComponent(
       `Hi Artisan Magz team! I have an inquiry regarding my order #${order.orderNumber} placed on ${new Date(order.createdAt).toLocaleDateString()}.`
     );
-    window.open(`https://wa.me/919876543210?text=${text}`, '_blank');
+    window.open(`https://wa.me/917000041053?text=${text}`, '_blank');
   };
 
   return (

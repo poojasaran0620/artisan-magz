@@ -332,7 +332,7 @@ function buildEmailHTML(payload: EmailPayload): string {
               <table align="center" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="center" bgcolor="#25D366" style="background-color: #25D366; border-radius: 20px; padding: 10px 24px;">
-                    <a href="https://wa.me/919876543210?text=Hi!%20I%20have%20a%20question%20about%20order%20${orderNumber}" style="color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">
+                    <a href="https://wa.me/917000041053?text=Hi!%20I%20have%20a%20question%20about%20order%20${orderNumber}" style="color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">
                       💬 Questions? WhatsApp Us
                     </a>
                   </td>
@@ -489,7 +489,7 @@ function buildBulkInquiryEmailHTML(payload: EmailPayload): string {
               <table align="center" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="center" bgcolor="#25D366" style="background-color: #25D366; border-radius: 20px; padding: 10px 24px;">
-                    <a href="https://wa.me/919876543210?text=Hi!%20I%20just%20submitted%20a%20bulk%20order%20inquiry%20for%20${encodeURIComponent(occasion)}" style="color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">
+                    <a href="https://wa.me/917000041053?text=Hi!%20I%20just%20submitted%20a%20bulk%20order%20inquiry%20for%20${encodeURIComponent(occasion)}" style="color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">
                       💬 Chat with Us on WhatsApp
                     </a>
                   </td>

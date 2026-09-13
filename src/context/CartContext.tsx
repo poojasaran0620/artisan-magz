@@ -44,7 +44,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const CART_STORAGE_KEY = 'aura_ribbon_cart_v1';
 const FREE_SHIPPING_MIN = 1499;
 const STANDARD_SHIPPING_FEE = 99;
-const WHATSAPP_BUSINESS_NUMBER = '919876543210'; // Replaceable with studio business number
+const WHATSAPP_BUSINESS_NUMBER = '917000041053'; // Studio WhatsApp business number
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {

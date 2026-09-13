@@ -1,5 +1,6 @@
-import React from 'react';
-import { X, ShieldCheck, Lock, Truck, HelpCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, ShieldCheck, Lock, Truck, HelpCircle, ChevronDown } from 'lucide-react';
+import { FAQ_DATA } from '../../data/faqData';
 
 interface PolicyModalProps {
   policy: string | null;
@@ -7,6 +8,8 @@ interface PolicyModalProps {
 }
 
 export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => {
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
   if (!policy) return null;
 
   return (
@@ -83,28 +86,38 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
           )}
 
           {policy === 'faq' && (
-            <>
-              <div className="space-y-1">
-                <h4 className="font-bold text-wine-900">How do I send my remaining photos?</h4>
-                <p>
-                  You can upload photos on the product page directly, or easily send them in high-resolution as a document/album via WhatsApp after checkout!
-                </p>
-              </div>
-
-              <div className="space-y-1">
-                <h4 className="font-bold text-wine-900">Do I get to see a design preview before you print?</h4>
-                <p>
-                  Yes! Our team shares a digital PDF proof of your magazine or newspaper layout on WhatsApp for your sign-off before printing begins.
-                </p>
-              </div>
-
-              <div className="space-y-1">
-                <h4 className="font-bold text-wine-900">Can I order directly on WhatsApp?</h4>
-                <p>
-                  Absolutely! Clicking "Order via WhatsApp" automatically compiles all your selected variants, photos, and gift notes into a neat message for our team.
-                </p>
-              </div>
-            </>
+            <div className="divide-y divide-taupe-200/80 border-y border-taupe-200/80">
+              {FAQ_DATA.map((item, idx) => {
+                const isOpen = openFaqIndex === idx;
+                return (
+                  <div key={idx} className="transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                      className="w-full py-3.5 flex items-center justify-between text-left cursor-pointer group gap-3"
+                    >
+                      <span
+                        className={`text-xs font-semibold transition-colors ${
+                          isOpen ? 'text-roseGold' : 'text-charcoal group-hover:text-roseGold'
+                        }`}
+                      >
+                        {item.question}
+                      </span>
+                      <ChevronDown
+                        className={`w-4 h-4 shrink-0 transition-transform duration-300 ${
+                          isOpen ? 'rotate-180 text-roseGold' : 'text-taupe-400 group-hover:text-charcoal'
+                        }`}
+                      />
+                    </button>
+                    {isOpen && (
+                      <div className="pb-3.5 text-xs text-charcoal/70 leading-relaxed animate-in fade-in duration-200">
+                        {item.answer}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
 

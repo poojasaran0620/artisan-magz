@@ -133,6 +133,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
               >
                 Bulk Orders
               </button>
+
+              <button
+                onClick={() => handleNavClick('faq')}
+                className={`text-sm font-medium transition hover:text-roseGold ${
+                  currentView === 'faq' ? 'text-roseGold font-semibold' : 'text-charcoal/80'
+                }`}
+              >
+                FAQ
+              </button>
             </nav>
 
             {/* User Auth Trigger */}
@@ -232,13 +241,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
           {/* 3. FAQ */}
           <button
             type="button"
-            onClick={() => {
-              setMobileMenuOpen(false);
-              if (onOpenPolicy) {
-                onOpenPolicy('faq');
-              }
-            }}
-            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold transition"
+            onClick={() => handleNavClick('faq')}
+            className={`block w-full text-left py-2 font-medium transition hover:text-roseGold ${
+              currentView === 'faq' ? 'text-roseGold font-semibold' : 'text-charcoal'
+            }`}
           >
             FAQ
           </button>
@@ -271,7 +277,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
             onClick={() => {
               setMobileMenuOpen(false);
               window.open(
-                'https://wa.me/919876543210?text=Hi%20Artisan%20Magz!%20I%20have%20a%20question%20about%20your%20products.',
+                'https://wa.me/917000041053?text=Hi%20Artisan%20Magz!%20I%20have%20a%20question%20about%20your%20products.',
                 '_blank'
               );
             }}
