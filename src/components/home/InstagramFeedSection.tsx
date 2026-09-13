@@ -1,4 +1,4 @@
-﻿import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -118,20 +118,41 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel, isGlobalMuted, onToggleMute }
       ref={containerRef}
       className="flex-none w-[285px] sm:w-[315px] md:w-[325px] snap-start bg-white rounded-3xl border border-taupe-200/80 shadow-soft hover:shadow-luxury transition-all duration-300 flex flex-col overflow-hidden group"
     >
-      {/* 1. Card Top Bar: Sequence & Title */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[#FAF6F0] border-b border-taupe-200/60">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="w-5 h-5 rounded-full bg-charcoal text-[#FDFCF5] text-[10px] font-mono font-bold flex items-center justify-center shrink-0">
-            0{reel.sequence}
-          </span>
-          <span className="text-xs font-bold text-charcoal truncate" title={reel.title}>
-            {reel.title}
-          </span>
+      {/* 1. Card Top Bar: Profile of Artisan Magz (Click to visit Instagram profile) */}
+      <a
+        href={INSTAGRAM_PROFILE_URL}
+        target="_blank"
+        rel="noreferrer"
+        title={`Visit @${INSTAGRAM_HANDLE} on Instagram`}
+        className="flex items-center justify-between px-3.5 py-2.5 bg-[#FAF6F0] hover:bg-[#F4ECE3] border-b border-taupe-200/60 transition-colors group/profile cursor-pointer"
+      >
+        <div className="flex items-center gap-2.5 min-w-0">
+          {/* Instagram Story Gradient Ring Avatar */}
+          <div className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] shrink-0 shadow-2xs group-hover/profile:scale-105 transition-transform">
+            <img
+              src="/artisan_logo_sharp.png"
+              alt="Artisan Magz"
+              className="w-full h-full object-cover rounded-full bg-white"
+            />
+          </div>
+          <div className="flex flex-col min-w-0 leading-tight">
+            <div className="flex items-center gap-1">
+              <span className="text-xs font-bold text-charcoal truncate group-hover/profile:text-roseGold transition-colors">
+                @{INSTAGRAM_HANDLE}
+              </span>
+              <InstagramIcon className="w-3 h-3 text-roseGold shrink-0" />
+            </div>
+            <span className="text-[10px] text-charcoal/60 truncate">
+              Artisan Magz • Follow
+            </span>
+          </div>
         </div>
-        <span className="text-[10px] font-semibold text-roseGold bg-roseGold/10 px-2 py-0.5 rounded-full shrink-0">
-          Reel
-        </span>
-      </div>
+
+        <div className="flex items-center gap-1 text-[11px] font-bold text-roseGold group-hover/profile:text-roseGold-dark bg-white px-2.5 py-1 rounded-full border border-taupe-200/80 shadow-2xs transition shrink-0">
+          <span>Follow</span>
+          <ExternalLink className="w-3 h-3 opacity-70 group-hover/profile:translate-x-0.5 transition-transform" />
+        </div>
+      </a>
 
       {/* 2. Interactive Video Screen */}
       <div
@@ -152,12 +173,11 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel, isGlobalMuted, onToggleMute }
           className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
         />
 
-        {/* Top Badges Overlay (Mute Button & Handle) */}
+        {/* Top Badges Overlay (Sequence & Mute Button) */}
         <div className="absolute top-3 inset-x-3 flex items-center justify-between z-20 pointer-events-none">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium shadow-xs">
-            <InstagramIcon className="w-3 h-3 text-roseGold-light" />
-            <span>@{INSTAGRAM_HANDLE}</span>
-          </div>
+          <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-mono font-bold shadow-xs">
+            0{reel.sequence}
+          </span>
 
           <button
             onClick={(e) => {
