@@ -48,3 +48,21 @@ it('order status values match the expected 4-step pipeline', () => {
   assert.deepEqual([...VALID_STATUSES], ['placed', 'printing', 'dispatched', 'delivered']);
   assert.equal(VALID_STATUSES.length, 4);
 });
+
+// ── Bulk Inquiry Customer Name Resolution ─────────────────────────────
+
+function resolveInquiryCustomerName(inquiry: { name?: string; firstName?: string; lastName?: string }): string {
+  return inquiry.name || `${inquiry.firstName || ''} ${inquiry.lastName || ''}`.trim() || 'Customer';
+}
+
+it('resolveInquiryCustomerName correctly prioritizes single name', () => {
+  assert.equal(resolveInquiryCustomerName({ name: 'Aarav Sharma' }), 'Aarav Sharma');
+  assert.equal(resolveInquiryCustomerName({ name: 'Pooja Saran', firstName: 'Pooja', lastName: 'Saran' }), 'Pooja Saran');
+});
+
+it('resolveInquiryCustomerName falls back to legacy firstName and lastName', () => {
+  assert.equal(resolveInquiryCustomerName({ firstName: 'Rachna', lastName: 'Saran' }), 'Rachna Saran');
+  assert.equal(resolveInquiryCustomerName({ firstName: 'Aarti' }), 'Aarti');
+  assert.equal(resolveInquiryCustomerName({}), 'Customer');
+});
+

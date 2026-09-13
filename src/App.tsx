@@ -25,6 +25,7 @@ import { FramesCollectionPage } from './components/frames/FramesCollectionPage';
 import { FrameOption } from './data/frameOptions';
 import { PRODUCTS } from './data/products';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { BulkOrderPage } from './components/bulk/BulkOrderPage';
 
 export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>('home');
@@ -106,7 +107,11 @@ export const App: React.FC = () => {
         <WishlistProvider>
           <div className="min-h-screen flex flex-col bg-[#FDFCF5] selection:bg-[#FFDBE5] selection:text-[#333333]">
           {/* Main Navigation (AnnouncementBar disabled per user request) */}
-          <Navbar onNavigate={handleNavigate} currentView={currentView} />
+          <Navbar
+            onNavigate={handleNavigate}
+            currentView={currentView}
+            onOpenPolicy={(policy) => setActivePolicy(policy)}
+          />
 
           {/* Main Content Area */}
           <main className="flex-grow">
@@ -131,10 +136,15 @@ export const App: React.FC = () => {
 
                 {/* 4. Curated Instagram Feed (Reels & Posts Grid) */}
                 <InstagramFeedSection />
-
-                {/* 5. About Us & Brand Trust Pillars */}
-                <AboutUsSection />
               </>
+            )}
+
+            {(currentView === 'about' || currentView === 'about-us') && (
+              <AboutUsSection onBack={() => handleNavigate('home')} />
+            )}
+
+            {(currentView === 'bulk-order' || currentView === 'bulk') && (
+              <BulkOrderPage onBack={() => handleNavigate('home')} />
             )}
 
             {currentView === 'shop' && (

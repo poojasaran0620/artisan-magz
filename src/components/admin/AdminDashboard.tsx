@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, ShieldCheck, RefreshCcw, WifiOff } from 'lucide-react';
+import {
+  ArrowLeft,
+  ShieldCheck,
+  RefreshCcw,
+  WifiOff,
+  Mail,
+  MessageCircle,
+  Trash2,
+  Calendar,
+  Phone,
+  User,
+} from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
 import type { OrderRecord } from '../../context/AuthContext';
@@ -16,6 +27,21 @@ interface AdminDashboardProps {
   onBack: () => void;
 }
 
+interface BulkInquiryRecord {
+  id: string;
+  date: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  email: string;
+  phone: string;
+  occasion: string;
+  estimatedQuantity: string;
+  kindOfGifts: string;
+  specialRequirements?: string;
+  anyQuestions?: string;
+}
+
 const ORDERS_STORAGE_KEY = 'artisan_magz_orders_v1';
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
@@ -26,10 +52,78 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Tabs & Bulk Inquiries
+  const [activeTab, setActiveTab] = useState<'orders' | 'bulk'>('orders');
+  const [bulkInquiries, setBulkInquiries] = useState<BulkInquiryRecord[]>([]);
+
   // Filters
   const [statusFilter, setStatusFilter] = useState<OrderStatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
+
+  const loadBulkInquiries = async () => {
+    try {
+      if (supabase && isSupabaseConfigured) {
+        const { data, error: dbErr } = await supabase
+          .from('bulk_inquiries')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!dbErr && data && data.length > 0) {
+          const mapped: BulkInquiryRecord[] = data.map((b: any) => ({
+            id: String(b.id),
+            date: b.created_at || new Date().toISOString(),
+            name: b.name,
+            email: b.email,
+            phone: b.phone,
+            occasion: b.occasion,
+            estimatedQuantity: b.estimated_quantity,
+            kindOfGifts: b.kind_of_gifts,
+            specialRequirements: b.special_requirements || undefined,
+            anyQuestions: b.any_questions || undefined,
+          }));
+          setBulkInquiries(mapped);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load inquiries from database, falling back to localStorage:', err);
+    }
+
+    try {
+      const saved = localStorage.getItem('artisan_bulk_inquiries');
+      if (saved) {
+        setBulkInquiries(JSON.parse(saved));
+      } else {
+        setBulkInquiries([]);
+      }
+    } catch {
+      setBulkInquiries([]);
+    }
+  };
+
+  useEffect(() => {
+    loadBulkInquiries();
+  }, []);
+
+  const handleDeleteInquiry = async (id: string) => {
+    const updated = bulkInquiries.filter((b) => b.id !== id);
+    setBulkInquiries(updated);
+    try {
+      localStorage.setItem('artisan_bulk_inquiries', JSON.stringify(updated));
+    } catch {}
+
+    if (supabase && isSupabaseConfigured) {
+      try {
+        await supabase.from('bulk_inquiries').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Could not delete inquiry from DB:', e);
+      }
+    }
+
+    setToastMessage('Inquiry deleted.');
+    setTimeout(() => setToastMessage(null), 2500);
+  };
 
   // Guard: redirect if not admin
   useEffect(() => {
@@ -237,65 +331,241 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
 
       {/* ── Body ────────────────────────────────────────────────── */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Supabase status notice */}
-        {!isSupabaseConfigured && (
-          <div className="flex items-center gap-2 px-4 py-2.5 bg-amber-50 border border-amber-200/60 rounded-xl text-xs text-amber-800">
-            <WifiOff className="w-4 h-4 shrink-0" />
-            <span>
-              Supabase is not configured. Showing orders from local storage only.
+        {/* Navigation Tabs */}
+        <div className="flex items-center gap-2.5 border-b border-taupe-200/60 pb-3">
+          <button
+            type="button"
+            onClick={() => setActiveTab('orders')}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer flex items-center gap-2 ${
+              activeTab === 'orders'
+                ? 'bg-charcoal text-white shadow-soft'
+                : 'bg-cream-100 text-charcoal hover:bg-cream-200'
+            }`}
+          >
+            <span>Customer Orders</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/20 font-bold font-mono">
+              {orders.length}
             </span>
-          </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab('bulk');
+              loadBulkInquiries();
+            }}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer flex items-center gap-2 ${
+              activeTab === 'bulk'
+                ? 'bg-roseGold text-white shadow-soft'
+                : 'bg-cream-100 text-charcoal hover:bg-cream-200'
+            }`}
+          >
+            <span>Bulk Inquiries ✨</span>
+            {bulkInquiries.length > 0 && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] bg-white/30 text-white font-bold font-mono">
+                {bulkInquiries.length}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* ── Tab Content: Orders ─────────────────────────────────── */}
+        {activeTab === 'orders' && (
+          <>
+            {/* Supabase status notice */}
+            {!isSupabaseConfigured && (
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-amber-50 border border-amber-200/60 rounded-xl text-xs text-amber-800">
+                <WifiOff className="w-4 h-4 shrink-0" />
+                <span>
+                  Supabase is not configured. Showing orders from local storage only.
+                </span>
+              </div>
+            )}
+
+            {/* Error */}
+            {error && (
+              <div className="px-4 py-2.5 bg-red-50 border border-red-200/60 rounded-xl text-xs text-red-700">
+                {error}
+              </div>
+            )}
+
+            {/* KPI Cards */}
+            <AdminKPICards orders={orders} />
+
+            {/* Filters */}
+            <AdminOrderFilters
+              statusFilter={statusFilter}
+              onStatusFilterChange={setStatusFilter}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              sortOrder={sortOrder}
+              onSortOrderChange={setSortOrder}
+              totalCount={filteredOrders.length}
+            />
+
+            {/* Orders List */}
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-16 gap-3">
+                <div className="w-8 h-8 border-2 border-roseGold border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs text-taupe-500">Loading orders…</span>
+              </div>
+            ) : filteredOrders.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 gap-2 text-center">
+                <span className="text-4xl">📦</span>
+                <p className="text-sm font-serif font-bold text-charcoal">No orders found</p>
+                <p className="text-xs text-taupe-500 max-w-xs">
+                  {searchQuery
+                    ? `No orders matching "${searchQuery}"`
+                    : statusFilter !== 'all'
+                    ? `No orders with status "${statusFilter}"`
+                    : 'Orders will appear here once customers place them.'}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredOrders.map((order) => (
+                  <AdminOrderCard
+                    key={order.id}
+                    order={order}
+                    onStatusUpdate={handleStatusUpdate}
+                    isUpdating={updatingOrderId === order.id}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
 
-        {/* Error */}
-        {error && (
-          <div className="px-4 py-2.5 bg-red-50 border border-red-200/60 rounded-xl text-xs text-red-700">
-            {error}
-          </div>
-        )}
+        {/* ── Tab Content: Bulk Inquiries ─────────────────────────── */}
+        {activeTab === 'bulk' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-serif text-lg font-bold text-charcoal">
+                Bulk Order Inquiries ({bulkInquiries.length})
+              </h2>
+              {bulkInquiries.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm('Are you sure you want to clear all bulk inquiries?')) {
+                      setBulkInquiries([]);
+                      localStorage.removeItem('artisan_bulk_inquiries');
+                    }
+                  }}
+                  className="text-xs text-taupe-500 hover:text-red-600 transition"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
 
-        {/* KPI Cards */}
-        <AdminKPICards orders={orders} />
+            {bulkInquiries.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 gap-2 text-center bg-white rounded-2xl border border-taupe-200/60 p-8">
+                <span className="text-4xl">💌</span>
+                <p className="text-sm font-serif font-bold text-charcoal">No bulk inquiries yet</p>
+                <p className="text-xs text-taupe-500 max-w-sm leading-relaxed">
+                  When a customer fills out the Bulk Order form, their inquiry details will be listed right here with one-click WhatsApp and Email contact options.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {bulkInquiries.map((inquiry) => {
+                  const customerName =
+                    inquiry.name ||
+                    `${inquiry.firstName || ''} ${inquiry.lastName || ''}`.trim() ||
+                    'Customer';
+                  const cleanPhone = inquiry.phone.replace(/[^0-9]/g, '');
+                  const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+                    `Hi ${customerName}! Thank you for reaching out to Artisan Magz regarding your bulk order inquiry for ${inquiry.occasion}.`
+                  )}`;
 
-        {/* Filters */}
-        <AdminOrderFilters
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-          totalCount={filteredOrders.length}
-        />
+                  return (
+                    <div
+                      key={inquiry.id}
+                      className="bg-white rounded-2xl p-5 border border-taupe-200/80 shadow-soft space-y-4"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-taupe-100">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-serif text-base font-bold text-charcoal">
+                              {customerName}
+                            </span>
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blush-100 text-roseGold">
+                              {inquiry.occasion}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-taupe-500 flex items-center gap-1.5 mt-0.5">
+                            <Calendar className="w-3 h-3 text-taupe-400" />
+                            <span>{new Date(inquiry.date).toLocaleString('en-IN')}</span>
+                          </p>
+                        </div>
 
-        {/* Orders List */}
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <div className="w-8 h-8 border-2 border-roseGold border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs text-taupe-500">Loading orders…</span>
-          </div>
-        ) : filteredOrders.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-2 text-center">
-            <span className="text-4xl">📦</span>
-            <p className="text-sm font-serif font-bold text-charcoal">No orders found</p>
-            <p className="text-xs text-taupe-500 max-w-xs">
-              {searchQuery
-                ? `No orders matching "${searchQuery}"`
-                : statusFilter !== 'all'
-                ? `No orders with status "${statusFilter}"`
-                : 'Orders will appear here once customers place them.'}
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {filteredOrders.map((order) => (
-              <AdminOrderCard
-                key={order.id}
-                order={order}
-                onStatusUpdate={handleStatusUpdate}
-                isUpdating={updatingOrderId === order.id}
-              />
-            ))}
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-sage-50 text-sage-800 border border-sage-200 hover:bg-sage-100 text-xs font-semibold transition"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5 text-sage" />
+                            <span>WhatsApp</span>
+                          </a>
+
+                          <a
+                            href={`mailto:${inquiry.email}?subject=Artisan Magz Bulk Order Inquiry - ${inquiry.occasion}`}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cream-100 text-charcoal border border-taupe-200 hover:bg-cream-200 text-xs font-semibold transition"
+                          >
+                            <Mail className="w-3.5 h-3.5 text-roseGold" />
+                            <span>Email</span>
+                          </a>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteInquiry(inquiry.id)}
+                            className="p-1.5 text-taupe-400 hover:text-red-600 transition"
+                            title="Delete Inquiry"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Inquiry Details Grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs bg-cream-50/60 p-3.5 rounded-xl border border-taupe-100">
+                        <div>
+                          <span className="text-taupe-500 font-bold block text-[10px] uppercase tracking-wider">Phone</span>
+                          <span className="font-mono text-charcoal font-medium">{inquiry.phone}</span>
+                        </div>
+                        <div>
+                          <span className="text-taupe-500 font-bold block text-[10px] uppercase tracking-wider">Email</span>
+                          <span className="text-charcoal font-medium break-all">{inquiry.email}</span>
+                        </div>
+                        <div>
+                          <span className="text-taupe-500 font-bold block text-[10px] uppercase tracking-wider">Estimated Quantity</span>
+                          <span className="text-charcoal font-semibold">{inquiry.estimatedQuantity}</span>
+                        </div>
+                        <div className="sm:col-span-2 md:col-span-3">
+                          <span className="text-taupe-500 font-bold block text-[10px] uppercase tracking-wider">Kind of Gifts</span>
+                          <span className="text-charcoal">{inquiry.kindOfGifts}</span>
+                        </div>
+                        {inquiry.specialRequirements && (
+                          <div className="sm:col-span-2 md:col-span-3">
+                            <span className="text-taupe-500 font-bold block text-[10px] uppercase tracking-wider">Special Requirements</span>
+                            <span className="text-charcoal whitespace-pre-wrap">{inquiry.specialRequirements}</span>
+                          </div>
+                        )}
+                        {inquiry.anyQuestions && (
+                          <div className="sm:col-span-2 md:col-span-3">
+                            <span className="text-taupe-500 font-bold block text-[10px] uppercase tracking-wider">Questions</span>
+                            <span className="text-charcoal whitespace-pre-wrap">{inquiry.anyQuestions}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </div>

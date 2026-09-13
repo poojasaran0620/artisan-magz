@@ -127,6 +127,22 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
             <ul className="space-y-2.5 text-xs text-taupe-300">
               <li>
                 <button
+                  onClick={() => onNavigate('about')}
+                  className="hover:text-roseGold transition cursor-pointer"
+                >
+                  About Us & Founders
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigate('bulk-order')}
+                  className="hover:text-roseGold transition cursor-pointer"
+                >
+                  Bulk Orders & Events ✨
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => onOpenPolicy('cancellation')}
                   className="hover:text-roseGold transition cursor-pointer"
                 >

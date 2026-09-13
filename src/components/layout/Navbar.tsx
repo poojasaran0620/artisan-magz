@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Gift, Menu, X, Sparkles, User, Package, MapPin } from 'lucide-react';
+import { ShoppingBag, Gift, Menu, X, Sparkles, User, Package, MapPin, ChevronDown } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { BrandLogo } from '../ui/BrandLogo';
@@ -8,12 +8,14 @@ import { UserMenuDropdown } from '../account/UserMenuDropdown';
 interface NavbarProps {
   onNavigate: (view: string, productId?: string) => void;
   currentView: string;
+  onOpenPolicy?: (policy: string) => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenPolicy }) => {
   const { cartItems, openCart } = useCart();
   const { user, isAuthenticated, openAuthModal, openOrdersModal, openAddressesModal, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -113,6 +115,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
                   Save
                 </span>
               </button>
+
+              <button
+                onClick={() => handleNavClick('about')}
+                className={`text-sm font-medium transition hover:text-roseGold ${
+                  currentView === 'about' ? 'text-roseGold font-semibold' : 'text-charcoal/80'
+                }`}
+              >
+                About Us
+              </button>
+
+              <button
+                onClick={() => handleNavClick('bulk-order')}
+                className={`text-sm font-medium transition hover:text-roseGold ${
+                  currentView === 'bulk-order' ? 'text-roseGold font-semibold' : 'text-charcoal/80'
+                }`}
+              >
+                Bulk Orders
+              </button>
             </nav>
 
             {/* User Auth Trigger */}
@@ -145,39 +165,176 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
         </div>
       </div>
 
-      {/* Mobile Dropdown Navigation */}
+      {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-cream-50 border-b border-taupe-200/60 px-5 py-4 space-y-3 animate-fadeIn">
-          {/* Mobile User Profile Section */}
-          <div className="pb-3 border-b border-taupe-200/60">
-            {isAuthenticated && user ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  {user.avatarUrl ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.name}
-                      className="w-8 h-8 rounded-full object-cover border border-roseGold"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-roseGold text-white flex items-center justify-center text-xs font-bold">
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div>
-                    <span className="text-xs font-bold text-charcoal block">{user.name}</span>
-                    <span className="text-[10px] text-taupe-600 block">{user.email}</span>
-                  </div>
-                </div>
+        <div className="lg:hidden bg-cream-50 border-b border-taupe-200/60 px-5 py-4 space-y-1 animate-fadeIn">
+          {/* 1. Home */}
+          <button
+            onClick={() => handleNavClick('home')}
+            className={`block w-full text-left py-2 font-medium transition hover:text-roseGold ${
+              currentView === 'home' ? 'text-roseGold font-semibold' : 'text-charcoal'
+            }`}
+          >
+            Home
+          </button>
+
+          {/* 2. Categories (Expandable) */}
+          <div>
+            <button
+              type="button"
+              onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+              className="flex items-center justify-between w-full text-left py-2 font-medium text-charcoal hover:text-roseGold transition cursor-pointer"
+            >
+              <span>Categories</span>
+              <ChevronDown
+                className={`w-4 h-4 text-taupe-600 transition-transform duration-200 ${
+                  isCategoriesOpen ? 'rotate-180 text-roseGold' : ''
+                }`}
+              />
+            </button>
+
+            {isCategoriesOpen && (
+              <div className="pl-4 py-1 space-y-2 border-l border-roseGold/40 ml-2 mt-1 mb-2">
                 <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    signOut();
-                  }}
-                  className="text-xs text-red-600 font-semibold px-2 py-1"
+                  onClick={() => handleNavClick('product', 'prod-mag-01')}
+                  className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
                 >
-                  Sign Out
+                  Magazines
                 </button>
+                <button
+                  onClick={() => handleNavClick('product', 'prod-mini-mag-01')}
+                  className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                >
+                  Pocket magazine
+                </button>
+                <button
+                  onClick={() => handleNavClick('frames')}
+                  className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                >
+                  Photo frames
+                </button>
+                <button
+                  onClick={() => handleNavClick('hamper')}
+                  className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                >
+                  Hamper
+                </button>
+                <button
+                  onClick={() => handleNavClick('product', 'prod-combo-01')}
+                  className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                >
+                  Combos
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* 3. FAQ */}
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              if (onOpenPolicy) {
+                onOpenPolicy('faq');
+              }
+            }}
+            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold transition"
+          >
+            FAQ
+          </button>
+
+          {/* 4. About us */}
+          <button
+            type="button"
+            onClick={() => handleNavClick('about')}
+            className={`block w-full text-left py-2 font-medium transition hover:text-roseGold ${
+              currentView === 'about' ? 'text-roseGold font-semibold' : 'text-charcoal'
+            }`}
+          >
+            About us
+          </button>
+
+          {/* 5. Bulk order */}
+          <button
+            type="button"
+            onClick={() => handleNavClick('bulk-order')}
+            className={`block w-full text-left py-2 font-medium transition hover:text-roseGold ${
+              currentView === 'bulk-order' ? 'text-roseGold font-semibold' : 'text-charcoal'
+            }`}
+          >
+            Bulk order
+          </button>
+
+          {/* 6. Contact us */}
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              window.open(
+                'https://wa.me/919876543210?text=Hi%20Artisan%20Magz!%20I%20have%20a%20question%20about%20your%20products.',
+                '_blank'
+              );
+            }}
+            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold transition"
+          >
+            Contact us
+          </button>
+
+          {/* 7. In the end: Login / Sign up */}
+          <div className="pt-3 border-t border-taupe-200/60 mt-2">
+            {isAuthenticated && user ? (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    {user.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.name}
+                        className="w-8 h-8 rounded-full object-cover border border-roseGold"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-roseGold text-white flex items-center justify-center text-xs font-bold">
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-xs font-bold text-charcoal block">{user.name}</span>
+                      <span className="text-[10px] text-taupe-600 block">{user.email}</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      signOut();
+                    }}
+                    className="text-xs text-red-600 font-semibold px-2 py-1 cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+
+                <div className="flex gap-2 pt-1">
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openOrdersModal();
+                    }}
+                    className="flex-1 py-1.5 px-2.5 bg-white text-charcoal rounded-lg text-xs font-medium border border-taupe-200 flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Package className="w-3.5 h-3.5 text-roseGold" />
+                    <span>My Orders</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openAddressesModal();
+                    }}
+                    className="flex-1 py-1.5 px-2.5 bg-white text-charcoal rounded-lg text-xs font-medium border border-taupe-200 flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-roseGold" />
+                    <span>Addresses</span>
+                  </button>
+                </div>
               </div>
             ) : (
               <button
@@ -186,87 +343,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
                   setMobileMenuOpen(false);
                   openAuthModal();
                 }}
-                className="w-full py-2.5 px-4 bg-white hover:bg-cream-100 text-charcoal rounded-xl text-xs font-bold border border-taupe-300 shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-2.5 px-4 bg-white hover:bg-cream-100 text-charcoal rounded-xl text-xs font-bold border border-taupe-300 shadow-xs flex items-center justify-center gap-2 cursor-pointer transition"
               >
                 <User className="w-4 h-4 text-roseGold" />
-                <span>Sign In with Google</span>
+                <span>Login / Sign Up</span>
               </button>
             )}
-
-            {isAuthenticated && (
-              <div className="flex gap-2 pt-2">
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    openOrdersModal();
-                  }}
-                  className="flex-1 py-1.5 px-2.5 bg-white text-charcoal rounded-lg text-xs font-medium border border-taupe-200 flex items-center justify-center gap-1.5"
-                >
-                  <Package className="w-3.5 h-3.5 text-roseGold" />
-                  <span>My Orders</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    openAddressesModal();
-                  }}
-                  className="flex-1 py-1.5 px-2.5 bg-white text-charcoal rounded-lg text-xs font-medium border border-taupe-200 flex items-center justify-center gap-1.5"
-                >
-                  <MapPin className="w-3.5 h-3.5 text-roseGold" />
-                  <span>Addresses</span>
-                </button>
-              </div>
-            )}
           </div>
-
-          <button
-            onClick={() => handleNavClick('home')}
-            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold"
-          >
-            Home
-          </button>
-          <button
-            onClick={() => handleNavClick('product', 'prod-mag-01')}
-            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold"
-          >
-            Custom Magazines (8 - 20 Pages)
-          </button>
-          <button
-            onClick={() => handleNavClick('frames')}
-            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold"
-          >
-            Personalized Frames & Collages
-          </button>
-          <button
-            onClick={() => handleNavClick('product', 'prod-news-01')}
-            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold"
-          >
-            Personalized Newspaper Card
-          </button>
-          <button
-            onClick={() => handleNavClick('product', 'prod-song-01')}
-            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold"
-          >
-            Song Book & Spotify Plaque
-          </button>
-          <button
-            onClick={() => handleNavClick('hamper')}
-            className="flex items-center justify-between w-full text-left py-2.5 px-3 bg-blush-100 rounded-xl font-semibold text-charcoal"
-          >
-            <span className="flex items-center gap-2">
-              <Gift className="w-4 h-4 text-roseGold" />
-              Build Your Own Hamper
-            </span>
-            <span className="text-[10px] bg-charcoal text-[#FDFCF5] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">
-              Interactive
-            </span>
-          </button>
-          <button
-            onClick={() => handleNavClick('reviews')}
-            className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold"
-          >
-            Customer Reviews & Unboxings
-          </button>
         </div>
       )}
     </header>
