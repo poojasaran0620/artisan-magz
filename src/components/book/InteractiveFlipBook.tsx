@@ -67,6 +67,7 @@ FlipPage.displayName = 'FlipPage';
 interface InteractiveFlipBookProps {
   pages: BookPage[];
   isEditable?: boolean;
+  targetPage?: number;
   onPhotoClick?: (photoId: string) => void;
   onPageChange?: (pageNumber: number) => void;
 }
@@ -74,11 +75,13 @@ interface InteractiveFlipBookProps {
 export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
   pages,
   isEditable = false,
+  targetPage,
   onPhotoClick,
   onPageChange,
 }) => {
   const flipBookRef = useRef<any>(null);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [isMobile, setIsMobile] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth < 768 : false
   );
@@ -91,8 +94,54 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Web Audio API realistic subtle paper turn rustle
+  const playFlipSound = () => {
+    if (!soundEnabled) return;
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const bufferSize = Math.floor(ctx.sampleRate * 0.11);
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(850, ctx.currentTime);
+      filter.Q.setValueAtTime(1.4, ctx.currentTime);
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start();
+    } catch {
+      // AudioContext blocked or not supported
+    }
+  };
+
+  // Sync external page navigation (e.g. clicking thumbnail strip)
+  useEffect(() => {
+    if (targetPage !== undefined && flipBookRef.current) {
+      try {
+        const pageFlip = flipBookRef.current.pageFlip();
+        if (pageFlip && pageFlip.getCurrentPageIndex() !== targetPage) {
+          pageFlip.flip(targetPage);
+        }
+      } catch {
+        // Safe catch
+      }
+    }
+  }, [targetPage]);
+
   const handleFlip = (e: { data: number }) => {
     setCurrentPageIndex(e.data);
+    playFlipSound();
     if (onPageChange) {
       onPageChange(e.data + 1);
     }
@@ -113,18 +162,27 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
   // Compute active spread label (e.g. "Cover", "Pages 2 & 3", "Pages 4 & 5")
   const currentSpreadLabel = React.useMemo(() => {
     if (currentPageIndex === 0) return 'Page 1 (Front Cover)';
-    if (currentPageIndex >= pages.length) return 'Back Cover';
-    const leftNum = currentPageIndex % 2 === 0 ? currentPageIndex : currentPageIndex - 1;
-    const rightNum = leftNum + 1;
-    if (rightNum <= pages.length) {
-      return `Pages ${leftNum} & ${rightNum}`;
+    if (isMobile) {
+      return `Page ${currentPageIndex + 1} of ${pages.length}`;
     }
-    return `Page ${leftNum}`;
-  }, [currentPageIndex, pages.length]);
+    const pageNum = currentPageIndex + 1;
+    if (pageNum % 2 === 0) {
+      const left = pageNum;
+      const right = pageNum + 1;
+      if (right <= pages.length) {
+        return `Pages ${left} & ${right}`;
+      }
+      return `Page ${left} (Back Cover)`;
+    } else {
+      const left = pageNum - 1;
+      const right = pageNum;
+      return `Pages ${left} & ${right}`;
+    }
+  }, [currentPageIndex, isMobile, pages.length]);
 
-  // Page dimensions modeled after Anchor Customs (aspect ~1:1.41)
+  // Page dimensions (aspect ratio ~0.7075 matching 849x1200 ISO magazine standard)
   const pageWidth = isMobile ? 320 : 380;
-  const pageHeight = isMobile ? 450 : 538;
+  const pageHeight = isMobile ? 452 : 538;
 
   // React-pageflip expects any cast due to React 18 types
   const FlipBookComponent = HTMLFlipBook as any;
@@ -132,7 +190,7 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
   return (
     <div className="flex flex-col items-center justify-center w-full select-none py-2 sm:py-6">
       {/* Current Spread Pill Indicator matching Anchor Customs */}
-      <div className="mb-4 sm:mb-6">
+      <div className="mb-4 sm:mb-6 flex items-center gap-3">
         <div className="inline-flex items-center gap-2 bg-charcoal text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow-luxury tracking-wide uppercase">
           <Sparkles className="w-3.5 h-3.5 text-roseGold" />
           <span>{currentSpreadLabel}</span>
@@ -141,8 +199,9 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
 
       {/* 3D FlipBook Stage with Outer Depth Shadow */}
       <div className="relative flex items-center justify-center max-w-full overflow-hidden p-2 sm:p-4">
-        <div className="relative filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.22)]">
+        <div className="relative filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
           <FlipBookComponent
+            key={isMobile ? 'mobile-flip' : 'desktop-flip'}
             ref={flipBookRef}
             width={pageWidth}
             height={pageHeight}
@@ -152,12 +211,12 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
             minHeight={340}
             maxHeight={700}
             maxShadowOpacity={0.5}
-            showCover={true}
+            showCover={!isMobile}
             mobileScrollSupport={true}
             usePortrait={isMobile}
             startPage={0}
             drawShadow={true}
-            flippingTime={900}
+            flippingTime={850}
             useMouseEvents={true}
             swipeDistance={30}
             showPageCorners={true}
@@ -191,9 +250,9 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
           <ChevronLeft className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-xs border border-taupe-200 rounded-full text-charcoal/70 text-[11px] sm:text-xs font-semibold uppercase tracking-wider shadow-2xs">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 bg-white/90 backdrop-blur-xs border border-taupe-200 rounded-full text-charcoal/80 text-[11px] sm:text-xs font-semibold uppercase tracking-wider shadow-2xs">
           <Hand className="w-3.5 h-3.5 text-roseGold animate-pulse" />
-          <span>Drag corner or click to flip</span>
+          <span>{isMobile ? 'Swipe or tap arrows' : 'Drag corner or click to flip'}</span>
         </div>
 
         <button
@@ -209,3 +268,4 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
     </div>
   );
 };
+

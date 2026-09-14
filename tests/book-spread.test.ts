@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBookSpreads, INITIAL_5_PAGE_BOOK } from '../src/data/bookTemplates.ts';
+import { buildBookSpreads, INITIAL_5_PAGE_BOOK, CHAAR_KADAM_BOOK_PAGES } from '../src/data/bookTemplates.ts';
 import type { BookPage } from '../src/types/book.ts';
 
 describe('Multi-Page Physical Book Spread System', () => {
@@ -75,4 +75,48 @@ describe('Multi-Page Physical Book Spread System', () => {
       assert.ok(Array.isArray(page.texts), `Page ${page.pageNumber} must have texts array`);
     }
   });
+
+  test('Chaar Kadam 11-page magazine contains all downloaded high-res template pages', () => {
+    assert.equal(CHAAR_KADAM_BOOK_PAGES.length, 11);
+
+
+    const spreads = buildBookSpreads(CHAAR_KADAM_BOOK_PAGES);
+    assert.equal(spreads.length, 6);
+
+    // Spread 0: Cover (Page 1)
+    assert.equal(spreads[0].type, 'single');
+    assert.equal(spreads[0].label, 'Page 1 (Cover)');
+    assert.equal(spreads[0].rightPage?.referenceImage, '/templates/chaar-kadam/page_1.webp');
+
+    // Spread 1: Inside Cover & Tum Sa Mile (Pages 2-3)
+    assert.equal(spreads[1].type, 'dual');
+    assert.equal(spreads[1].label, 'Pages 2–3');
+    assert.equal(spreads[1].leftPage?.referenceImage, '/templates/chaar-kadam/page_2.webp');
+    assert.equal(spreads[1].rightPage?.referenceImage, '/templates/chaar-kadam/page_3.webp');
+
+    // Spread 2: Duniya Se Kaun Dare & Chaar Kadam Kya Saari Umar (Pages 4-5)
+    assert.equal(spreads[2].type, 'dual');
+    assert.equal(spreads[2].label, 'Pages 4–5');
+    assert.equal(spreads[2].leftPage?.referenceImage, '/templates/chaar-kadam/page_4.webp');
+    assert.equal(spreads[2].rightPage?.referenceImage, '/templates/chaar-kadam/page_5.webp');
+
+    // Spread 3: Chal Dungi Saath Tere & Bin Kuch Kahe (Pages 6-7)
+    assert.equal(spreads[3].type, 'dual');
+    assert.equal(spreads[3].label, 'Pages 6–7');
+    assert.equal(spreads[3].leftPage?.referenceImage, '/templates/chaar-kadam/page_6.webp');
+    assert.equal(spreads[3].rightPage?.referenceImage, '/templates/chaar-kadam/page_7.webp');
+
+    // Spread 4: Haathon Mein Haath Liye & Envelope (Pages 8-9)
+    assert.equal(spreads[4].type, 'dual');
+    assert.equal(spreads[4].label, 'Pages 8–9');
+    assert.equal(spreads[4].leftPage?.referenceImage, '/templates/chaar-kadam/page_8.webp');
+    assert.equal(spreads[4].rightPage?.referenceImage, '/templates/chaar-kadam/page_9.webp');
+
+    // Spread 5: Chal Do Na & Back Cover (Pages 10-11)
+    assert.equal(spreads[5].type, 'dual');
+    assert.equal(spreads[5].label, 'Pages 10–11');
+    assert.equal(spreads[5].leftPage?.referenceImage, '/templates/chaar-kadam/page_10.webp');
+    assert.equal(spreads[5].rightPage?.referenceImage, '/templates/chaar-kadam/page_11.webp');
+  });
 });
+

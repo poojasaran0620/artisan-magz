@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BookPage, BookSpread } from '../../types/book';
-import { buildBookSpreads, INITIAL_5_PAGE_BOOK } from '../../data/bookTemplates';
+import { buildBookSpreads, CHAAR_KADAM_BOOK_PAGES, INITIAL_5_PAGE_BOOK } from '../../data/bookTemplates';
 import { PhysicalBookSpread } from './PhysicalBookSpread';
 import { InteractiveFlipBook } from './InteractiveFlipBook';
 import {
@@ -23,20 +23,35 @@ interface MultiPageBookViewerProps {
 }
 
 export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
-  initialPages = INITIAL_5_PAGE_BOOK,
+  initialPages = CHAAR_KADAM_BOOK_PAGES,
   onBack,
 }) => {
   const [pages, setPages] = useState<BookPage[]>(initialPages);
+  const [activeTemplate, setActiveTemplate] = useState<'chaar-kadam' | 'classic'>('chaar-kadam');
   const [activeSpreadIndex, setActiveSpreadIndex] = useState<number>(0);
+  const [targetFlipPage, setTargetFlipPage] = useState<number | undefined>(undefined);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'flipbook' | 'spreads'>('flipbook');
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Switch between Chaar Kadam and Custom Starter
+  const handleTemplateSelect = (template: 'chaar-kadam' | 'classic') => {
+    setActiveTemplate(template);
+    if (template === 'chaar-kadam') {
+      setPages(CHAAR_KADAM_BOOK_PAGES);
+    } else {
+      setPages(INITIAL_5_PAGE_BOOK);
+    }
+    setActiveSpreadIndex(0);
+    setTargetFlipPage(0);
+  };
+
   // Compute spreads from pages list
   const spreads: BookSpread[] = React.useMemo(() => {
     return buildBookSpreads(pages);
   }, [pages]);
+
 
   const activeSpread = spreads[activeSpreadIndex] || spreads[0];
   const canGoPrev = activeSpreadIndex > 0;
@@ -158,8 +173,35 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
           </div>
         </div>
 
-        {/* Spread Navigation Badges */}
+        {/* Spread Navigation Badges & Controls */}
         <div className="flex items-center gap-2">
+          {/* Template Selector */}
+          <div className="hidden lg:flex items-center bg-cream-100 p-0.5 rounded-full border border-taupe-200 text-xs font-semibold shadow-2xs">
+            <button
+              type="button"
+              onClick={() => handleTemplateSelect('chaar-kadam')}
+              className={`px-3 py-1 rounded-full transition cursor-pointer flex items-center gap-1.5 ${
+                activeTemplate === 'chaar-kadam'
+                  ? 'bg-roseGold text-white shadow-2xs'
+                  : 'text-charcoal/70 hover:text-charcoal'
+              }`}
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>Chaar Kadam (11p)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTemplateSelect('classic')}
+              className={`px-3 py-1 rounded-full transition cursor-pointer flex items-center gap-1.5 ${
+                activeTemplate === 'classic'
+                  ? 'bg-roseGold text-white shadow-2xs'
+                  : 'text-charcoal/70 hover:text-charcoal'
+              }`}
+            >
+              <span>Classic Keepsake (5p)</span>
+            </button>
+          </div>
+
           <div className="hidden md:flex items-center gap-2 bg-cream-100 border border-taupe-200 px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-2xs">
             <BookOpen className="w-4 h-4 text-roseGold" />
             <span className="text-charcoal font-medium">{activeSpread.label}</span>
@@ -227,6 +269,7 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
           <div className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center">
             <InteractiveFlipBook
               pages={pages}
+              targetPage={targetFlipPage}
               isEditable={isEditable}
               onPhotoClick={handlePhotoClick}
               onPageChange={(pageNumber) => {
@@ -236,6 +279,7 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
             />
           </div>
         ) : (
+
           <>
             {/* Floating Left Navigation Button */}
             <button
@@ -298,12 +342,23 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
           {spreads.map((spread, idx) => {
             const isSelected = activeSpreadIndex === idx;
 
+            const handleThumbnailClick = () => {
+              setActiveSpreadIndex(idx);
+              if (idx === 0) {
+                setTargetFlipPage(0);
+              } else {
+                setTargetFlipPage(idx * 2 - 1);
+              }
+            };
+
             if (spread.type === 'single') {
               // Single Page 1 Thumbnail
+              const coverImg = spread.rightPage?.referenceImage || spread.rightPage?.photos[0]?.url;
+
               return (
                 <button
                   key={spread.id}
-                  onClick={() => setActiveSpreadIndex(idx)}
+                  onClick={handleThumbnailClick}
                   className={`flex flex-col items-center gap-1.5 group cursor-pointer transition-all ${
                     isSelected ? 'scale-105' : 'opacity-70 hover:opacity-100'
                   }`}
@@ -315,9 +370,9 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
                         : 'border-taupe-300 hover:border-charcoal'
                     }`}
                   >
-                    {spread.rightPage?.photos[0] ? (
+                    {coverImg ? (
                       <img
-                        src={spread.rightPage.photos[0].url}
+                        src={coverImg}
                         alt="Page 1 Cover"
                         className="w-full h-full object-cover"
                       />
@@ -339,10 +394,13 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
             }
 
             // Dual Spread Thumbnail (Pages 2–3, 4–5, etc.)
+            const leftImg = spread.leftPage?.referenceImage || spread.leftPage?.photos[0]?.url;
+            const rightImg = spread.rightPage?.referenceImage || spread.rightPage?.photos[0]?.url;
+
             return (
               <button
                 key={spread.id}
-                onClick={() => setActiveSpreadIndex(idx)}
+                onClick={handleThumbnailClick}
                 className={`flex flex-col items-center gap-1.5 group cursor-pointer transition-all ${
                   isSelected ? 'scale-105' : 'opacity-70 hover:opacity-100'
                 }`}
@@ -356,10 +414,10 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
                 >
                   {/* Left Page Mini */}
                   <div className="relative border-r border-taupe-200 overflow-hidden bg-[#FAF8F5]">
-                    {spread.leftPage?.photos[0] ? (
+                    {leftImg ? (
                       <img
-                        src={spread.leftPage.photos[0].url}
-                        alt={`Page ${spread.leftPage.pageNumber}`}
+                        src={leftImg}
+                        alt={`Page ${spread.leftPage?.pageNumber}`}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -371,10 +429,10 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
 
                   {/* Right Page Mini */}
                   <div className="relative overflow-hidden bg-[#FAF8F5]">
-                    {spread.rightPage?.photos[0] ? (
+                    {rightImg ? (
                       <img
-                        src={spread.rightPage.photos[0].url}
-                        alt={`Page ${spread.rightPage.pageNumber}`}
+                        src={rightImg}
+                        alt={`Page ${spread.rightPage?.pageNumber}`}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -395,6 +453,7 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
             );
           })}
         </div>
+
       </footer>
     </div>
   );

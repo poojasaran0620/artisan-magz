@@ -36,3 +36,5 @@ supabase/.temp
 .vercel
 .env*
 .agents
+public/*.mp4
+

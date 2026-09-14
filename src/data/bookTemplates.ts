@@ -374,3 +374,334 @@ export const INITIAL_5_PAGE_BOOK: BookPage[] = [
     ],
   },
 ];
+
+/**
+ * Exact 11-page "Chaar Kadam" magazine book matching the user's reference video and Anchor Customs template
+ * Contains all 11 high-res pages: Cover -> Inside Spreads -> Back Cover
+ */
+export const CHAAR_KADAM_BOOK_PAGES: BookPage[] = [
+  // Page 1: Standalone Front Cover
+  {
+    id: 'ck-page-1',
+    pageNumber: 1,
+    side: 'standalone',
+    templateId: 'chaar-kadam-cover',
+    title: 'MRUNIRUDH • Forever Edition Vol. 01',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_1.webp',
+    photos: [
+      {
+        id: 'ck-p1-hero',
+        label: 'Cover Couple Portrait',
+        url: '/templates/chaar-kadam/page_1.webp',
+        aspectRatio: '3/4',
+        borderStyle: 'none',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p1-masthead',
+        type: 'headline',
+        content: 'MRUNIRUDH',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#FFFFFF',
+      },
+      {
+        id: 'ck-p1-sub',
+        type: 'subheading',
+        content: 'FOREVER EDITION • VOL. 01',
+        fontFamily: 'sans',
+        alignment: 'center',
+        color: '#FFFFFF',
+      },
+      {
+        id: 'ck-p1-quote',
+        type: 'quote',
+        content: "i'll always choose you <3",
+        fontFamily: 'serif',
+        isItalic: true,
+        alignment: 'center',
+        color: '#FFFFFF',
+      },
+    ],
+  },
+
+  // Page 2: Inside Front Cover (Left page of Spread 1)
+  {
+    id: 'ck-page-2',
+    pageNumber: 2,
+    side: 'left',
+    templateId: 'chaar-kadam-inside-cover',
+    title: 'Inside Cover',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FFFFFF',
+    referenceImage: '/templates/chaar-kadam/page_2.webp',
+    photos: [],
+    texts: [],
+  },
+
+  // Page 3: Right page of Spread 1
+  {
+    id: 'ck-page-3',
+    pageNumber: 3,
+    side: 'right',
+    templateId: 'chaar-kadam-page-3',
+    title: 'TUM SA mile • jo koi REHGUZAR',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_3.webp',
+    photos: [
+      {
+        id: 'ck-p3-1',
+        label: 'Boarding Pass & Ribbon Moments',
+        url: '/templates/chaar-kadam/page_3.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p3-headline',
+        type: 'headline',
+        content: 'TUM SA mile jo koi REHGUZAR',
+        fontFamily: 'serif',
+        color: '#333333',
+      },
+    ],
+  },
+
+  // Page 4: Left page of Spread 2
+  {
+    id: 'ck-page-4',
+    pageNumber: 4,
+    side: 'left',
+    templateId: 'chaar-kadam-page-4',
+    title: 'DUNIYA se कौन DARE',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_4.webp',
+    photos: [
+      {
+        id: 'ck-p4-strip',
+        label: 'Photobooth Strip & Camera',
+        url: '/templates/chaar-kadam/page_4.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p4-song',
+        type: 'headline',
+        content: 'DUNIYA se कौन DARE',
+        fontFamily: 'serif',
+        color: '#111111',
+      },
+    ],
+  },
+
+  // Page 5: Right page of Spread 2
+  {
+    id: 'ck-page-5',
+    pageNumber: 5,
+    side: 'right',
+    templateId: 'chaar-kadam-page-5',
+    title: 'चार क़दम kya saari umar',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_5.webp',
+    photos: [
+      {
+        id: 'ck-p5-photos',
+        label: 'Clothesline Polaroids & Scalloped Stamp',
+        url: '/templates/chaar-kadam/page_5.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p5-title',
+        type: 'headline',
+        content: 'चार क़दम kya saari umar',
+        fontFamily: 'serif',
+        color: '#7E121D',
+      },
+    ],
+  },
+
+  // Page 6: Left page of Spread 3
+  {
+    id: 'ck-page-6',
+    pageNumber: 6,
+    side: 'left',
+    templateId: 'chaar-kadam-page-6',
+    title: 'chal dungi साथ तेरे...',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_6.webp',
+    photos: [
+      {
+        id: 'ck-p6-stamp',
+        label: 'Maroon Stamp Frame',
+        url: '/templates/chaar-kadam/page_6.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p6-line',
+        type: 'headline',
+        content: 'chal dungi साथ तेरे...',
+        fontFamily: 'serif',
+        color: '#111111',
+      },
+    ],
+  },
+
+  // Page 7: Right page of Spread 3
+  {
+    id: 'ck-page-7',
+    pageNumber: 7,
+    side: 'right',
+    templateId: 'chaar-kadam-page-7',
+    title: 'BIN कुछ कहे • BIN कुछ सुने',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_7.webp',
+    photos: [
+      {
+        id: 'ck-p7-coll',
+        label: 'Vintage Newspaper & Kiss Mark',
+        url: '/templates/chaar-kadam/page_7.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p7-lyrics',
+        type: 'headline',
+        content: 'BIN कुछ कहे • BIN कुछ सुने',
+        fontFamily: 'serif',
+        color: '#111111',
+      },
+    ],
+  },
+
+  // Page 8: Left page of Spread 4
+  {
+    id: 'ck-page-8',
+    pageNumber: 8,
+    side: 'left',
+    templateId: 'chaar-kadam-page-8',
+    title: 'haathon mein haath liye',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_8.webp',
+    photos: [
+      {
+        id: 'ck-p8-grid',
+        label: 'Puzzle Photo Grid',
+        url: '/templates/chaar-kadam/page_8.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p8-title',
+        type: 'headline',
+        content: 'haathon mein haath liye',
+        fontFamily: 'serif',
+        color: '#111111',
+      },
+    ],
+  },
+
+  // Page 9: Right page of Spread 4
+  {
+    id: 'ck-page-9',
+    pageNumber: 9,
+    side: 'right',
+    templateId: 'chaar-kadam-page-9',
+    title: 'CHAAR क़दम bas',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_9.webp',
+    photos: [
+      {
+        id: 'ck-p9-env',
+        label: 'Red Love Letter Envelope',
+        url: '/templates/chaar-kadam/page_9.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p9-text',
+        type: 'headline',
+        content: 'CHAAR क़दम bas',
+        fontFamily: 'serif',
+        color: '#111111',
+      },
+    ],
+  },
+
+  // Page 10: Left page of Spread 5
+  {
+    id: 'ck-page-10',
+    pageNumber: 10,
+    side: 'left',
+    templateId: 'chaar-kadam-page-10',
+    title: 'chal do na saath mere <3',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_10.webp',
+    photos: [
+      {
+        id: 'ck-p10-heart',
+        label: 'Pixel Heart Cutout',
+        url: '/templates/chaar-kadam/page_10.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p10-note',
+        type: 'headline',
+        content: 'chal do na saath mere <3',
+        fontFamily: 'serif',
+        color: '#FFFFFF',
+      },
+    ],
+  },
+
+  // Page 11: Right page of Spread 5 (Back Cover)
+  {
+    id: 'ck-page-11',
+    pageNumber: 11,
+    side: 'right',
+    templateId: 'chaar-kadam-page-11',
+    title: 'Back Cover • Rest of Pages in Reels <3',
+    theme: 'Chaar Kadam Keepsake',
+    backgroundColor: '#8B0D15',
+    referenceImage: '/templates/chaar-kadam/page_11.webp',
+    photos: [
+      {
+        id: 'ck-p11-back',
+        label: 'Back Cover',
+        url: '/templates/chaar-kadam/page_11.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [
+      {
+        id: 'ck-p11-tag',
+        type: 'headline',
+        content: 'REST OF THE PAGES ARE SHOWCASED IN OUR REELS <3',
+        fontFamily: 'sans',
+        alignment: 'center',
+        color: '#FFFFFF',
+      },
+    ],
+  },
+];
+
