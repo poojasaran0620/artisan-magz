@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Mail } from 'lucide-react';
 import { InstagramIcon, WhatsAppIcon } from '../ui/Icons';
 
@@ -12,18 +12,25 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
     <footer className="bg-[#FAF8F5] text-charcoal pt-14 pb-16 border-t border-[#EAE4DC]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
-          {/* Brand & Emotional Tagline */}
-          <div className="col-span-1 lg:col-span-2 space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="font-serif italic text-3xl sm:text-4xl text-charcoal font-bold tracking-tight">
-                Artisan
-              </span>
-              <span className="font-serif text-3xl sm:text-4xl text-[#9C7A5E] font-bold tracking-tight">
-                Magz
-              </span>
+          {/* Brand & Tagline matching Website & Logo Theme */}
+          <div className="col-span-1 lg:col-span-2 space-y-4">
+            <div className="flex items-center gap-3">
+              <img
+                src="/artisan_logo_horizontal.png"
+                alt="Artisan Magz"
+                className="h-14 sm:h-16 w-auto object-contain -ml-1 hover:scale-105 transition-transform duration-300"
+              />
+              <div className="flex flex-col justify-center">
+                <span className="font-serif italic text-2xl sm:text-3xl text-charcoal font-bold tracking-tight leading-none">
+                  Artisan
+                </span>
+                <span className="text-[11px] tracking-[0.28em] uppercase text-roseGold font-bold mt-1">
+                  MAGZ
+                </span>
+              </div>
             </div>
             <p className="text-sm sm:text-base text-charcoal/80 leading-relaxed max-w-md font-sans">
-              You might cry (in a cute way). Turning your memories into something you can hold forever.
+              Artfully made for your moments
             </p>
           </div>
 
@@ -37,7 +44,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
                 <button
                   type="button"
                   onClick={() => onOpenPolicy('terms')}
-                  className="font-serif text-base sm:text-lg text-charcoal hover:text-[#9C7A5E] transition-colors cursor-pointer text-left block"
+                  className="font-serif text-base sm:text-lg text-charcoal hover:text-roseGold transition-colors cursor-pointer text-left block"
                 >
                   Terms &amp; Conditions
                 </button>
@@ -46,7 +53,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
                 <button
                   type="button"
                   onClick={() => onOpenPolicy('privacy')}
-                  className="font-serif text-base sm:text-lg text-charcoal hover:text-[#9C7A5E] transition-colors cursor-pointer text-left block"
+                  className="font-serif text-base sm:text-lg text-charcoal hover:text-roseGold transition-colors cursor-pointer text-left block"
                 >
                   Privacy Policy
                 </button>
@@ -55,7 +62,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
                 <button
                   type="button"
                   onClick={() => onOpenPolicy('cancellation')}
-                  className="font-serif text-base sm:text-lg text-charcoal hover:text-[#9C7A5E] transition-colors cursor-pointer text-left block"
+                  className="font-serif text-base sm:text-lg text-charcoal hover:text-roseGold transition-colors cursor-pointer text-left block"
                 >
                   Refund Policy
                 </button>
@@ -64,7 +71,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
                 <button
                   type="button"
                   onClick={() => onOpenPolicy('shipping')}
-                  className="font-serif text-base sm:text-lg text-charcoal hover:text-[#9C7A5E] transition-colors cursor-pointer text-left block"
+                  className="font-serif text-base sm:text-lg text-charcoal hover:text-roseGold transition-colors cursor-pointer text-left block"
                 >
                   Shipping Policy
                 </button>
@@ -81,9 +88,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
               <li>
                 <a
                   href="mailto:artisanmagz@gmail.com"
-                  className="flex items-center gap-2.5 text-charcoal hover:text-[#9C7A5E] transition-colors group"
+                  className="flex items-center gap-2.5 text-charcoal hover:text-roseGold transition-colors group"
                 >
-                  <Mail className="w-5 h-5 text-charcoal shrink-0" />
+                  <Mail className="w-5 h-5 text-charcoal group-hover:text-roseGold transition-colors shrink-0" />
                   <span className="font-sans">artisanmagz@gmail.com</span>
                 </a>
               </li>
@@ -92,9 +99,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
                   href="https://www.instagram.com/artisan.magz?stkn=bXVmN2RsanZlMGdp"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2.5 text-[#9C7A5E] hover:text-charcoal transition-colors group"
+                  className="flex items-center gap-2.5 text-roseGold hover:text-roseGold-dark transition-colors group"
                 >
-                  <InstagramIcon className="w-5 h-5 text-[#9C7A5E] shrink-0" />
+                  <InstagramIcon className="w-5 h-5 text-roseGold shrink-0" />
                   <span className="font-sans font-medium">@artisan.magz</span>
                 </a>
               </li>

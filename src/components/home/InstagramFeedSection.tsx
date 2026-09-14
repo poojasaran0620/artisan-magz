@@ -7,7 +7,6 @@ import {
   Pause,
   Volume2,
   VolumeX,
-  Sparkles,
 } from 'lucide-react';
 import { InstagramIcon } from '../ui/Icons';
 import {
@@ -173,12 +172,8 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel, isGlobalMuted, onToggleMute }
           className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
         />
 
-        {/* Top Badges Overlay (Sequence & Mute Button) */}
-        <div className="absolute top-3 inset-x-3 flex items-center justify-between z-20 pointer-events-none">
-          <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-sans font-bold tabular-nums shadow-xs">
-            0{reel.sequence}
-          </span>
-
+        {/* Top-Right Mute / Unmute Button */}
+        <div className="absolute top-3 right-3 z-20">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -250,7 +245,6 @@ export const InstagramFeedSection: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [isGlobalMuted, setIsGlobalMuted] = useState(true);
 
   const updateScrollState = () => {
@@ -259,10 +253,6 @@ export const InstagramFeedSection: React.FC = () => {
     const { scrollLeft, scrollWidth, clientWidth } = el;
     setCanScrollLeft(scrollLeft > 10);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-
-    const cardWidth = 320;
-    const idx = Math.round(scrollLeft / cardWidth);
-    setActiveIndex(Math.min(Math.max(idx, 0), BEST_PERFORMING_REELS.length - 1));
   };
 
   useEffect(() => {
@@ -285,19 +275,6 @@ export const InstagramFeedSection: React.FC = () => {
       left: direction === 'left' ? -scrollAmount : scrollAmount,
       behavior: 'smooth',
     });
-  };
-
-  const scrollToIndex = (index: number) => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-    const cards = el.children;
-    if (cards[index]) {
-      (cards[index] as HTMLElement).scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
-      });
-    }
   };
 
   return (
@@ -377,37 +354,7 @@ export const InstagramFeedSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Carousel Indicators / Navigation Dots */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-charcoal/60 font-medium">Reel sequence:</span>
-            <div className="flex items-center gap-1.5">
-              {BEST_PERFORMING_REELS.map((reel, idx) => (
-                <button
-                  key={reel.id}
-                  onClick={() => scrollToIndex(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                    activeIndex === idx
-                      ? 'w-7 bg-charcoal'
-                      : 'w-2 bg-taupe-300 hover:bg-taupe-400'
-                  }`}
-                  aria-label={`Jump to Reel ${reel.sequence}`}
-                  title={`Reel #${reel.sequence}: ${reel.title}`}
-                />
-              ))}
-            </div>
-            <span className="text-xs font-sans tabular-nums text-charcoal/50 ml-1">
-              0{activeIndex + 1} / 0{BEST_PERFORMING_REELS.length}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs text-charcoal/70 text-center sm:text-right">
-            <Sparkles className="w-3.5 h-3.5 text-roseGold shrink-0" />
-            <span>
-              Tag <strong className="text-charcoal font-semibold">@{INSTAGRAM_HANDLE}</strong> on Instagram with your unboxing video to be featured!
-            </span>
-          </div>
-        </div>
+        {/* End of Horizontal Reels Track */}
       </div>
     </section>
   );
