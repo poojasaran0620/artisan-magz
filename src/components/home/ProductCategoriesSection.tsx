@@ -170,12 +170,20 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
               onClick={prod.onClick}
               className="bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 border border-taupe-200/80 shadow-xs hover:shadow-soft-lg transition-all duration-300 flex flex-col group cursor-pointer text-center"
             >
-              {/* Product Photo - flush fit without empty whitespace */}
-              <div className="relative aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden bg-cream-100 shadow-2xs border border-taupe-200/50">
+              {/* Product Photo - full uncropped fit for wide Songs Book, object-cover for portrait items */}
+              <div className={`relative aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden ${
+                prod.id === 'song-album'
+                  ? 'bg-[#FAF8F5] p-1 flex items-center justify-center'
+                  : 'bg-cream-100'
+              } shadow-2xs border border-taupe-200/50`}>
                 <img
                   src={prod.image}
                   alt={prod.alt}
-                  className={`w-full h-full object-cover ${prod.position || 'object-center'} group-hover:scale-105 transition duration-500`}
+                  className={`w-full h-full ${
+                    prod.id === 'song-album'
+                      ? 'object-contain'
+                      : `object-cover ${prod.position || 'object-center'}`
+                  } group-hover:scale-105 transition duration-500`}
                 />
               </div>
 

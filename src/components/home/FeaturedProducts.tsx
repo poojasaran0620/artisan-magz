@@ -114,12 +114,20 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
                   {/* Image Container */}
                   <div
                     onClick={() => handleProductClick(product)}
-                    className="relative aspect-square overflow-hidden bg-cream-100 cursor-pointer"
+                    className={`relative aspect-square overflow-hidden ${
+                      product.category === 'songbook'
+                        ? 'bg-[#FAF8F5] p-2 flex items-center justify-center'
+                        : 'bg-cream-100'
+                    } cursor-pointer`}
                   >
                     <img
                       src={product.images[0]}
                       alt={product.title}
-                      className="w-full h-full object-cover object-top group-hover:scale-[1.06] transition-transform duration-500 ease-out"
+                      className={`w-full h-full ${
+                        product.category === 'songbook'
+                          ? 'object-contain'
+                          : 'object-cover object-top'
+                      } group-hover:scale-[1.06] transition-transform duration-500 ease-out`}
                     />
 
                     {/* Top Badge */}
