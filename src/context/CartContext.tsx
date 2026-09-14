@@ -56,7 +56,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   });
 
-  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('cart') === 'open' || params.get('cart') === 'true';
+    }
+    return false;
+  });
   const [discountCode, setDiscountCode] = useState<string>('');
   const [discountPercent, setDiscountPercent] = useState<number>(0);
 

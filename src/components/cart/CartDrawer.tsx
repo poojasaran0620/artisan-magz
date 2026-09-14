@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import { formatPrice } from '../../utils/formatters';
@@ -54,29 +55,36 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToDirectCheckou
     Math.round(((freeShippingThreshold - amountNeededForFreeShipping) / freeShippingThreshold) * 100)
   );
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {isCartOpen && (
-        <motion.div
-          key="cart-drawer-wrapper"
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className="fixed inset-0 z-50 overflow-hidden"
-        >
+        <div className="fixed inset-0 z-50 overflow-hidden">
           {/* Backdrop with Genuine Fade-In and Fade-Out */}
           <motion.div
-            variants={modalBackdropVariants}
+            key="cart-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={closeCart}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            aria-hidden="true"
           />
 
-          {/* Slide-in Drawer Container */}
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10 pointer-events-none">
-            <motion.div
-              variants={drawerSlideRightVariants}
-              className="w-screen max-w-md bg-[#FDFCF5] shadow-2xl flex flex-col justify-between border-l border-taupe-200/80 pointer-events-auto"
-            >
+          {/* Slide-in Drawer Panel (Full width on mobile, max-w-md on desktop, zero clipping) */}
+          <motion.div
+            key="cart-drawer-panel"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            className="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md bg-[#FDFCF5] shadow-2xl flex flex-col justify-between border-l border-taupe-200/80 overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Shopping Cart Drawer"
+          >
               {/* Header */}
               <div className="p-5 border-b border-taupe-200/60 bg-white/80 backdrop-blur-md flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -294,7 +302,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToDirectCheckou
                         whileTap={{ scale: 0.95 }}
                         transition={springs.snappy}
                         type="submit"
-                        className="px-3.5 py-2 bg-charcoal text-[#FDFCF5] text-xs font-semibold rounded-xl hover:bg-charcoal-dark transition cursor-pointer"
+                        className="px-3.5 py-2 bg-charcoal text-[#FDFCF5] text-xs font-semibold rounded-xl hover:bg-charcoal-dark transition cursor-pointer shrink-0"
                       >
                         Apply
                       </motion.button>
@@ -386,8 +394,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToDirectCheckou
               )}
             </motion.div>
           </div>
-        </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
