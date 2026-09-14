@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
-import { ChevronDown, ArrowLeft, MessageCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { ArrowLeft, MessageCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { FAQ_DATA } from '../../data/faqData';
 import { luxuryEase, springs } from '../../styles/motion';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '../ui/accordion';
+
 export { FAQ_DATA };
 
 interface FAQSectionProps {
@@ -10,12 +17,6 @@ interface FAQSectionProps {
 }
 
 export const FAQSection: React.FC<FAQSectionProps> = ({ onBack }) => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
   return (
     <div className="min-h-[85vh] bg-gradient-to-b from-[#FDFCF5] via-cream-100/40 to-[#FAF6F0] py-10 sm:py-16 px-4 sm:px-6 lg:px-8 relative">
       {/* Background Soft Glow */}
@@ -56,57 +57,23 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onBack }) => {
             </p>
           </div>
 
-          {/* Accordion List */}
-          <div className="divide-y divide-taupe-200/80 border-y border-taupe-200/80">
-            {FAQ_DATA.map((item, idx) => {
-              const isOpen = openIndex === idx;
-              return (
-                <div key={idx} className="transition-colors">
-                  <button
-                    type="button"
-                    onClick={() => toggleFAQ(idx)}
-                    className="w-full py-4 sm:py-5 flex items-center justify-between text-left cursor-pointer group gap-4 select-none"
-                    aria-expanded={isOpen}
-                  >
-                    <span
-                      className={`text-xs sm:text-sm font-semibold transition-colors ${
-                        isOpen ? 'text-roseGold' : 'text-charcoal group-hover:text-roseGold'
-                      }`}
-                    >
-                      {item.question}
-                    </span>
-                    <motion.div
-                      animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={springs.smooth}
-                      className="shrink-0"
-                    >
-                      <ChevronDown
-                        className={`w-4 h-4 ${
-                          isOpen ? 'text-roseGold' : 'text-taupe-400 group-hover:text-charcoal'
-                        }`}
-                      />
-                    </motion.div>
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.28, ease: luxuryEase }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pb-4 sm:pb-5 text-xs sm:text-sm text-charcoal/70 leading-relaxed">
-                          {item.answer}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
+          {/* Accordion List with Radix/shadcn */}
+          <Accordion type="single" collapsible className="w-full border-t border-taupe-200/80">
+            {FAQ_DATA.map((item, idx) => (
+              <AccordionItem key={idx} value={`faq-${idx}`}>
+                <AccordionTrigger className="group">
+                  <span className="text-xs sm:text-sm font-semibold transition-colors group-hover:text-roseGold text-charcoal">
+                    {item.question}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="text-xs sm:text-sm text-charcoal/70 leading-relaxed">
+                    {item.answer}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
 
           {/* Extra Help Banner */}
           <div className="pt-4 border-t border-taupe-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">

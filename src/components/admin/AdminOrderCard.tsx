@@ -71,6 +71,8 @@ const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
+import { Badge } from '../ui/badge';
+
 export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
   order,
   onStatusUpdate,
@@ -92,10 +94,10 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
             <span className="font-mono text-xs font-bold text-charcoal">
               {order.orderNumber}
             </span>
-            <span className={`${style.badge} px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1`}>
+            <Badge variant={order.status} className="px-2 py-0.5 text-[10px] font-bold flex items-center gap-1">
               <span className={`${style.dot} w-1.5 h-1.5 rounded-full inline-block`} />
               {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-            </span>
+            </Badge>
           </div>
           <div className="flex items-center gap-3 mt-1.5 text-[11px] text-taupe-600">
             <span className="flex items-center gap-1">
