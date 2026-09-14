@@ -148,10 +148,23 @@ describe('Multi-Page Physical Book Spread System', () => {
     assert.equal(spreads[2].leftPage?.referenceImage, '/templates/tu-chahiye/page_4.jpg');
     assert.equal(spreads[2].rightPage?.referenceImage, '/templates/tu-chahiye/page_5.jpg');
 
-    // Spread 3: Left "Tu hi रहनुमा chaiye"
+    // Spread 3: Left "Tu hi रहनुमा chaiye", Right "JEENE को BAS मुझे"
     assert.equal(spreads[3].type, 'dual');
     assert.equal(spreads[3].label, 'Pages 6–7');
     assert.equal(spreads[3].leftPage?.referenceImage, '/templates/tu-chahiye/page_6.jpg');
+    assert.equal(spreads[3].rightPage?.referenceImage, '/templates/tu-chahiye/page_7.jpg');
+
+    // Spread 4: Left "Tu hi meherbaan chaiye", Right "HOOOO सीने में Agar TU दर्द है"
+    assert.equal(spreads[4].type, 'dual');
+    assert.equal(spreads[4].label, 'Pages 8–9');
+    assert.equal(spreads[4].leftPage?.referenceImage, '/templates/tu-chahiye/page_8.jpg');
+    assert.equal(spreads[4].rightPage?.referenceImage, '/templates/tu-chahiye/page_9.jpg');
+
+    // Spread 5: Left "ना koi दवा chaiye <3", Right "i'll be there for you" Back Cover
+    assert.equal(spreads[5].type, 'dual');
+    assert.equal(spreads[5].label, 'Pages 10–11');
+    assert.equal(spreads[5].leftPage?.referenceImage, '/templates/tu-chahiye/page_10.jpg');
+    assert.equal(spreads[5].rightPage?.referenceImage, '/templates/tu-chahiye/page_11.jpg');
   });
 });
 

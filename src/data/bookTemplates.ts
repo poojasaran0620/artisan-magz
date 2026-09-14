@@ -713,7 +713,11 @@ export const CHAAR_KADAM_BOOK_PAGES: BookPage[] = [
  * - Page 4: "NA TERE सिवा CHAIYE" (Spread 2 Left)
  * - Page 5: "HAR सफ़र mein mujhe" (Spread 2 Right)
  * - Page 6: "Tu hi रहनुमा chaiye" (Spread 3 Left)
- * - Pages 7-11: Ready for the next uploaded batch
+ * - Page 7: "JEENE को BAS मुझे" (Spread 3 Right)
+ * - Page 8: "tu hi meherbaan chaiye" (Spread 4 Left)
+ * - Page 9: "HOOOO सीने में Agar TU दर्द है" (Spread 4 Right)
+ * - Page 10: "ना koi दवा chaiye <3" (Spread 5 Left)
+ * - Page 11: "i'll be there for you" - Back Cover (Spread 5 Right)
  */
 export const SONGS_BOOK_PAGES: BookPage[] = [
   // Page 1: Standalone Front Cover
@@ -753,9 +757,9 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 2,
     side: 'left',
     templateId: 'tu-chahiye-inside-cover',
-    title: 'Inside Cover (Empty)',
+    title: 'Inside Cover (Blank)',
     theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_2.webp',
     photos: [],
     texts: [],
@@ -769,12 +773,12 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     templateId: 'tu-chahiye-page-3',
     title: 'KOI AUR dooja • kyun MUJHE',
     theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_3.jpg',
     photos: [
       {
         id: 'sb-p3-1',
-        label: 'KOI AUR dooja Tickets',
+        label: 'Koi Aur Dooja Kyun Mujhe',
         url: '/templates/tu-chahiye/page_3.jpg',
         aspectRatio: '3/4',
       },
@@ -790,12 +794,12 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     templateId: 'tu-chahiye-page-4',
     title: 'NA TERE सिवा CHAIYE',
     theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_4.jpg',
     photos: [
       {
         id: 'sb-p4-1',
-        label: 'NA TERE सिवा CHAIYE Filmstrip & Camera',
+        label: 'Na Tere Siva Chaiye',
         url: '/templates/tu-chahiye/page_4.jpg',
         aspectRatio: '3/4',
       },
@@ -811,12 +815,12 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     templateId: 'tu-chahiye-page-5',
     title: 'HAR सफ़र mein mujhe',
     theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_5.jpg',
     photos: [
       {
         id: 'sb-p5-1',
-        label: 'HAR सफ़र mein mujhe Stamp Frame',
+        label: 'Har Safar Mein Mujhe',
         url: '/templates/tu-chahiye/page_5.jpg',
         aspectRatio: '3/4',
       },
@@ -832,12 +836,12 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     templateId: 'tu-chahiye-page-6',
     title: 'Tu hi रहनुमा chaiye',
     theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_6.jpg',
     photos: [
       {
         id: 'sb-p6-1',
-        label: 'Tu hi रहनुमा chaiye Postage Frame',
+        label: 'Tu Hi Rahnuma Chaiye',
         url: '/templates/tu-chahiye/page_6.jpg',
         aspectRatio: '3/4',
       },
@@ -845,21 +849,21 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     texts: [],
   },
 
-  // Page 7: Right of Spread 3 (Awaiting Next Upload Batch)
+  // Page 7: Right of Spread 3
   {
     id: 'sb-page-7',
     pageNumber: 7,
     side: 'right',
     templateId: 'tu-chahiye-page-7',
-    title: 'Page 7 (Upload Slot)',
+    title: 'JEENE को BAS मुझे',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/chaar-kadam/page_7.webp',
+    referenceImage: '/templates/tu-chahiye/page_7.jpg',
     photos: [
       {
         id: 'sb-p7-1',
-        label: 'Page 7 Slot',
-        url: '/templates/chaar-kadam/page_7.webp',
+        label: 'Jeene Ko Bas Mujhe',
+        url: '/templates/tu-chahiye/page_7.jpg',
         aspectRatio: '3/4',
       },
     ],
@@ -872,15 +876,15 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 8,
     side: 'left',
     templateId: 'tu-chahiye-page-8',
-    title: 'Page 8 (Upload Slot)',
+    title: 'Tu hi meherbaan chaiye',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/chaar-kadam/page_8.webp',
+    referenceImage: '/templates/tu-chahiye/page_8.jpg',
     photos: [
       {
         id: 'sb-p8-1',
-        label: 'Page 8 Slot',
-        url: '/templates/chaar-kadam/page_8.webp',
+        label: 'Tu Hi Meherbaan Chaiye',
+        url: '/templates/tu-chahiye/page_8.jpg',
         aspectRatio: '3/4',
       },
     ],
@@ -893,15 +897,15 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 9,
     side: 'right',
     templateId: 'tu-chahiye-page-9',
-    title: 'Page 9 (Upload Slot)',
+    title: 'HOOOO सीने में Agar TU दर्द है',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/chaar-kadam/page_9.webp',
+    referenceImage: '/templates/tu-chahiye/page_9.jpg',
     photos: [
       {
         id: 'sb-p9-1',
-        label: 'Page 9 Slot',
-        url: '/templates/chaar-kadam/page_9.webp',
+        label: 'Seene Mein Agar Tu Dard Hai',
+        url: '/templates/tu-chahiye/page_9.jpg',
         aspectRatio: '3/4',
       },
     ],
@@ -914,15 +918,15 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 10,
     side: 'left',
     templateId: 'tu-chahiye-page-10',
-    title: 'Page 10 (Upload Slot)',
+    title: 'ना koi दवा chaiye <3',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/chaar-kadam/page_10.webp',
+    referenceImage: '/templates/tu-chahiye/page_10.jpg',
     photos: [
       {
         id: 'sb-p10-1',
-        label: 'Page 10 Slot',
-        url: '/templates/chaar-kadam/page_10.webp',
+        label: 'Na Koi Dawa Chaiye',
+        url: '/templates/tu-chahiye/page_10.jpg',
         aspectRatio: '3/4',
       },
     ],
@@ -935,20 +939,18 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 11,
     side: 'right',
     templateId: 'tu-chahiye-page-11',
-    title: 'Back Cover',
+    title: "i'll be there for you / by yours fav",
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#8B0D15',
-    referenceImage: '/templates/chaar-kadam/page_11.webp',
+    referenceImage: '/templates/tu-chahiye/page_11.jpg',
     photos: [
       {
         id: 'sb-p11-1',
-        label: 'Back Cover Slot',
-        url: '/templates/chaar-kadam/page_11.webp',
+        label: "I'll Be There For You",
+        url: '/templates/tu-chahiye/page_11.jpg',
         aspectRatio: '3/4',
       },
     ],
     texts: [],
   },
 ];
-
-
