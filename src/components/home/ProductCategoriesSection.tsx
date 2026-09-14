@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Hammer } from 'lucide-react';
+import { ArrowRight, Hammer, BookOpen } from 'lucide-react';
 import { PRODUCTS } from '../../data/products';
 
 interface ProductCategoriesSectionProps {
@@ -200,6 +200,30 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Highlighted Banner for Songs Book Multi-Page Layout */}
+        <div className="mt-8 sm:mt-10 bg-gradient-to-r from-[#FAF6F0] via-white to-[#FAF6F0] border-2 border-roseGold/40 rounded-3xl p-6 sm:p-8 shadow-luxury text-center space-y-3">
+          <div className="inline-flex items-center gap-1.5 bg-roseGold/10 text-roseGold px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Multi-Page Book Layout</span>
+          </div>
+          <h3 className="font-serif text-2xl sm:text-3xl text-charcoal font-bold">
+            Songs Book • Physical Book Spreads
+          </h3>
+          <p className="text-xs sm:text-sm text-charcoal/70 max-w-xl mx-auto leading-relaxed">
+            Presented like an authentic physical printed book: <strong>Page 1 as standalone single cover</strong>, followed by <strong>Pages 2–3</strong> and <strong>Pages 4–5 as side-by-side spreads</strong> with center spine binding and realistic paper curvature.
+          </p>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => onSelectProduct('prod-song-01')}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-charcoal hover:bg-roseGold text-white rounded-full text-xs sm:text-sm font-semibold transition cursor-pointer shadow-luxury hover:scale-105 active:scale-95"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Preview Songs Book Spreads Now 📖</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>

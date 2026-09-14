@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gift, Menu, X, Sparkles, Package, MapPin, ChevronDown } from 'lucide-react';
+import { Gift, Menu, X, Sparkles, Package, MapPin, ChevronDown, BookOpen } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { BrandLogo } from '../ui/BrandLogo';
@@ -61,6 +61,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
                 <span>Magazines (8-20p)</span>
                 <span className="text-[9px] bg-blush-100 text-roseGold px-1.5 py-0.5 rounded-full font-bold">
                   Star
+                </span>
+              </button>
+
+              <button
+                onClick={() => handleNavClick('book-viewer')}
+                className={`text-sm font-semibold transition hover:text-roseGold flex items-center gap-1.5 ${
+                  currentView === 'book-viewer' ? 'text-roseGold font-bold' : 'text-charcoal/80'
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5 text-roseGold" />
+                <span>Songs Book</span>
+                <span className="text-[9px] bg-roseGold/10 text-roseGold px-1.5 py-0.5 rounded-full font-bold">
+                  Spreads
                 </span>
               </button>
 
@@ -237,9 +250,33 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
                 >
                   Combos
                 </button>
+                <button
+                  onClick={() => handleNavClick('book-viewer')}
+                  className="block w-full text-left py-1 text-sm text-roseGold font-semibold hover:text-roseGold-dark transition flex items-center justify-between"
+                >
+                  <span>Songs Book</span>
+                  <span className="text-[9px] bg-roseGold/10 px-1.5 py-0.5 rounded-full font-bold">Spreads</span>
+                </button>
               </div>
             )}
           </div>
+
+          {/* Direct Songs Book Spreads Mobile Link */}
+          <button
+            type="button"
+            onClick={() => handleNavClick('book-viewer')}
+            className={`block w-full text-left py-2 font-bold transition flex items-center justify-between ${
+              currentView === 'book-viewer' ? 'text-roseGold' : 'text-charcoal'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-roseGold" />
+              <span>Songs Book Spreads</span>
+            </div>
+            <span className="text-[10px] bg-roseGold text-white px-2 py-0.5 rounded-full font-bold">
+              Physical Layout
+            </span>
+          </button>
 
           {/* 3. FAQ */}
           <button
