@@ -708,7 +708,7 @@ export const CHAAR_KADAM_BOOK_PAGES: BookPage[] = [
 /**
  * Songs Book featuring the user's newly uploaded custom template images:
  * - Page 1: Cover ("MY HOME • Special Edition #123")
- * - Page 2: Blank / Empty Inside Cover (Spread 1 Left)
+ * - Page 2: "A little surprise has just arrived..." Red Envelope Note (Spread 1 Left)
  * - Page 3: "KOI AUR dooja • kyun MUJHE" (Spread 1 Right)
  * - Page 4: "NA TERE सिवा CHAIYE" (Spread 2 Left)
  * - Page 5: "HAR सफ़र mein mujhe" (Spread 2 Right)
@@ -717,7 +717,9 @@ export const CHAAR_KADAM_BOOK_PAGES: BookPage[] = [
  * - Page 8: "tu hi meherbaan chaiye" (Spread 4 Left)
  * - Page 9: "HOOOO सीने में Agar TU दर्द है" (Spread 4 Right)
  * - Page 10: "ना koi दवा chaiye <3" (Spread 5 Left)
- * - Page 11: "i'll be there for you" - Back Cover (Spread 5 Right)
+ * - Page 11: "i'll be there for you" (Spread 5 Right)
+ * - Page 12: "Really blessed to have You In my life" (Spread 6 Left)
+ * - Page 13: Inside Back Cover Blank / Empty (Spread 6 Right)
  */
 export const SONGS_BOOK_PAGES: BookPage[] = [
   // Page 1: Standalone Front Cover
@@ -751,17 +753,24 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     ],
   },
 
-  // Page 2: Inside Front Cover (Empty / Left of Spread 1)
+  // Page 2: Inside Front Cover (Left of Spread 1)
   {
     id: 'sb-page-2',
     pageNumber: 2,
     side: 'left',
     templateId: 'tu-chahiye-inside-cover',
-    title: 'Inside Cover (Blank)',
+    title: 'A Little Surprise • Dedication Note',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_2.webp',
-    photos: [],
+    referenceImage: '/templates/tu-chahiye/page_2.jpg',
+    photos: [
+      {
+        id: 'sb-p2-envelope',
+        label: 'A Little Surprise Has Just Arrived',
+        url: '/templates/tu-chahiye/page_2.jpg',
+        aspectRatio: '3/4',
+      },
+    ],
     texts: [],
   },
 
@@ -933,7 +942,7 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     texts: [],
   },
 
-  // Page 11: Right of Spread 5 (Back Cover)
+  // Page 11: Right of Spread 5
   {
     id: 'sb-page-11',
     pageNumber: 11,
@@ -951,6 +960,41 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
         aspectRatio: '3/4',
       },
     ],
+    texts: [],
+  },
+
+  // Page 12: Left of Spread 6
+  {
+    id: 'sb-page-12',
+    pageNumber: 12,
+    side: 'left',
+    templateId: 'tu-chahiye-page-12',
+    title: 'Really Blessed to Have You In My Life',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/tu-chahiye/page_12.jpg',
+    photos: [
+      {
+        id: 'sb-p12-couple',
+        label: 'Really Blessed to Have You In My Life',
+        url: '/templates/tu-chahiye/page_12.jpg',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 13: Right of Spread 6 (Empty / Blank Inside Back Cover)
+  {
+    id: 'sb-page-13',
+    pageNumber: 13,
+    side: 'right',
+    templateId: 'tu-chahiye-page-13',
+    title: 'Inside Back Cover (Blank)',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/tu-chahiye/page_13.webp',
+    photos: [],
     texts: [],
   },
 ];

@@ -125,21 +125,21 @@ describe('Multi-Page Physical Book Spread System', () => {
     assert.equal(spreads[5].rightPage?.referenceImage, '/templates/chaar-kadam/page_11.webp');
   });
 
-  test('SONGS_BOOK_PAGES correctly maps the user uploaded custom pages', () => {
-    assert.equal(SONGS_BOOK_PAGES.length, 11);
+  test('SONGS_BOOK_PAGES correctly maps the user uploaded custom pages across 13 pages', () => {
+    assert.equal(SONGS_BOOK_PAGES.length, 13);
 
     const spreads = buildBookSpreads(SONGS_BOOK_PAGES);
-    assert.equal(spreads.length, 6);
+    assert.equal(spreads.length, 7);
 
     // Spread 0: Cover - MY HOME
     assert.equal(spreads[0].type, 'single');
     assert.equal(spreads[0].label, 'Page 1 (Cover)');
     assert.equal(spreads[0].rightPage?.referenceImage, '/templates/tu-chahiye/page_1.jpg');
 
-    // Spread 1: Left empty inside cover, Right "KOI AUR dooja"
+    // Spread 1: Left envelope note, Right "KOI AUR dooja"
     assert.equal(spreads[1].type, 'dual');
     assert.equal(spreads[1].label, 'Pages 2–3');
-    assert.equal(spreads[1].leftPage?.referenceImage, '/templates/tu-chahiye/page_2.webp');
+    assert.equal(spreads[1].leftPage?.referenceImage, '/templates/tu-chahiye/page_2.jpg');
     assert.equal(spreads[1].rightPage?.referenceImage, '/templates/tu-chahiye/page_3.jpg');
 
     // Spread 2: Left "NA TERE सिवा CHAIYE", Right "HAR सफ़र mein mujhe"
@@ -160,11 +160,17 @@ describe('Multi-Page Physical Book Spread System', () => {
     assert.equal(spreads[4].leftPage?.referenceImage, '/templates/tu-chahiye/page_8.jpg');
     assert.equal(spreads[4].rightPage?.referenceImage, '/templates/tu-chahiye/page_9.jpg');
 
-    // Spread 5: Left "ना koi दवा chaiye <3", Right "i'll be there for you" Back Cover
+    // Spread 5: Left "ना koi दवा chaiye <3", Right "i'll be there for you"
     assert.equal(spreads[5].type, 'dual');
     assert.equal(spreads[5].label, 'Pages 10–11');
     assert.equal(spreads[5].leftPage?.referenceImage, '/templates/tu-chahiye/page_10.jpg');
     assert.equal(spreads[5].rightPage?.referenceImage, '/templates/tu-chahiye/page_11.jpg');
+
+    // Spread 6: Left "Really blessed to have you in my life", Right blank inside back cover
+    assert.equal(spreads[6].type, 'dual');
+    assert.equal(spreads[6].label, 'Pages 12–13');
+    assert.equal(spreads[6].leftPage?.referenceImage, '/templates/tu-chahiye/page_12.jpg');
+    assert.equal(spreads[6].rightPage?.referenceImage, '/templates/tu-chahiye/page_13.webp');
   });
 });
 

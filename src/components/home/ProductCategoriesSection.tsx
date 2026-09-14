@@ -47,7 +47,7 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
     {
       id: 'song-album',
       title: 'Songs Book',
-      image: songProduct?.images[0] || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
+      image: songProduct?.images[0] || '/products/song_book_cover.jpg',
       alt: 'Songs Book Multi-Page Layout',
       onClick: () => songProduct && onSelectProduct(songProduct.id),
       position: 'object-center',
