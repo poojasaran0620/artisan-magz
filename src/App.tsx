@@ -110,7 +110,7 @@ export const App: React.FC = () => {
         <WishlistProvider>
           <ToastProvider>
             <div className="min-h-screen flex flex-col bg-[#FDFCF5] selection:bg-[#FFDBE5] selection:text-[#333333]">
-            {/* Main Navigation (AnnouncementBar disabled per user request) */}
+              {/* Main Navigation (AnnouncementBar disabled per user request) */}
             <Navbar
               onNavigate={handleNavigate}
               currentView={currentView}

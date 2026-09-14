@@ -16,6 +16,7 @@ import {
   HamperInspirationLook,
 } from '../../types/product';
 import { formatPrice } from '../../utils/formatters';
+import { CountingNumber } from '../ui/CountingNumber';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
 import {
@@ -1725,9 +1726,10 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                 Real-Time Hamper Total
               </span>
               <div className="flex items-baseline gap-2">
-                <span className="font-sans text-xl sm:text-2xl font-bold text-charcoal tabular-nums">
-                  {formatPrice(hamperTotal)}
-                </span>
+                <CountingNumber
+                  value={hamperTotal}
+                  className="text-xl sm:text-2xl font-bold text-charcoal"
+                />
                 <span className="text-xs text-taupe-500">
                   ({selectedBox.name} + {totalItemCount} items)
                 </span>

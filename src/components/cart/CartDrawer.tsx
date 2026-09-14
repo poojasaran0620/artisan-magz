@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import { formatPrice } from '../../utils/formatters';
+import { CountingNumber } from '../ui/CountingNumber';
 import {
   X,
   Trash2,
@@ -340,9 +341,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToDirectCheckou
                       </span>
                     </div>
 
-                    <div className="flex justify-between text-sm font-sans font-bold text-wine-900 tabular-nums pt-2 border-t border-roseGold-light/30">
+                    <div className="flex justify-between text-sm font-sans font-bold text-wine-900 tabular-nums pt-2 border-t border-roseGold-light/30 items-baseline">
                       <span>Estimated Total:</span>
-                      <span>{formatPrice(total)}</span>
+                      <CountingNumber value={total} className="text-sm font-bold text-wine-900" />
                     </div>
                   </div>
 

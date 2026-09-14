@@ -2,6 +2,8 @@ import React from 'react';
 import { ArrowDown, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { springs, luxuryEase } from '../../styles/motion';
+import { FlipWords } from '../ui/FlipWords';
+import { AnimatedUnderline } from '../ui/AnimatedUnderline';
 
 interface WelcomeHeaderProps {
   onExploreClick: () => void;
@@ -63,15 +65,37 @@ export const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ onExploreClick }) 
               />
             </motion.div>
 
-            {/* Tagline in Italic Serif */}
-            <motion.p
+            {/* Tagline in Italic Serif with Hand-Drawn Animated Underline */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35, duration: 0.45 }}
-              className="font-serif italic text-base sm:text-lg text-charcoal/85 leading-relaxed font-normal px-2"
+              className="space-y-3 px-2"
             >
-              Editorial storytelling, printed with quiet love.
-            </motion.p>
+              <p className="font-serif italic text-base sm:text-lg text-charcoal/90 leading-relaxed font-normal">
+                Editorial storytelling,{' '}
+                <span className="relative inline-block whitespace-nowrap">
+                  <span>printed with quiet love</span>
+                  <AnimatedUnderline delay={0.5} />
+                </span>
+                .
+              </p>
+
+              {/* Dynamic Occasion Word Flipper */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 text-xs sm:text-sm text-taupe-700 font-normal pt-1">
+                <span className="text-charcoal/70">Bespoke keepsakes for your</span>
+                <FlipWords
+                  words={[
+                    'First Anniversary',
+                    '30th Birthday',
+                    'Secret Wedding',
+                    'Long Distance Love',
+                    "Valentine's Keepsake",
+                    'Soulmate Memories',
+                  ]}
+                />
+              </div>
+            </motion.div>
 
             {/* Explore Scroll Down Trigger */}
             <div className="pt-3 border-t border-taupe-200/50 flex justify-center">

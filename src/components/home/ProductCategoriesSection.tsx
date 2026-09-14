@@ -70,33 +70,19 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
       {/* PART 1: HIGHLIGHTED "BEST SELLING" BANNER                                */}
       {/* Rich gradient matching brand: Taupe (#A69480) to Rose Gold (#B76E79)    */}
       {/* ========================================================================= */}
-      <div className="relative overflow-hidden my-4">
-        {/* Top Organic Wave Curve Divider */}
-        <div className="w-full overflow-hidden leading-none">
-          <svg
-            className="relative block w-full h-7 sm:h-10 text-[#FDFCF5]"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.08,130.83,121.5,201.21,114.7,242.47,110.74,282.72,97.77,321.39,56.44Z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
-
-        {/* Highlighted Banner Canvas with Brand-Matching Gradient */}
-        <div className="bg-gradient-to-br from-[#9E7864] via-[#B76E79] to-[#804D55] text-white py-8 sm:py-10 px-4 sm:px-6 lg:px-8 relative shadow-luxury">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-4 sm:my-6">
+        <div className="relative rounded-3xl sm:rounded-4xl overflow-hidden bg-gradient-to-br from-[#9E7864] via-[#B76E79] to-[#804D55] text-white py-10 sm:py-14 px-4 sm:px-8 shadow-luxury border border-white/20">
           {/* Subtle Ambient Glow and Texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:18px_18px] pointer-events-none opacity-40" />
+          <div className="absolute -top-24 -right-24 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto relative z-10 space-y-6">
+          <div className="max-w-4xl mx-auto relative z-10 space-y-6">
             {/* Header: Script Cursive "Best Selling" */}
-            <div className="text-center space-y-1">
-              <h2 className="font-serif italic text-3xl sm:text-4xl md:text-5xl text-[#FDFCF5] font-normal tracking-wide drop-shadow-sm">
+            <div className="text-center space-y-1.5">
+              <h2 className="font-serif italic text-3xl sm:text-4xl md:text-5xl text-[#FDFCF5] font-normal tracking-wide drop-shadow-xs">
                 Best Selling
               </h2>
-              <p className="text-xs text-[#FDFCF5]/85 max-w-md mx-auto">
+              <p className="text-xs sm:text-sm text-[#FDFCF5]/85 max-w-md mx-auto">
                 Handcrafted treasures voted customer favorites across India.
               </p>
             </div>
@@ -106,10 +92,10 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
               <motion.div
                 whileHover={{ y: -6, scale: 1.02 }}
                 transition={springs.smooth}
-                className="bg-[#FFFDF9] rounded-3xl p-4 sm:p-5 text-charcoal shadow-luxury border border-white/60 flex flex-col items-center text-center gap-3.5 relative overflow-hidden group cursor-pointer"
+                className="bg-[#FFFDF9] rounded-3xl p-4 sm:p-5 text-charcoal shadow-luxury border border-white/80 flex flex-col items-center text-center gap-3.5 relative overflow-hidden group cursor-pointer"
               >
                 {/* Bestseller Crown Tag */}
-                <div className="absolute top-2.5 right-2.5 z-10 bg-charcoal text-[#FDFCF5] text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                <div className="absolute top-3 right-3 z-10 bg-charcoal text-[#FDFCF5] text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm flex items-center gap-1">
                   <span>#1 Bestseller 🔥</span>
                 </div>
 
@@ -153,30 +139,16 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
             </div>
           </div>
         </div>
-
-        {/* Bottom Organic Wave Curve Divider */}
-        <div className="w-full overflow-hidden leading-none rotate-180">
-          <svg
-            className="relative block w-full h-7 sm:h-10 text-[#FDFCF5]"
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.08,130.83,121.5,201.21,114.7,242.47,110.74,282.72,97.77,321.39,56.44Z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
       </div>
 
       {/* ========================================================================= */}
       {/* PART 2: "MORE PRODUCTS" SIDE-BY-SIDE SECTION                              */}
       {/* 2-column mobile side-by-side grid matching user reference images         */}
       {/* ========================================================================= */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10">
         {/* Header matching Reference */}
         <div className="text-center space-y-2 mb-8">
-          <h2 className="font-serif text-3xl sm:text-4xl text-charcoal font-normal tracking-tight">
+          <h2 className="font-serif text-2xl sm:text-4xl text-charcoal font-normal tracking-tight">
             More Products
           </h2>
           <p className="text-[10px] sm:text-xs font-bold tracking-[0.22em] text-taupe-700 uppercase">
@@ -189,17 +161,17 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
           {moreProducts.map((prod, idx) => (
             <motion.div
               key={prod.id}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
-              transition={{ delay: idx * 0.07, duration: 0.4, ease: luxuryEase }}
-              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ delay: idx * 0.06, duration: 0.35, ease: luxuryEase }}
+              whileHover={{ y: -5, scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               onClick={prod.onClick}
-              className="bg-white rounded-3xl p-2.5 sm:p-3 border border-taupe-200/80 shadow-luxury hover:shadow-soft-lg transition-shadow duration-300 flex flex-col group cursor-pointer text-center"
+              className="bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 border border-taupe-200/80 shadow-xs hover:shadow-soft-lg transition-all duration-300 flex flex-col group cursor-pointer text-center"
             >
               {/* Product Photo - flush fit without empty whitespace */}
-              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cream-100 shadow-xs border border-taupe-200/50">
+              <div className="relative aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden bg-cream-100 shadow-2xs border border-taupe-200/50">
                 <img
                   src={prod.image}
                   alt={prod.alt}
