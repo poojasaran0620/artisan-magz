@@ -82,13 +82,13 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
   const flipBookRef = useRef<any>(null);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
-  const [isMobile, setIsMobile] = useState<boolean>(() =>
-    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  const [windowWidth, setWindowWidth] = useState<number>(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
   );
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setWindowWidth(window.innerWidth);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -162,9 +162,6 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
   // Compute active spread label (e.g. "Cover", "Pages 2 & 3", "Pages 4 & 5")
   const currentSpreadLabel = React.useMemo(() => {
     if (currentPageIndex === 0) return 'Page 1 (Front Cover)';
-    if (isMobile) {
-      return `Page ${currentPageIndex + 1} of ${pages.length}`;
-    }
     const pageNum = currentPageIndex + 1;
     if (pageNum % 2 === 0) {
       const left = pageNum;
@@ -178,11 +175,22 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
       const right = pageNum;
       return `Pages ${left} & ${right}`;
     }
-  }, [currentPageIndex, isMobile, pages.length]);
+  }, [currentPageIndex, pages.length]);
 
-  // Page dimensions (aspect ratio ~0.7075 matching 849x1200 ISO magazine standard)
-  const pageWidth = isMobile ? 320 : 380;
-  const pageHeight = isMobile ? 452 : 538;
+  // Two-page side-by-side dimensions across all devices (Desktop, Tablet, Mobile)
+  // On desktop: 380px per page (760px spread, 538px height)
+  // On mobile (< 768px): calculate page width so 2 pages sit side-by-side with padding
+  const pageWidth = React.useMemo(() => {
+    if (windowWidth >= 820) {
+      return 380;
+    }
+    // Available width for two pages side-by-side with 16px total padding
+    const availableWidth = Math.max(280, windowWidth - 16);
+    const calculated = Math.floor(availableWidth / 2);
+    return Math.min(380, calculated);
+  }, [windowWidth]);
+
+  const pageHeight = Math.round(pageWidth / 0.7075);
 
   // React-pageflip expects any cast due to React 18 types
   const FlipBookComponent = HTMLFlipBook as any;
@@ -190,35 +198,35 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
   return (
     <div className="flex flex-col items-center justify-center w-full select-none py-2 sm:py-6">
       {/* Current Spread Pill Indicator matching Anchor Customs */}
-      <div className="mb-4 sm:mb-6 flex items-center gap-3">
-        <div className="inline-flex items-center gap-2 bg-charcoal text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow-luxury tracking-wide uppercase">
-          <Sparkles className="w-3.5 h-3.5 text-roseGold" />
+      <div className="mb-3 sm:mb-6 flex items-center gap-3">
+        <div className="inline-flex items-center gap-2 bg-charcoal text-white px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold shadow-luxury tracking-wide uppercase">
+          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-roseGold" />
           <span>{currentSpreadLabel}</span>
         </div>
       </div>
 
       {/* 3D FlipBook Stage with Outer Depth Shadow */}
-      <div className="relative flex items-center justify-center max-w-full overflow-hidden p-2 sm:p-4">
-        <div className="relative filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
+      <div className="relative flex items-center justify-center max-w-full overflow-hidden p-1 sm:p-4">
+        <div className="relative filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]">
           <FlipBookComponent
-            key={isMobile ? 'mobile-flip' : 'desktop-flip'}
+            key={`flipbook-${pageWidth}`}
             ref={flipBookRef}
             width={pageWidth}
             height={pageHeight}
             size="fixed"
-            minWidth={240}
+            minWidth={100}
             maxWidth={500}
-            minHeight={340}
-            maxHeight={700}
+            minHeight={140}
+            maxHeight={750}
             maxShadowOpacity={0.5}
-            showCover={!isMobile}
+            showCover={true}
             mobileScrollSupport={true}
-            usePortrait={isMobile}
+            usePortrait={false}
             startPage={0}
             drawShadow={true}
             flippingTime={850}
             useMouseEvents={true}
-            swipeDistance={30}
+            swipeDistance={20}
             showPageCorners={true}
             onFlip={handleFlip}
             className="artisan-magazine-flipbook"
@@ -239,33 +247,34 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
       </div>
 
       {/* Bottom Controls matching Anchor Customs ("Drag or Click to Flip") */}
-      <div className="mt-4 sm:mt-6 flex items-center gap-3 sm:gap-4">
+      <div className="mt-3 sm:mt-6 flex items-center gap-2.5 sm:gap-4">
         <button
           type="button"
           onClick={flipPrev}
           aria-label="Previous Page"
-          className="w-10 h-10 rounded-full bg-white hover:bg-cream-100 text-charcoal border border-taupe-200 shadow-luxury flex items-center justify-center transition cursor-pointer active:scale-95"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white hover:bg-cream-100 text-charcoal border border-taupe-200 shadow-luxury flex items-center justify-center transition cursor-pointer active:scale-95"
           title="Previous Page (or click left page corner)"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
-        <div className="flex items-center gap-2 px-3.5 py-1.5 bg-white/90 backdrop-blur-xs border border-taupe-200 rounded-full text-charcoal/80 text-[11px] sm:text-xs font-semibold uppercase tracking-wider shadow-2xs">
-          <Hand className="w-3.5 h-3.5 text-roseGold animate-pulse" />
-          <span>{isMobile ? 'Swipe or tap arrows' : 'Drag corner or click to flip'}</span>
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-white/90 backdrop-blur-xs border border-taupe-200 rounded-full text-charcoal/80 text-[10px] sm:text-xs font-semibold uppercase tracking-wider shadow-2xs">
+          <Hand className="w-3 h-3 text-roseGold animate-pulse" />
+          <span>Tap or drag corner to flip</span>
         </div>
 
         <button
           type="button"
           onClick={flipNext}
           aria-label="Next Page"
-          className="w-10 h-10 rounded-full bg-white hover:bg-cream-100 text-charcoal border border-taupe-200 shadow-luxury flex items-center justify-center transition cursor-pointer active:scale-95"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white hover:bg-cream-100 text-charcoal border border-taupe-200 shadow-luxury flex items-center justify-center transition cursor-pointer active:scale-95"
           title="Next Page (or click right page corner)"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
       </div>
     </div>
   );
 };
+
 
