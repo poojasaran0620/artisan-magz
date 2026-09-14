@@ -1,6 +1,8 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronDown, ArrowLeft, MessageCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FAQ_DATA } from '../../data/faqData';
+import { luxuryEase, springs } from '../../styles/motion';
 export { FAQ_DATA };
 
 interface FAQSectionProps {
@@ -23,19 +25,27 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onBack }) => {
         {/* Top Back Button */}
         {onBack && (
           <div>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
+              transition={springs.snappy}
               onClick={onBack}
               type="button"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-charcoal/70 hover:text-roseGold transition cursor-pointer bg-white/80 hover:bg-white px-4 py-2 rounded-full border border-taupe-200/70 shadow-xs"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-charcoal/70 hover:text-roseGold transition-colors cursor-pointer bg-white/80 hover:bg-white px-4 py-2 rounded-full border border-taupe-200/70 shadow-xs"
             >
               <ArrowLeft className="w-4 h-4 text-roseGold" />
               <span>Back to Home</span>
-            </button>
+            </motion.button>
           </div>
         )}
 
         {/* FAQ Card */}
-        <div className="bg-white rounded-[2.5rem] p-6 sm:p-12 shadow-luxury border border-roseGold-light/40 space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: luxuryEase }}
+          className="bg-white rounded-[2.5rem] p-6 sm:p-12 shadow-luxury border border-roseGold-light/40 space-y-8"
+        >
           {/* Section Header */}
           <div className="text-center space-y-2">
             <h1 className="font-serif text-3xl sm:text-4xl text-charcoal font-normal tracking-tight">
@@ -55,7 +65,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onBack }) => {
                   <button
                     type="button"
                     onClick={() => toggleFAQ(idx)}
-                    className="w-full py-4 sm:py-5 flex items-center justify-between text-left cursor-pointer group gap-4"
+                    className="w-full py-4 sm:py-5 flex items-center justify-between text-left cursor-pointer group gap-4 select-none"
                     aria-expanded={isOpen}
                   >
                     <span
@@ -65,18 +75,34 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onBack }) => {
                     >
                       {item.question}
                     </span>
-                    <ChevronDown
-                      className={`w-4 h-4 shrink-0 transition-transform duration-300 ${
-                        isOpen ? 'rotate-180 text-roseGold' : 'text-taupe-400 group-hover:text-charcoal'
-                      }`}
-                    />
+                    <motion.div
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={springs.smooth}
+                      className="shrink-0"
+                    >
+                      <ChevronDown
+                        className={`w-4 h-4 ${
+                          isOpen ? 'text-roseGold' : 'text-taupe-400 group-hover:text-charcoal'
+                        }`}
+                      />
+                    </motion.div>
                   </button>
 
-                  {isOpen && (
-                    <div className="pb-4 sm:pb-5 text-xs sm:text-sm text-charcoal/70 leading-relaxed animate-in fade-in duration-200">
-                      {item.answer}
-                    </div>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.28, ease: luxuryEase }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pb-4 sm:pb-5 text-xs sm:text-sm text-charcoal/70 leading-relaxed">
+                          {item.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               );
             })}
@@ -88,7 +114,10 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onBack }) => {
               <p className="text-xs font-semibold text-charcoal">Still have a question?</p>
               <p className="text-[11px] text-charcoal/60">We are always happy to help with your personalized gift.</p>
             </div>
-            <a
+            <motion.a
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              transition={springs.snappy}
               href="https://wa.me/917000041053?text=Hi%20Artisan%20Magz!%20I%20have%20a%20question%20about%20your%20products."
               target="_blank"
               rel="noreferrer"
@@ -96,9 +125,9 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ onBack }) => {
             >
               <MessageCircle className="w-3.5 h-3.5 text-sage" />
               <span>Chat on WhatsApp</span>
-            </a>
+            </motion.a>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

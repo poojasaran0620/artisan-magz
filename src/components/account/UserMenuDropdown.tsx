@@ -55,7 +55,7 @@ export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ onNavigate }
         <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-luxury border border-taupe-200/80 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
           {/* User Header */}
           <div className="p-3 bg-cream-50 rounded-xl mb-1 border border-taupe-200/40">
-            <div className="font-serif font-bold text-sm text-charcoal truncate">
+            <div className="font-sans font-bold text-sm text-charcoal truncate">
               {user.name}
             </div>
             <div className="text-[11px] text-taupe-600 truncate">{user.email}</div>

@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { springs, buttonTapSpring, modalBackdropVariants, modalDialogVariants } from '../../styles/motion';
 import {
   HAMPER_BOX_OPTIONS,
   HAMPER_GOODIES,
@@ -14,7 +16,9 @@ import {
   HamperInspirationLook,
 } from '../../types/product';
 import { formatPrice } from '../../utils/formatters';
+import { CountingNumber } from '../ui/CountingNumber';
 import { useCart } from '../../context/CartContext';
+import { useToast } from '../../context/ToastContext';
 import {
   Gift,
   Check,
@@ -56,6 +60,7 @@ interface FlyingProjectile {
 
 export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) => {
   const { addToCart, sendWhatsAppOrder } = useCart();
+  const { showToast } = useToast();
 
   // Box Choice (Cardboard vs Hardboard)
   const [selectedBox, setSelectedBox] = useState<HamperBoxOption>(HAMPER_BOX_OPTIONS[0]);
@@ -224,6 +229,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
 
         // Add item to hamper
         setSelectedGoodies((prev) => [...prev, { goodie, quantity: 1 }]);
+        showToast(`Packed "${goodie.name}" into Hamper 🎁`, 'success');
 
         // If card or note was added, prompt message personalization
         if (goodie.id === 'g-small-note') {
@@ -239,12 +245,14 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
       }, 500);
     } else {
       setSelectedGoodies((prev) => [...prev, { goodie, quantity: 1 }]);
+      showToast(`Packed "${goodie.name}" into Hamper 🎁`, 'success');
     }
   };
 
   const handleRemoveGoodie = (goodieId: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     setSelectedGoodies((prev) => prev.filter((g) => g.goodie.id !== goodieId));
+    showToast('Removed item from Hamper', 'info');
   };
 
   const isGoodieInHamper = (goodieId: string) =>
@@ -315,6 +323,8 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
       },
       1
     );
+
+    showToast('Custom Hamper Added to Keepsake Bag 🛍️', 'cart');
 
     if (action === 'whatsapp') {
       sendWhatsAppOrder([createdItem]);
@@ -476,8 +486,10 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
             {HAMPER_BOX_OPTIONS.map((box) => {
               const isSelected = selectedBox.id === box.id;
               return (
-                <div
+                <motion.div
                   key={box.id}
+                  whileHover={{ scale: 1.015 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedBox(box)}
                   className={`rounded-2xl p-3.5 sm:p-4 border-2 transition-all duration-300 cursor-pointer flex items-center gap-4 group ${
                     isSelected
@@ -497,7 +509,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                         {formatPrice(box.price)}
                       </span>
                     </div>
-                    <h3 className="font-serif font-bold text-sm sm:text-base text-charcoal mt-1 group-hover:text-roseGold transition-colors">
+                    <h3 className="font-sans font-bold text-sm sm:text-base text-charcoal mt-1 group-hover:text-roseGold transition-colors">
                       {box.name}
                     </h3>
                     <p className="text-[11px] text-charcoal/70 truncate mt-0.5">
@@ -510,7 +522,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -532,11 +544,10 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                     onClick={() => setSelectedLidTag(tag)}
                     className={`py-1 px-3 rounded-full text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer border ${
                       isSelected
-                        ? 'bg-charcoal text-white border-charcoal shadow-xs'
-                        : 'bg-[#FAF8F5] text-charcoal/80 border-taupe-200 hover:bg-cream-100'
+                        ? 'bg-roseGold text-white border-roseGold shadow-xs'
+                        : 'bg-cream-50 text-charcoal/80 border-taupe-200 hover:bg-cream-100'
                     }`}
                   >
-                    <span>{tag.icon}</span>
                     <span>{tag.label}</span>
                   </button>
                 );
@@ -558,9 +569,10 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                   </span>
                 </div>
                 <div className="w-full bg-taupe-100 h-1.5 rounded-full overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-blush-400 via-roseGold to-charcoal h-full transition-all duration-500 rounded-full"
-                    style={{ width: `${cozyPercent}%` }}
+                  <motion.div
+                    className="bg-gradient-to-r from-blush-400 via-roseGold to-charcoal h-full rounded-full"
+                    animate={{ width: `${cozyPercent}%` }}
+                    transition={springs.smooth}
                   />
                 </div>
               </div>
@@ -1049,7 +1061,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                             className="w-full h-full object-contain"
                           />
                         </div>
-                        <h4 className="font-serif font-bold text-xs text-charcoal truncate">
+                        <h4 className="font-sans font-bold text-xs text-charcoal truncate">
                           {goodie.name}
                         </h4>
                       </div>
@@ -1416,7 +1428,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                 <div className="w-9 h-9 rounded-xl bg-blush-100 flex items-center justify-center text-roseGold">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
-                <h4 className="font-serif font-bold text-sm text-charcoal">
+                <h4 className="font-sans font-bold text-sm text-charcoal">
                   Crush-Proof Packaging
                 </h4>
                 <p className="text-xs text-charcoal/70 leading-relaxed">
@@ -1429,7 +1441,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                 <div className="w-9 h-9 rounded-xl bg-blush-100 flex items-center justify-center text-roseGold">
                   <Camera className="w-5 h-5" />
                 </div>
-                <h4 className="font-serif font-bold text-sm text-charcoal">
+                <h4 className="font-sans font-bold text-sm text-charcoal">
                   Pre-Dispatch Video / Photo
                 </h4>
                 <p className="text-xs text-charcoal/70 leading-relaxed">
@@ -1442,7 +1454,7 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                 <div className="w-9 h-9 rounded-xl bg-blush-100 flex items-center justify-center text-roseGold">
                   <Truck className="w-5 h-5" />
                 </div>
-                <h4 className="font-serif font-bold text-sm text-charcoal">
+                <h4 className="font-sans font-bold text-sm text-charcoal">
                   Express Pan-India Delivery
                 </h4>
                 <p className="text-xs text-charcoal/70 leading-relaxed">
@@ -1455,224 +1467,252 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
         </div>
 
         {/* Personalization Modal for Scroll Note / Cards */}
-        {isNoteModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-luxury border border-roseGold-light/40 space-y-5 animate-in fade-in zoom-in-95">
-              <div className="flex items-center justify-between border-b border-taupe-200/60 pb-3">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold">
-                    Personalized Hamper Message
-                  </span>
-                  <h3 className="font-serif text-lg font-bold text-charcoal">
-                    {noteType === 'newspaper'
-                      ? 'Vintage Newspaper Card'
-                      : noteType === 'greeting'
-                      ? 'Floating Greeting Card'
-                      : 'Rolled Handwritten Scroll Note'}
-                  </h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsNoteModalOpen(false)}
-                  className="w-7 h-7 rounded-full bg-cream-100 hover:bg-roseGold hover:text-white flex items-center justify-center text-taupe-600 transition cursor-pointer"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="space-y-4 text-xs">
-                <div>
-                  <label className="block font-bold text-charcoal mb-1">
-                    Recipient Name / Nickname:
-                  </label>
-                  <input
-                    type="text"
-                    value={recipientName}
-                    onChange={(e) => setRecipientName(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-taupe-300 focus:outline-none focus:ring-2 focus:ring-roseGold"
-                    placeholder="e.g. My Favorite Human"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-bold text-charcoal mb-1">
-                    Your Personalized Message:
-                  </label>
-                  <textarea
-                    rows={4}
-                    value={cardMessage}
-                    onChange={(e) => setCardMessage(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-taupe-300 focus:outline-none focus:ring-2 focus:ring-roseGold resize-none font-serif italic text-charcoal"
-                    placeholder="Write your sweet words here..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-bold text-charcoal mb-1">
-                    Sender Name / Signature:
-                  </label>
-                  <input
-                    type="text"
-                    value={senderName}
-                    onChange={(e) => setSenderName(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-taupe-300 focus:outline-none focus:ring-2 focus:ring-roseGold"
-                    placeholder="e.g. Forever Yours ♡"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsNoteModalOpen(false)}
-                className="w-full py-2.5 bg-charcoal hover:bg-roseGold text-white rounded-xl text-xs font-bold transition shadow-sm cursor-pointer"
+        <AnimatePresence>
+          {isNoteModalOpen && (
+            <motion.div
+              variants={modalBackdropVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+            >
+              <motion.div
+                variants={modalDialogVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-luxury border border-roseGold-light/40 space-y-5"
               >
-                Save & Tuck Inside Hamper ✓
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Quick View / Inspect Modal for any Goodie */}
-        {inspectingGoodie && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
-            <div className="bg-white rounded-3xl max-w-2xl w-full shadow-luxury border border-roseGold-light/40 overflow-hidden space-y-0 animate-in zoom-in-95 max-h-[90vh] flex flex-col">
-              {/* Modal Header */}
-              <div className="flex items-center justify-between p-4 sm:p-5 border-b border-taupe-200/70">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-cream-100 text-charcoal border border-taupe-200">
-                    {inspectingGoodie.category}
-                  </span>
-                  {inspectingGoodie.tag && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500 text-white">
-                      {inspectingGoodie.tag}
+                <div className="flex items-center justify-between border-b border-taupe-200/60 pb-3">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold">
+                      Personalized Hamper Message
                     </span>
-                  )}
+                    <h3 className="font-sans text-base sm:text-lg font-bold text-charcoal">
+                      {noteType === 'newspaper'
+                        ? 'Vintage Newspaper Card'
+                        : noteType === 'greeting'
+                        ? 'Floating Greeting Card'
+                        : 'Rolled Handwritten Scroll Note'}
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsNoteModalOpen(false)}
+                    className="w-7 h-7 rounded-full bg-cream-100 hover:bg-roseGold hover:text-white flex items-center justify-center text-taupe-600 transition tap-active cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setInspectingGoodie(null)}
-                  className="w-7 h-7 rounded-full bg-cream-100 hover:bg-roseGold hover:text-white flex items-center justify-center text-taupe-600 transition cursor-pointer"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
 
-              {/* Modal Body */}
-              <div className="p-5 sm:p-6 overflow-y-auto space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-center">
-                  <div className="aspect-square rounded-2xl bg-[#FAF8F5] border border-taupe-200 overflow-hidden flex items-center justify-center p-4">
-                    <img
-                      src={inspectingGoodie.detailedImage || inspectingGoodie.image}
-                      alt={inspectingGoodie.name}
-                      className="w-full h-full object-contain"
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <label className="block font-bold text-charcoal mb-1">
+                      Recipient Name / Nickname:
+                    </label>
+                    <input
+                      type="text"
+                      value={recipientName}
+                      onChange={(e) => setRecipientName(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-taupe-300 focus:outline-none focus:ring-2 focus:ring-roseGold"
+                      placeholder="e.g. My Favorite Human"
                     />
                   </div>
 
-                  <div className="space-y-3">
-                    <div>
-                      <span className="text-xs font-sans font-bold text-roseGold tabular-nums">
-                        {inspectingGoodie.price > 0
-                          ? formatPrice(inspectingGoodie.price)
-                          : 'Included with Hamper'}
-                      </span>
-                      <h3 className="font-serif text-lg sm:text-xl font-bold text-charcoal">
-                        {inspectingGoodie.name}
-                      </h3>
-                    </div>
+                  <div>
+                    <label className="block font-bold text-charcoal mb-1">
+                      Your Personalized Message:
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={cardMessage}
+                      onChange={(e) => setCardMessage(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-taupe-300 focus:outline-none focus:ring-2 focus:ring-roseGold resize-none font-serif italic text-charcoal"
+                      placeholder="Write your sweet words here..."
+                    />
+                  </div>
 
-                    <p className="text-xs text-charcoal/80 leading-relaxed">
-                      {inspectingGoodie.description}
-                    </p>
-
-                    <div className="space-y-1.5 pt-2 border-t border-taupe-200/60 text-xs">
-                      {inspectingGoodie.material && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-taupe-500">Material:</span>
-                          <span className="font-semibold text-charcoal">
-                            {inspectingGoodie.material}
-                          </span>
-                        </div>
-                      )}
-                      {inspectingGoodie.dimensions && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-taupe-500">Dimensions:</span>
-                          <span className="font-sans font-medium text-charcoal">
-                            {inspectingGoodie.dimensions}
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex items-center justify-between">
-                        <span className="text-taupe-500">Status in Hamper:</span>
-                        <span
-                          className={`font-bold ${
-                            isGoodieInHamper(inspectingGoodie.id)
-                              ? 'text-emerald-600'
-                              : 'text-taupe-500'
-                          }`}
-                        >
-                          {isGoodieInHamper(inspectingGoodie.id) ? '✓ Packed' : 'Not yet added'}
-                        </span>
-                      </div>
-                    </div>
+                  <div>
+                    <label className="block font-bold text-charcoal mb-1">
+                      Sender Name / Signature:
+                    </label>
+                    <input
+                      type="text"
+                      value={senderName}
+                      onChange={(e) => setSenderName(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-taupe-300 focus:outline-none focus:ring-2 focus:ring-roseGold"
+                      placeholder="e.g. Forever Yours ♡"
+                    />
                   </div>
                 </div>
 
-                {/* Specs List */}
-                {inspectingGoodie.specs && inspectingGoodie.specs.length > 0 && (
-                  <div className="space-y-2 bg-[#FAF8F5] p-4 rounded-2xl border border-taupe-200/70">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal">
-                      Craftsmanship & Key Details
-                    </h4>
-                    <ul className="space-y-1.5 text-xs text-charcoal/80">
-                      {inspectingGoodie.specs.map((spec, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <span className="text-roseGold font-bold text-sm leading-none">•</span>
-                          <span>{spec}</span>
-                        </li>
-                      ))}
-                    </ul>
+                <button
+                  type="button"
+                  onClick={() => setIsNoteModalOpen(false)}
+                  className="w-full py-2.5 bg-charcoal hover:bg-roseGold text-white rounded-xl text-xs font-bold transition shadow-sm tap-active cursor-pointer"
+                >
+                  Save & Tuck Inside Hamper ✓
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Quick View / Inspect Modal for any Goodie */}
+        <AnimatePresence>
+          {inspectingGoodie && (
+            <motion.div
+              variants={modalBackdropVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
+            >
+              <motion.div
+                variants={modalDialogVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="bg-white rounded-3xl max-w-lg w-full shadow-luxury border border-roseGold-light/40 overflow-hidden flex flex-col max-h-[90vh]"
+              >
+                {/* Modal Header */}
+                <div className="flex items-center justify-between p-4 sm:p-5 border-b border-taupe-200/70">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-cream-100 text-charcoal border border-taupe-200">
+                      {inspectingGoodie.category}
+                    </span>
+                    {inspectingGoodie.tag && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500 text-white">
+                        {inspectingGoodie.tag}
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => setInspectingGoodie(null)}
+                    className="w-7 h-7 rounded-full bg-cream-100 hover:bg-roseGold hover:text-white flex items-center justify-center text-taupe-600 transition cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
 
-              {/* Modal Footer */}
-              <div className="p-4 sm:p-5 border-t border-taupe-200/70 bg-[#FAF8F5] flex items-center justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={() => setInspectingGoodie(null)}
-                  className="px-4 py-2 rounded-xl border border-taupe-300 text-xs font-bold text-charcoal hover:bg-white transition cursor-pointer"
-                >
-                  Close
-                </button>
+                {/* Modal Body */}
+                <div className="p-5 sm:p-6 overflow-y-auto space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-center">
+                    <div className="aspect-square rounded-2xl bg-[#FAF8F5] border border-taupe-200 overflow-hidden flex items-center justify-center p-4">
+                      <img
+                        src={inspectingGoodie.detailedImage || inspectingGoodie.image}
+                        alt={inspectingGoodie.name}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleToggleGoodieFromGallery(inspectingGoodie);
-                    setInspectingGoodie(null);
-                  }}
-                  className={`px-5 py-2 rounded-xl text-xs font-bold transition shadow-soft cursor-pointer flex items-center gap-1.5 ${
-                    isGoodieInHamper(inspectingGoodie.id)
-                      ? 'bg-rose-600 hover:bg-rose-700 text-white'
-                      : 'bg-charcoal hover:bg-roseGold text-white'
-                  }`}
-                >
-                  {isGoodieInHamper(inspectingGoodie.id) ? (
-                    <>
-                      <X className="w-3.5 h-3.5" />
-                      <span>Remove from Hamper</span>
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Pack into My Hamper Box</span>
-                    </>
+                    <div className="space-y-3">
+                      <div>
+                        <span className="text-xs font-sans font-bold text-roseGold tabular-nums">
+                          {inspectingGoodie.price > 0
+                            ? formatPrice(inspectingGoodie.price)
+                            : 'Included with Hamper'}
+                        </span>
+                        <h3 className="font-serif text-lg sm:text-xl font-bold text-charcoal">
+                          {inspectingGoodie.name}
+                        </h3>
+                      </div>
+
+                      <p className="text-xs text-charcoal/80 leading-relaxed">
+                        {inspectingGoodie.description}
+                      </p>
+
+                      <div className="space-y-1.5 pt-2 border-t border-taupe-200/60 text-xs">
+                        {inspectingGoodie.material && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-taupe-500">Material:</span>
+                            <span className="font-semibold text-charcoal">
+                              {inspectingGoodie.material}
+                            </span>
+                          </div>
+                        )}
+                        {inspectingGoodie.dimensions && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-taupe-500">Dimensions:</span>
+                            <span className="font-sans font-medium text-charcoal">
+                              {inspectingGoodie.dimensions}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between">
+                          <span className="text-taupe-500">Status in Hamper:</span>
+                          <span
+                            className={`font-bold ${
+                              isGoodieInHamper(inspectingGoodie.id)
+                                ? 'text-emerald-600'
+                                : 'text-taupe-500'
+                            }`}
+                          >
+                            {isGoodieInHamper(inspectingGoodie.id) ? '✓ Packed' : 'Not yet added'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Specs List */}
+                  {inspectingGoodie.specs && inspectingGoodie.specs.length > 0 && (
+                    <div className="space-y-2 bg-[#FAF8F5] p-4 rounded-2xl border border-taupe-200/70">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal">
+                        Craftsmanship & Key Details
+                      </h4>
+                      <ul className="space-y-1.5 text-xs text-charcoal/80">
+                        {inspectingGoodie.specs.map((spec, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-roseGold font-bold text-sm leading-none">•</span>
+                            <span>{spec}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-4 sm:p-5 border-t border-taupe-200/70 bg-[#FAF8F5] flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setInspectingGoodie(null)}
+                    className="px-4 py-2 rounded-xl border border-taupe-300 text-xs font-bold text-charcoal hover:bg-white transition cursor-pointer"
+                  >
+                    Close
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleToggleGoodieFromGallery(inspectingGoodie);
+                      setInspectingGoodie(null);
+                    }}
+                    className={`px-5 py-2 rounded-xl text-xs font-bold transition shadow-soft cursor-pointer flex items-center gap-1.5 ${
+                      isGoodieInHamper(inspectingGoodie.id)
+                        ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                        : 'bg-charcoal hover:bg-roseGold text-white'
+                    }`}
+                  >
+                    {isGoodieInHamper(inspectingGoodie.id) ? (
+                      <>
+                        <X className="w-3.5 h-3.5" />
+                        <span>Remove from Hamper</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Pack into My Hamper Box</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ========================================================================= */}
@@ -1686,9 +1726,10 @@ export const HamperBuilder: React.FC<HamperBuilderProps> = ({ onBackToShop }) =>
                 Real-Time Hamper Total
               </span>
               <div className="flex items-baseline gap-2">
-                <span className="font-sans text-xl sm:text-2xl font-bold text-charcoal tabular-nums">
-                  {formatPrice(hamperTotal)}
-                </span>
+                <CountingNumber
+                  value={hamperTotal}
+                  className="text-xl sm:text-2xl font-bold text-charcoal"
+                />
                 <span className="text-xs text-taupe-500">
                   ({selectedBox.name} + {totalItemCount} items)
                 </span>

@@ -1,12 +1,12 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, OrderRecord } from '../../context/AuthContext';
 import { formatPrice } from '../../utils/formatters';
 import { X, Package, MessageCircle, Clock, CheckCircle2, Truck, Gift, ArrowRight } from 'lucide-react';
+import { modalBackdropVariants, modalDialogVariants, buttonTapSpring } from '../../styles/motion';
 
 export const MyOrdersModal: React.FC = () => {
   const { isOrdersModalOpen, closeOrdersModal, orders } = useAuth();
-
-  if (!isOrdersModalOpen) return null;
 
   const getStatusBadge = (status: OrderRecord['status']) => {
     switch (status) {
@@ -48,14 +48,24 @@ export const MyOrdersModal: React.FC = () => {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200"
-      onClick={closeOrdersModal}
-    >
-      <div
-        className="bg-[#FFFDF9] rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-luxury border border-white/80 overflow-hidden relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isOrdersModalOpen && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="fixed inset-0 z-50 bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={closeOrdersModal}
+        >
+          <motion.div
+            variants={modalDialogVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="bg-[#FFFDF9] rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-luxury border border-white/80 overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Header */}
         <div className="p-5 sm:p-6 border-b border-taupe-200/60 flex items-center justify-between bg-cream-50/80">
           <div className="flex items-center gap-2.5">
@@ -63,7 +73,7 @@ export const MyOrdersModal: React.FC = () => {
               <Package className="w-5 h-5 text-roseGold" />
             </div>
             <div>
-              <h2 className="font-serif text-xl sm:text-2xl font-bold text-charcoal">
+              <h2 className="font-sans text-xl sm:text-2xl font-bold text-charcoal">
                 My Keepsakes & Orders
               </h2>
               <p className="text-xs text-taupe-600">Track and view your personalized gifts</p>
@@ -85,7 +95,7 @@ export const MyOrdersModal: React.FC = () => {
               <div className="w-16 h-16 rounded-full bg-cream-100 flex items-center justify-center mx-auto text-taupe-400">
                 <Package className="w-8 h-8" />
               </div>
-              <h3 className="font-serif text-lg font-bold text-charcoal">No orders yet</h3>
+              <h3 className="font-sans text-base sm:text-lg font-bold text-charcoal">No orders yet</h3>
               <p className="text-xs text-taupe-600 max-w-xs mx-auto">
                 Once you customize and place an order for a magazine, frame, or hamper, it will appear here with live tracking.
               </p>
@@ -167,7 +177,7 @@ export const MyOrdersModal: React.FC = () => {
                           />
                         )}
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-serif font-bold text-charcoal truncate">
+                          <h4 className="font-sans font-semibold text-xs sm:text-sm text-charcoal truncate">
                             {item.title}
                           </h4>
                           {item.variantName && (
@@ -212,7 +222,9 @@ export const MyOrdersModal: React.FC = () => {
             })
           )}
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShieldCheck, Lock, Truck, HelpCircle, ChevronDown } from 'lucide-react';
 import { FAQ_DATA } from '../../data/faqData';
+import { modalBackdropVariants, modalDialogVariants, buttonTapSpring, springs } from '../../styles/motion';
 
 interface PolicyModalProps {
   policy: string | null;
@@ -10,35 +12,52 @@ interface PolicyModalProps {
 export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
-  if (!policy) return null;
+  const isOpen = Boolean(policy);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-      <div className="bg-[#FCFAF7] rounded-3xl w-full max-w-lg shadow-2xl border border-roseGold-light overflow-hidden flex flex-col max-h-[85vh]">
-        {/* Header */}
-        <div className="p-5 bg-white border-b border-roseGold-light/40 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {policy === 'terms' && <ShieldCheck className="w-5 h-5 text-blush-600" />}
-            {policy === 'cancellation' && <ShieldCheck className="w-5 h-5 text-blush-600" />}
-            {policy === 'shipping' && <Truck className="w-5 h-5 text-blush-600" />}
-            {policy === 'privacy' && <Lock className="w-5 h-5 text-blush-600" />}
-            {policy === 'faq' && <HelpCircle className="w-5 h-5 text-blush-600" />}
-            <h3 className="font-serif text-lg font-bold text-wine-900 capitalize">
-              {policy === 'terms' && 'Terms & Conditions'}
-              {policy === 'cancellation' && 'Cancellation & Replacement Policy'}
-              {policy === 'shipping' && 'Shipping & Transit Timelines'}
-              {policy === 'privacy' && 'Photo Privacy & Data Protection'}
-              {policy === 'faq' && 'Frequently Asked Questions'}
-            </h3>
-          </div>
-
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-cream-100 hover:bg-cream-200 text-wine-900 flex items-center justify-center transition"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          onClick={onClose}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+        >
+          <motion.div
+            variants={modalDialogVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#FCFAF7] rounded-3xl w-full max-w-lg shadow-2xl border border-roseGold-light overflow-hidden flex flex-col max-h-[85vh]"
           >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+            {/* Header */}
+            <div className="p-5 bg-white border-b border-roseGold-light/40 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {policy === 'terms' && <ShieldCheck className="w-5 h-5 text-blush-600" />}
+                {policy === 'cancellation' && <ShieldCheck className="w-5 h-5 text-blush-600" />}
+                {policy === 'shipping' && <Truck className="w-5 h-5 text-blush-600" />}
+                {policy === 'privacy' && <Lock className="w-5 h-5 text-blush-600" />}
+                {policy === 'faq' && <HelpCircle className="w-5 h-5 text-blush-600" />}
+                <h3 className="font-serif text-lg font-bold text-wine-900 capitalize">
+                  {policy === 'terms' && 'Terms & Conditions'}
+                  {policy === 'cancellation' && 'Cancellation & Replacement Policy'}
+                  {policy === 'shipping' && 'Shipping & Transit Timelines'}
+                  {policy === 'privacy' && 'Photo Privacy & Data Protection'}
+                  {policy === 'faq' && 'Frequently Asked Questions'}
+                </h3>
+              </div>
+
+              <motion.button
+                whileTap={buttonTapSpring}
+                onClick={onClose}
+                className="w-8 h-8 rounded-full bg-cream-100 hover:bg-cream-200 text-wine-900 flex items-center justify-center transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </motion.button>
+            </div>
 
         {/* Content */}
         <div className="p-6 overflow-y-auto space-y-4 text-xs text-wine-900/80 leading-relaxed">
@@ -149,7 +168,9 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
             Close
           </button>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

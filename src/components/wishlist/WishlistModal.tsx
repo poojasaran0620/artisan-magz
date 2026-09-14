@@ -1,8 +1,10 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlist } from '../../context/WishlistContext';
 import { PRODUCTS } from '../../data/products';
 import { formatPrice } from '../../utils/formatters';
 import { Heart, X, ShoppingBag, ArrowRight } from 'lucide-react';
+import { modalBackdropVariants, modalDialogVariants, buttonTapSpring } from '../../styles/motion';
 
 interface WishlistModalProps {
   isOpen: boolean;
@@ -19,29 +21,44 @@ export const WishlistModal: React.FC<WishlistModalProps> = ({
 }) => {
   const { wishlist, toggleWishlist } = useWishlist();
 
-  if (!isOpen) return null;
-
   const wishlistedProducts = PRODUCTS.filter((p) => wishlist.includes(p.id));
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-      <div className="bg-[#FCFAF7] rounded-3xl w-full max-w-lg shadow-2xl border border-roseGold-light overflow-hidden flex flex-col max-h-[85vh]">
-        {/* Header */}
-        <div className="p-5 bg-white border-b border-roseGold-light/40 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Heart className="w-5 h-5 text-blush-600 fill-blush-500" />
-            <h3 className="font-serif text-lg font-bold text-wine-900">
-              Saved Keepsakes ({wishlist.length})
-            </h3>
-          </div>
-
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-cream-100 hover:bg-cream-200 text-wine-900 flex items-center justify-center transition"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          onClick={onClose}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+        >
+          <motion.div
+            variants={modalDialogVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            onClick={(e) => e.stopPropagation()}
+            className="bg-[#FCFAF7] rounded-3xl w-full max-w-lg shadow-2xl border border-roseGold-light overflow-hidden flex flex-col max-h-[85vh]"
           >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+            {/* Header */}
+            <div className="p-5 bg-white border-b border-roseGold-light/40 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Heart className="w-5 h-5 text-blush-600 fill-blush-500" />
+                <h3 className="font-sans text-base sm:text-lg font-bold text-wine-900">
+                  Saved Keepsakes ({wishlist.length})
+                </h3>
+              </div>
+
+              <motion.button
+                whileTap={buttonTapSpring}
+                onClick={onClose}
+                className="w-8 h-8 rounded-full bg-cream-100 hover:bg-cream-200 text-wine-900 flex items-center justify-center transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </motion.button>
+            </div>
 
         {/* Content */}
         <div className="p-5 overflow-y-auto space-y-3 divide-y divide-roseGold-light/30">
@@ -50,7 +67,7 @@ export const WishlistModal: React.FC<WishlistModalProps> = ({
               <div className="w-14 h-14 rounded-full bg-blush-50 text-blush-400 mx-auto flex items-center justify-center">
                 <Heart className="w-7 h-7" />
               </div>
-              <h4 className="font-serif text-base font-bold text-wine-900">No Saved Keepsakes Yet</h4>
+              <h4 className="font-sans text-base font-bold text-wine-900">No Saved Keepsakes Yet</h4>
               <p className="text-xs text-wine-900/60 max-w-xs mx-auto">
                 Tap the little heart icon on any personalized magazine, frame, or hamper to save it here for later!
               </p>
@@ -65,7 +82,7 @@ export const WishlistModal: React.FC<WishlistModalProps> = ({
                     className="w-14 h-14 rounded-xl object-cover border shrink-0"
                   />
                   <div className="min-w-0">
-                    <h5 className="font-serif text-xs font-bold text-wine-900 truncate">
+                    <h5 className="font-sans text-xs sm:text-sm font-bold text-wine-900 truncate">
                       {p.title}
                     </h5>
                     <p className="font-sans text-[11px] text-blush-700 font-semibold tabular-nums mt-0.5">
@@ -99,7 +116,9 @@ export const WishlistModal: React.FC<WishlistModalProps> = ({
             ))
           )}
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

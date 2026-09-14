@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Product, ProductVariant } from '../../types/product';
 import { PRODUCTS } from '../../data/products';
 import { formatPrice } from '../../utils/formatters';
+import { CountingNumber } from '../ui/CountingNumber';
 import { useCart } from '../../context/CartContext';
+import { springs } from '../../styles/motion';
 import {
   ArrowLeft,
   Check,
@@ -427,29 +430,43 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack, onOpen
                 CHOOSE YOUR FORMAT
               </span>
 
-              {/* Format Toggle Pill matching Reference */}
-              <div className="inline-flex p-1 bg-charcoal/40 backdrop-blur-md rounded-full border border-white/20 shadow-inner">
+              {/* Format Toggle Sliding Pill (shadcn Tabs / iOS segmented control) */}
+              <div className="inline-flex p-1 bg-charcoal/40 backdrop-blur-md rounded-full border border-white/20 shadow-inner relative">
                 <button
                   type="button"
                   onClick={() => setFormat('standard-a4')}
-                  className={`px-4 sm:px-6 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  className={`relative px-4 sm:px-6 py-1.5 rounded-full text-xs font-bold transition-colors cursor-pointer ${
                     format === 'standard-a4'
-                      ? 'bg-white text-charcoal shadow-sm'
-                      : 'text-white/80 hover:text-white'
+                      ? 'text-charcoal'
+                      : 'text-white/85 hover:text-white'
                   }`}
                 >
-                  STANDARD • A4
+                  {format === 'standard-a4' && (
+                    <motion.div
+                      layoutId="activeFormatIndicator"
+                      transition={springs.snappy}
+                      className="absolute inset-0 bg-white rounded-full shadow-sm"
+                    />
+                  )}
+                  <span className="relative z-10">STANDARD • A4</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setFormat('mini-a5')}
-                  className={`px-4 sm:px-6 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  className={`relative px-4 sm:px-6 py-1.5 rounded-full text-xs font-bold transition-colors cursor-pointer ${
                     format === 'mini-a5'
-                      ? 'bg-white text-charcoal shadow-sm'
-                      : 'text-white/80 hover:text-white'
+                      ? 'text-charcoal'
+                      : 'text-white/85 hover:text-white'
                   }`}
                 >
-                  MINI • A5
+                  {format === 'mini-a5' && (
+                    <motion.div
+                      layoutId="activeFormatIndicator"
+                      transition={springs.snappy}
+                      className="absolute inset-0 bg-white rounded-full shadow-sm"
+                    />
+                  )}
+                  <span className="relative z-10">MINI • A5</span>
                 </button>
               </div>
             </div>
@@ -844,9 +861,10 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack, onOpen
                 Total Keepsake Price
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className="font-sans text-xl sm:text-2xl font-bold tabular-nums text-charcoal">
-                  {formatPrice(totalPrice)}
-                </span>
+                <CountingNumber
+                  value={totalPrice}
+                  className="text-xl sm:text-2xl font-bold text-charcoal"
+                />
                 {selectedAddOn && (
                   <span className="text-[10px] text-roseGold font-semibold">
                     (incl. {ADD_ONS.find((a) => a.id === selectedAddOn)?.title})
