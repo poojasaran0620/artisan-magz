@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -15,6 +15,7 @@ import { FeaturedProducts } from './components/home/FeaturedProducts';
 import { ProductDetail } from './components/product/ProductDetail';
 import { HamperBuilder } from './components/hamper/HamperBuilder';
 import { MagazineBuilder } from './components/magazine/MagazineBuilder';
+import { MultiPageBookViewer } from './components/book/MultiPageBookViewer';
 import { ReviewsPage } from './components/reviews/ReviewsPage';
 import { CartDrawer } from './components/cart/CartDrawer';
 import { CheckoutModal } from './components/cart/CheckoutModal';
@@ -31,7 +32,25 @@ import { BulkOrderPage } from './components/bulk/BulkOrderPage';
 import { FAQSection } from './components/home/FAQSection';
 
 export const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<string>('home');
+  const [currentView, setCurrentView] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const viewParam = params.get('view');
+      const hash = window.location.hash.toLowerCase();
+      if (
+        viewParam === 'book' ||
+        viewParam === 'book-viewer' ||
+        viewParam === 'songbook' ||
+        viewParam === 'songs-book' ||
+        hash.includes('book') ||
+        hash.includes('songbook')
+      ) {
+        return 'book-viewer';
+      }
+      if (viewParam) return viewParam;
+    }
+    return 'home';
+  });
   const [selectedProductId, setSelectedProductId] = useState<string>('prod-mag-01');
   const [selectedFrameOption, setSelectedFrameOption] = useState<FrameOption | null>(null);
   const [initialVariantId, setInitialVariantId] = useState<string | undefined>(undefined);
@@ -40,10 +59,52 @@ export const App: React.FC = () => {
   const [isWishlistModalOpen, setIsWishlistModalOpen] = useState<boolean>(false);
   const [activePolicy, setActivePolicy] = useState<string | null>(null);
 
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const viewParam = params.get('view');
+      const hash = window.location.hash.toLowerCase();
+      if (
+        viewParam === 'book' ||
+        viewParam === 'book-viewer' ||
+        viewParam === 'songbook' ||
+        viewParam === 'songs-book' ||
+        hash.includes('book') ||
+        hash.includes('songbook')
+      ) {
+        setCurrentView('book-viewer');
+      } else if (viewParam) {
+        setCurrentView(viewParam);
+      } else if (!hash) {
+        setCurrentView('home');
+      }
+    };
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
   const handleNavigate = (view: string, id?: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (view === 'wishlist') {
       setIsWishlistModalOpen(true);
+      return;
+    }
+    if (view === 'book-viewer' || view === 'book' || view === 'songs-book') {
+      setCurrentView('book-viewer');
+      if (typeof window !== 'undefined' && window.history.replaceState) {
+        window.history.replaceState(null, '', '?view=book');
+      }
+      return;
+    }
+    if (view === 'home') {
+      setCurrentView('home');
+      if (typeof window !== 'undefined' && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
       return;
     }
     if (view === 'frames') {
@@ -57,6 +118,10 @@ export const App: React.FC = () => {
       }
       if (id === 'prod-hamper-01' || id === 'hamper' || id === 'hampers') {
         setCurrentView('hamper');
+        return;
+      }
+      if (id === 'prod-song-01' || id === 'songbook' || id === 'song-album' || id === 'songs-book') {
+        setCurrentView('book-viewer');
         return;
       }
       setSelectedProductId(id);
@@ -81,6 +146,13 @@ export const App: React.FC = () => {
     }
     if (productId === 'hampers' || productId === 'prod-hamper-01' || productId === 'hamper') {
       setCurrentView('hamper');
+      return;
+    }
+    if (productId === 'prod-song-01' || productId === 'songbook' || productId === 'song-album' || productId === 'songs-book') {
+      setCurrentView('book-viewer');
+      if (typeof window !== 'undefined' && window.history.replaceState) {
+        window.history.replaceState(null, '', '?view=book');
+      }
       return;
     }
     setSelectedFrameOption(null);
@@ -210,11 +282,19 @@ export const App: React.FC = () => {
                 onNavigateHamper={() => handleNavigate('hamper')}
                 onOpenPolicy={(policy) => setActivePolicy(policy)}
                 onDirectCheckout={() => setIsCheckoutModalOpen(true)}
+                onOpenBookViewer={() => setCurrentView('book-viewer')}
               />
             )}
 
             {currentView === 'magazine-builder' && (
-              <MagazineBuilder onBack={() => handleNavigate('home')} />
+              <MagazineBuilder
+                onBack={() => handleNavigate('home')}
+                onOpenBookViewer={() => handleNavigate('book-viewer')}
+              />
+            )}
+
+            {(currentView === 'book-viewer' || currentView === 'book-layout' || currentView === 'book') && (
+              <MultiPageBookViewer onBack={() => handleNavigate('home')} />
             )}
 
             {currentView === 'hamper' && (

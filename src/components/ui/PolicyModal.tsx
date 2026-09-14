@@ -36,11 +36,13 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
             {/* Header */}
             <div className="p-5 bg-white border-b border-roseGold-light/40 flex items-center justify-between">
               <div className="flex items-center gap-2">
+                {policy === 'terms' && <ShieldCheck className="w-5 h-5 text-blush-600" />}
                 {policy === 'cancellation' && <ShieldCheck className="w-5 h-5 text-blush-600" />}
                 {policy === 'shipping' && <Truck className="w-5 h-5 text-blush-600" />}
                 {policy === 'privacy' && <Lock className="w-5 h-5 text-blush-600" />}
                 {policy === 'faq' && <HelpCircle className="w-5 h-5 text-blush-600" />}
                 <h3 className="font-serif text-lg font-bold text-wine-900 capitalize">
+                  {policy === 'terms' && 'Terms & Conditions'}
                   {policy === 'cancellation' && 'Cancellation & Replacement Policy'}
                   {policy === 'shipping' && 'Shipping & Transit Timelines'}
                   {policy === 'privacy' && 'Photo Privacy & Data Protection'}
@@ -59,16 +61,33 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({ policy, onClose }) => 
 
         {/* Content */}
         <div className="p-6 overflow-y-auto space-y-4 text-xs text-wine-900/80 leading-relaxed">
+          {policy === 'terms' && (
+            <>
+              <p>
+                <strong>Welcome to Artisan Magz:</strong> By accessing our website and placing an order for personalized magazines, frames, or custom hampers, you agree to these Terms & Conditions.
+              </p>
+              <p>
+                <strong>Customization & Personalization:</strong> All products are made-to-order based on the photos, dates, messages, and specifications provided by the customer. Please review your custom details carefully before final checkout.
+              </p>
+              <p>
+                <strong>Customer Content Responsibility:</strong> Customers confirm that they possess the necessary rights and permissions to use any photos, names, and messages uploaded for personalization.
+              </p>
+              <p>
+                <strong>Quality Commitment:</strong> Every keepsake is printed on archival premium paper stock with high-resolution pigment inks and hand-inspected before dispatch.
+              </p>
+            </>
+          )}
+
           {policy === 'cancellation' && (
             <>
               <p>
                 <strong>Personalized & Made-to-Order Items:</strong> Because all our magazines, frames, newspaper editions, and bespoke hampers are custom-crafted with your personal photos and engraved text, orders <strong>cannot be cancelled or returned once printing has started</strong>.
               </p>
               <p>
-                <strong>Cancellation Window:</strong> You may cancel or amend your order within <strong>2 hours</strong> of placing it by pinging our WhatsApp team at +91 98765 43210.
+                <strong>Cancellation Window:</strong> You may cancel or amend your order within <strong>2 hours</strong> of placing it by messaging our WhatsApp team at +91 70000 41053.
               </p>
               <p>
-                <strong>Damaged in Transit Guarantee:</strong> If your product arrives damaged, broken, or with any typographical error caused by our team, we will replace it <strong>100% free of charge</strong>. Simply send an unboxing video to our WhatsApp support within 48 hours of delivery.
+                <strong>Damaged in Transit Guarantee:</strong> If your product arrives damaged, broken, or with any typographical error caused by our team, we will replace it <strong>100% free of charge</strong>. Simply send a continuous, unedited unboxing video to our WhatsApp support within 48 hours of delivery.
               </p>
             </>
           )}

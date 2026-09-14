@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "node --experimental-strip-types tests/formatters.test.ts && node --experimental-strip-types tests/hamper.test.ts && node --experimental-strip-types tests/categories.test.ts && node --experimental-strip-types tests/auth.test.ts && node --experimental-strip-types tests/admin.test.ts && node --experimental-strip-types tests/typography.test.ts"
+    "test": "node --experimental-strip-types tests/formatters.test.ts && node --experimental-strip-types tests/hamper.test.ts && node --experimental-strip-types tests/categories.test.ts && node --experimental-strip-types tests/auth.test.ts && node --experimental-strip-types tests/admin.test.ts && node --experimental-strip-types tests/typography.test.ts && node --experimental-strip-types tests/book-spread.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",
@@ -17,6 +17,7 @@
     "lucide-react": "^1.16.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-pageflip": "^2.0.3",
     "tailwind-merge": "^3.0.2"
   },
   "devDependencies": {

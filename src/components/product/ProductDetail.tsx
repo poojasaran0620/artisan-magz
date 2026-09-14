@@ -42,6 +42,7 @@ interface ProductDetailProps {
   onNavigateHamper: () => void;
   onOpenPolicy: (policyName: string) => void;
   onDirectCheckout?: () => void;
+  onOpenBookViewer?: () => void;
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
@@ -55,6 +56,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   onNavigateHamper,
   onOpenPolicy,
   onDirectCheckout,
+  onOpenBookViewer,
 }) => {
   const { addToCart, sendWhatsAppOrder } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
@@ -371,6 +373,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                   onVariantChange={handleVariantSelect}
                   customization={customization}
                   onChange={handleCustomizationChange}
+                  onOpenBookViewer={onOpenBookViewer}
                 />
               )}
 
