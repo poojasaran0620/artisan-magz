@@ -705,3 +705,250 @@ export const CHAAR_KADAM_BOOK_PAGES: BookPage[] = [
   },
 ];
 
+/**
+ * Songs Book featuring the user's newly uploaded custom template images:
+ * - Page 1: Cover ("MY HOME • Special Edition #123")
+ * - Page 2: Blank / Empty Inside Cover (Spread 1 Left)
+ * - Page 3: "KOI AUR dooja • kyun MUJHE" (Spread 1 Right)
+ * - Page 4: "NA TERE सिवा CHAIYE" (Spread 2 Left)
+ * - Page 5: "HAR सफ़र mein mujhe" (Spread 2 Right)
+ * - Page 6: "Tu hi रहनुमा chaiye" (Spread 3 Left)
+ * - Pages 7-11: Ready for the next uploaded batch
+ */
+export const SONGS_BOOK_PAGES: BookPage[] = [
+  // Page 1: Standalone Front Cover
+  {
+    id: 'sb-page-1',
+    pageNumber: 1,
+    side: 'standalone',
+    templateId: 'tu-chahiye-cover',
+    title: 'MY HOME • Special Edition #123',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/tu-chahiye/page_1.jpg',
+    photos: [
+      {
+        id: 'sb-p1-hero',
+        label: 'Cover Couple Portrait',
+        url: '/templates/tu-chahiye/page_1.jpg',
+        aspectRatio: '3/4',
+        borderStyle: 'none',
+      },
+    ],
+    texts: [
+      {
+        id: 'sb-p1-masthead',
+        type: 'headline',
+        content: 'MY HOME',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#FFFFFF',
+      },
+    ],
+  },
+
+  // Page 2: Inside Front Cover (Empty / Left of Spread 1)
+  {
+    id: 'sb-page-2',
+    pageNumber: 2,
+    side: 'left',
+    templateId: 'tu-chahiye-inside-cover',
+    title: 'Inside Cover (Empty)',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FFFFFF',
+    referenceImage: '/templates/tu-chahiye/page_2.webp',
+    photos: [],
+    texts: [],
+  },
+
+  // Page 3: Right of Spread 1
+  {
+    id: 'sb-page-3',
+    pageNumber: 3,
+    side: 'right',
+    templateId: 'tu-chahiye-page-3',
+    title: 'KOI AUR dooja • kyun MUJHE',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FFFFFF',
+    referenceImage: '/templates/tu-chahiye/page_3.jpg',
+    photos: [
+      {
+        id: 'sb-p3-1',
+        label: 'KOI AUR dooja Tickets',
+        url: '/templates/tu-chahiye/page_3.jpg',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 4: Left of Spread 2
+  {
+    id: 'sb-page-4',
+    pageNumber: 4,
+    side: 'left',
+    templateId: 'tu-chahiye-page-4',
+    title: 'NA TERE सिवा CHAIYE',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FFFFFF',
+    referenceImage: '/templates/tu-chahiye/page_4.jpg',
+    photos: [
+      {
+        id: 'sb-p4-1',
+        label: 'NA TERE सिवा CHAIYE Filmstrip & Camera',
+        url: '/templates/tu-chahiye/page_4.jpg',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 5: Right of Spread 2
+  {
+    id: 'sb-page-5',
+    pageNumber: 5,
+    side: 'right',
+    templateId: 'tu-chahiye-page-5',
+    title: 'HAR सफ़र mein mujhe',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FFFFFF',
+    referenceImage: '/templates/tu-chahiye/page_5.jpg',
+    photos: [
+      {
+        id: 'sb-p5-1',
+        label: 'HAR सफ़र mein mujhe Stamp Frame',
+        url: '/templates/tu-chahiye/page_5.jpg',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 6: Left of Spread 3
+  {
+    id: 'sb-page-6',
+    pageNumber: 6,
+    side: 'left',
+    templateId: 'tu-chahiye-page-6',
+    title: 'Tu hi रहनुमा chaiye',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FFFFFF',
+    referenceImage: '/templates/tu-chahiye/page_6.jpg',
+    photos: [
+      {
+        id: 'sb-p6-1',
+        label: 'Tu hi रहनुमा chaiye Postage Frame',
+        url: '/templates/tu-chahiye/page_6.jpg',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 7: Right of Spread 3 (Awaiting Next Upload Batch)
+  {
+    id: 'sb-page-7',
+    pageNumber: 7,
+    side: 'right',
+    templateId: 'tu-chahiye-page-7',
+    title: 'Page 7 (Upload Slot)',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_7.webp',
+    photos: [
+      {
+        id: 'sb-p7-1',
+        label: 'Page 7 Slot',
+        url: '/templates/chaar-kadam/page_7.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 8: Left of Spread 4
+  {
+    id: 'sb-page-8',
+    pageNumber: 8,
+    side: 'left',
+    templateId: 'tu-chahiye-page-8',
+    title: 'Page 8 (Upload Slot)',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_8.webp',
+    photos: [
+      {
+        id: 'sb-p8-1',
+        label: 'Page 8 Slot',
+        url: '/templates/chaar-kadam/page_8.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 9: Right of Spread 4
+  {
+    id: 'sb-page-9',
+    pageNumber: 9,
+    side: 'right',
+    templateId: 'tu-chahiye-page-9',
+    title: 'Page 9 (Upload Slot)',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_9.webp',
+    photos: [
+      {
+        id: 'sb-p9-1',
+        label: 'Page 9 Slot',
+        url: '/templates/chaar-kadam/page_9.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 10: Left of Spread 5
+  {
+    id: 'sb-page-10',
+    pageNumber: 10,
+    side: 'left',
+    templateId: 'tu-chahiye-page-10',
+    title: 'Page 10 (Upload Slot)',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#FAF8F5',
+    referenceImage: '/templates/chaar-kadam/page_10.webp',
+    photos: [
+      {
+        id: 'sb-p10-1',
+        label: 'Page 10 Slot',
+        url: '/templates/chaar-kadam/page_10.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+
+  // Page 11: Right of Spread 5 (Back Cover)
+  {
+    id: 'sb-page-11',
+    pageNumber: 11,
+    side: 'right',
+    templateId: 'tu-chahiye-page-11',
+    title: 'Back Cover',
+    theme: 'Tu Chahiye Song Book',
+    backgroundColor: '#8B0D15',
+    referenceImage: '/templates/chaar-kadam/page_11.webp',
+    photos: [
+      {
+        id: 'sb-p11-1',
+        label: 'Back Cover Slot',
+        url: '/templates/chaar-kadam/page_11.webp',
+        aspectRatio: '3/4',
+      },
+    ],
+    texts: [],
+  },
+];
+
+

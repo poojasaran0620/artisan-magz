@@ -1,7 +1,13 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBookSpreads, INITIAL_5_PAGE_BOOK, CHAAR_KADAM_BOOK_PAGES } from '../src/data/bookTemplates.ts';
+import {
+  buildBookSpreads,
+  INITIAL_5_PAGE_BOOK,
+  CHAAR_KADAM_BOOK_PAGES,
+  SONGS_BOOK_PAGES,
+} from '../src/data/bookTemplates.ts';
 import type { BookPage } from '../src/types/book.ts';
+
 
 describe('Multi-Page Physical Book Spread System', () => {
   test('Page 1 is created as a single standalone page (Spread 0)', () => {
@@ -118,5 +124,35 @@ describe('Multi-Page Physical Book Spread System', () => {
     assert.equal(spreads[5].leftPage?.referenceImage, '/templates/chaar-kadam/page_10.webp');
     assert.equal(spreads[5].rightPage?.referenceImage, '/templates/chaar-kadam/page_11.webp');
   });
+
+  test('SONGS_BOOK_PAGES correctly maps the user uploaded custom pages', () => {
+    assert.equal(SONGS_BOOK_PAGES.length, 11);
+
+    const spreads = buildBookSpreads(SONGS_BOOK_PAGES);
+    assert.equal(spreads.length, 6);
+
+    // Spread 0: Cover - MY HOME
+    assert.equal(spreads[0].type, 'single');
+    assert.equal(spreads[0].label, 'Page 1 (Cover)');
+    assert.equal(spreads[0].rightPage?.referenceImage, '/templates/tu-chahiye/page_1.jpg');
+
+    // Spread 1: Left empty inside cover, Right "KOI AUR dooja"
+    assert.equal(spreads[1].type, 'dual');
+    assert.equal(spreads[1].label, 'Pages 2–3');
+    assert.equal(spreads[1].leftPage?.referenceImage, '/templates/tu-chahiye/page_2.webp');
+    assert.equal(spreads[1].rightPage?.referenceImage, '/templates/tu-chahiye/page_3.jpg');
+
+    // Spread 2: Left "NA TERE सिवा CHAIYE", Right "HAR सफ़र mein mujhe"
+    assert.equal(spreads[2].type, 'dual');
+    assert.equal(spreads[2].label, 'Pages 4–5');
+    assert.equal(spreads[2].leftPage?.referenceImage, '/templates/tu-chahiye/page_4.jpg');
+    assert.equal(spreads[2].rightPage?.referenceImage, '/templates/tu-chahiye/page_5.jpg');
+
+    // Spread 3: Left "Tu hi रहनुमा chaiye"
+    assert.equal(spreads[3].type, 'dual');
+    assert.equal(spreads[3].label, 'Pages 6–7');
+    assert.equal(spreads[3].leftPage?.referenceImage, '/templates/tu-chahiye/page_6.jpg');
+  });
 });
+
 

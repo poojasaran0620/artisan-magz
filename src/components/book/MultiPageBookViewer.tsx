@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BookPage, BookSpread } from '../../types/book';
-import { buildBookSpreads, CHAAR_KADAM_BOOK_PAGES, INITIAL_5_PAGE_BOOK } from '../../data/bookTemplates';
+import {
+  buildBookSpreads,
+  SONGS_BOOK_PAGES,
+  CHAAR_KADAM_BOOK_PAGES,
+  INITIAL_5_PAGE_BOOK,
+} from '../../data/bookTemplates';
 import { PhysicalBookSpread } from './PhysicalBookSpread';
 import { InteractiveFlipBook } from './InteractiveFlipBook';
 import {
@@ -23,11 +28,11 @@ interface MultiPageBookViewerProps {
 }
 
 export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
-  initialPages = CHAAR_KADAM_BOOK_PAGES,
+  initialPages = SONGS_BOOK_PAGES,
   onBack,
 }) => {
   const [pages, setPages] = useState<BookPage[]>(initialPages);
-  const [activeTemplate, setActiveTemplate] = useState<'chaar-kadam' | 'classic'>('chaar-kadam');
+  const [activeTemplate, setActiveTemplate] = useState<'tu-chahiye' | 'chaar-kadam' | 'classic'>('tu-chahiye');
   const [activeSpreadIndex, setActiveSpreadIndex] = useState<number>(0);
   const [targetFlipPage, setTargetFlipPage] = useState<number | undefined>(undefined);
   const [isEditable, setIsEditable] = useState<boolean>(false);
@@ -35,10 +40,12 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
   const [viewMode, setViewMode] = useState<'flipbook' | 'spreads'>('flipbook');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Switch between Chaar Kadam and Custom Starter
-  const handleTemplateSelect = (template: 'chaar-kadam' | 'classic') => {
+  // Switch between Templates
+  const handleTemplateSelect = (template: 'tu-chahiye' | 'chaar-kadam' | 'classic') => {
     setActiveTemplate(template);
-    if (template === 'chaar-kadam') {
+    if (template === 'tu-chahiye') {
+      setPages(SONGS_BOOK_PAGES);
+    } else if (template === 'chaar-kadam') {
       setPages(CHAAR_KADAM_BOOK_PAGES);
     } else {
       setPages(INITIAL_5_PAGE_BOOK);
@@ -46,6 +53,7 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
     setActiveSpreadIndex(0);
     setTargetFlipPage(0);
   };
+
 
   // Compute spreads from pages list
   const spreads: BookSpread[] = React.useMemo(() => {
@@ -179,6 +187,18 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
           <div className="hidden lg:flex items-center bg-cream-100 p-0.5 rounded-full border border-taupe-200 text-xs font-semibold shadow-2xs">
             <button
               type="button"
+              onClick={() => handleTemplateSelect('tu-chahiye')}
+              className={`px-3 py-1 rounded-full transition cursor-pointer flex items-center gap-1.5 ${
+                activeTemplate === 'tu-chahiye'
+                  ? 'bg-roseGold text-white shadow-2xs'
+                  : 'text-charcoal/70 hover:text-charcoal'
+              }`}
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>Custom Song Book</span>
+            </button>
+            <button
+              type="button"
               onClick={() => handleTemplateSelect('chaar-kadam')}
               className={`px-3 py-1 rounded-full transition cursor-pointer flex items-center gap-1.5 ${
                 activeTemplate === 'chaar-kadam'
@@ -186,8 +206,7 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
                   : 'text-charcoal/70 hover:text-charcoal'
               }`}
             >
-              <Sparkles className="w-3 h-3" />
-              <span>Chaar Kadam (11p)</span>
+              <span>Chaar Kadam</span>
             </button>
             <button
               type="button"
@@ -198,9 +217,10 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
                   : 'text-charcoal/70 hover:text-charcoal'
               }`}
             >
-              <span>Classic Keepsake (5p)</span>
+              <span>Classic Keepsake</span>
             </button>
           </div>
+
 
           <div className="hidden md:flex items-center gap-2 bg-cream-100 border border-taupe-200 px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-2xs">
             <BookOpen className="w-4 h-4 text-roseGold" />
