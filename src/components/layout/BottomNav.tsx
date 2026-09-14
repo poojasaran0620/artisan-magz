@@ -1,5 +1,6 @@
 import React from 'react';
-import { Home, Sparkles, Gift, Heart, ShoppingBag } from 'lucide-react';
+import { Home, Sparkles, Gift, Heart } from 'lucide-react';
+import { ShoppingBagIcon } from '../ui/Icons';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 
@@ -66,7 +67,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentView, onNavigate })
         onClick={openCart}
         className="flex flex-col items-center gap-0.5 relative text-wine-900/60 hover:text-blush-600 transition"
       >
-        <ShoppingBag className="w-5 h-5" />
+        <ShoppingBagIcon className="w-5 h-5" />
         {totalCartCount > 0 && (
           <span className="absolute -top-1 right-2 bg-blush-600 text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">
             {totalCartCount}

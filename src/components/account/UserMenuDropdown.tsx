@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { User, Package, MapPin, LogOut, ChevronDown, ShieldCheck } from 'lucide-react';
+import { Package, MapPin, LogOut, ChevronDown, ShieldCheck } from 'lucide-react';
+import { UserProfileIcon } from '../ui/Icons';
 
 interface UserMenuDropdownProps {
   onNavigate?: (view: string) => void;
@@ -41,8 +42,8 @@ export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ onNavigate }
             className="w-6 h-6 rounded-full object-cover border border-roseGold/40"
           />
         ) : (
-          <div className="w-6 h-6 rounded-full bg-roseGold text-white flex items-center justify-center text-[11px] font-bold">
-            {firstName.charAt(0).toUpperCase()}
+          <div className="w-6 h-6 rounded-full bg-roseGold/10 text-roseGold flex items-center justify-center border border-roseGold/30">
+            <UserProfileIcon className="w-3.5 h-3.5" />
           </div>
         )}
         <span className="hidden sm:inline font-medium max-w-[100px] truncate">{firstName}</span>

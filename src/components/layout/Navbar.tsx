@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Gift, Menu, X, Sparkles, User, Package, MapPin, ChevronDown } from 'lucide-react';
+import { Gift, Menu, X, Sparkles, Package, MapPin, ChevronDown } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { BrandLogo } from '../ui/BrandLogo';
 import { UserMenuDropdown } from '../account/UserMenuDropdown';
+import { UserProfileIcon, ShoppingBagIcon } from '../ui/Icons';
 
 interface NavbarProps {
   onNavigate: (view: string, productId?: string) => void;
@@ -151,10 +152,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
               <button
                 type="button"
                 onClick={openAuthModal}
-                className="hidden sm:flex items-center gap-1.5 bg-cream-100 hover:bg-cream-200 text-charcoal px-3 py-1.5 rounded-full border border-taupe-200/80 text-xs font-semibold transition cursor-pointer"
+                className="flex items-center gap-1.5 bg-cream-100 hover:bg-cream-200 text-charcoal px-2.5 sm:px-3 py-1.5 rounded-full border border-taupe-200/80 text-xs font-semibold transition cursor-pointer"
+                title="Sign In / Profile"
+                aria-label="User profile"
               >
-                <User className="w-3.5 h-3.5 text-roseGold" />
-                <span>Sign In</span>
+                <UserProfileIcon className="w-4 h-4 text-charcoal group-hover:text-roseGold transition-colors" />
+                <span className="hidden sm:inline">Sign In</span>
               </button>
             )}
 
@@ -164,7 +167,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
               className="flex items-center gap-2 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] px-3.5 py-2 rounded-full shadow-soft transition hover:shadow-soft-lg group cursor-pointer"
               aria-label="Open Shopping Cart"
             >
-              <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition text-roseGold-light" />
+              <ShoppingBagIcon className="w-4 h-4 group-hover:scale-110 transition text-roseGold-light" />
               <span className="text-xs font-semibold hidden sm:inline">Bag</span>
               <span className="bg-blush-100 text-charcoal text-[11px] font-bold px-2 py-0.2 rounded-full min-w-[18px] text-center">
                 {totalCartCount}
@@ -351,7 +354,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
                 }}
                 className="w-full py-2.5 px-4 bg-white hover:bg-cream-100 text-charcoal rounded-xl text-xs font-bold border border-taupe-300 shadow-xs flex items-center justify-center gap-2 cursor-pointer transition"
               >
-                <User className="w-4 h-4 text-roseGold" />
+                <UserProfileIcon className="w-4 h-4 text-roseGold" />
                 <span>Login / Sign Up</span>
               </button>
             )}
