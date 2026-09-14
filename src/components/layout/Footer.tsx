@@ -1,203 +1,121 @@
-import React from 'react';
-import { Heart, MessageCircle, ShieldCheck, Truck, Sparkles } from 'lucide-react';
-import { InstagramIcon } from '../ui/Icons';
+﻿import React from 'react';
+import { Mail } from 'lucide-react';
+import { InstagramIcon, WhatsAppIcon } from '../ui/Icons';
 
 interface FooterProps {
   onOpenPolicy: (policyName: string) => void;
   onNavigate: (view: string, id?: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenPolicy }) => {
   return (
-    <footer className="bg-[#242424] text-[#FDFCF5] pt-16 pb-24 md:pb-12 border-t border-taupe-700/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand Col */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-8 rounded-full overflow-hidden bg-white shrink-0 p-0.5 border border-white/20">
-                <img src="/artisan_logo_horizontal.png" alt="Artisan Magz Logo" className="w-full h-full object-cover scale-110" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-serif italic text-3xl text-[#FDFCF5] tracking-wide font-normal">
-                  Artisan
-                </span>
-                <span className="text-[10px] tracking-[0.28em] uppercase text-roseGold font-bold ml-1">
-                  magz
-                </span>
-              </div>
+    <footer className="bg-[#FAF8F5] text-charcoal pt-14 pb-16 border-t border-[#EAE4DC]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
+          {/* Brand & Emotional Tagline */}
+          <div className="col-span-1 lg:col-span-2 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="font-serif italic text-3xl sm:text-4xl text-charcoal font-bold tracking-tight">
+                Artisan
+              </span>
+              <span className="font-serif text-3xl sm:text-4xl text-[#9C7A5E] font-bold tracking-tight">
+                Magz
+              </span>
             </div>
-            <p className="text-xs leading-relaxed text-taupe-300">
-              India's premier bespoke magazine gifting studio. We immortalize your sweetest dates, milestones, and love stories into glossy magazines, custom frames, and curated keepsakes.
-            </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href="https://www.instagram.com/artisan.magz?stkn=bXVmN2RsanZlMGdp"
-                target="_blank"
-                rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-roseGold flex items-center justify-center text-[#FDFCF5] transition"
-                aria-label="Instagram Profile"
-              >
-                <InstagramIcon className="w-4 h-4" />
-              </a>
-              <a
-                href="https://wa.me/917000041053"
-                target="_blank"
-                rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-sage-700 hover:bg-sage flex items-center justify-center text-white transition"
-                aria-label="WhatsApp Support"
-              >
-                <MessageCircle className="w-4 h-4" />
-              </a>
-            </div>
-            <p className="text-[11px] text-taupe-400 font-sans">
-              DM us on Instagram: @artisan.magz
+            <p className="text-sm sm:text-base text-charcoal/80 leading-relaxed max-w-md font-sans">
+              You might cry (in a cute way). Turning your memories into something you can hold forever.
             </p>
           </div>
 
-          {/* Catalog Col */}
-          <div>
-            <h4 className="font-serif text-lg text-[#FDFCF5] mb-4">Keepsake Collections</h4>
-            <ul className="space-y-2.5 text-xs text-taupe-300">
+          {/* Policies Column */}
+          <div className="col-span-1 space-y-3">
+            <h4 className="font-serif text-sm text-charcoal/70 tracking-wide">
+              Policies
+            </h4>
+            <ul className="space-y-2.5">
               <li>
                 <button
-                  onClick={() => onNavigate('product', 'prod-mag-01')}
-                  className="hover:text-roseGold transition cursor-pointer"
+                  type="button"
+                  onClick={() => onOpenPolicy('terms')}
+                  className="font-serif text-base sm:text-lg text-charcoal hover:text-[#9C7A5E] transition-colors cursor-pointer text-left block"
                 >
-                  Custom Magazines (8 to 20 Pages)
+                  Terms &amp; Conditions
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('frames')}
-                  className="hover:text-roseGold transition cursor-pointer"
-                >
-                  Polaroid Collage & Cutout Frames
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('product', 'prod-news-01')}
-                  className="hover:text-roseGold transition cursor-pointer"
-                >
-                  Personalized "Breaking News" Frame
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('product', 'prod-song-01')}
-                  className="hover:text-roseGold transition cursor-pointer"
-                >
-                  Spotify Song Book & Acrylic Plaque
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('hamper')}
-                  className="hover:text-roseGold transition text-roseGold font-medium cursor-pointer"
-                >
-                  Build Your Own Hamper (Bundle) ✨
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Promises & Highlights */}
-          <div>
-            <h4 className="font-serif text-lg text-[#FDFCF5] mb-4">Studio Promises</h4>
-            <ul className="space-y-3 text-xs text-taupe-300">
-              <li className="flex items-start gap-2.5">
-                <Truck className="w-4 h-4 text-roseGold mt-0.5 shrink-0" />
-                <span>Express pan-India delivery with bubble-cushioned transit guarantee.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-sage mt-0.5 shrink-0" />
-                <span>Digital design proofs shared before final print execution.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <Heart className="w-4 h-4 text-roseGold mt-0.5 shrink-0" />
-                <span>Handwritten calligraphy notes sealed with hot stamped wax.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Policies & Help */}
-          <div>
-            <h4 className="font-serif text-lg text-[#FDFCF5] mb-4">Customer Care</h4>
-            <ul className="space-y-2.5 text-xs text-taupe-300">
-              <li>
-                <button
-                  onClick={() => onNavigate('about')}
-                  className="hover:text-roseGold transition cursor-pointer"
-                >
-                  About Us & Founders
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('bulk-order')}
-                  className="hover:text-roseGold transition cursor-pointer"
-                >
-                  Bulk Orders & Events ✨
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onOpenPolicy('cancellation')}
-                  className="hover:text-roseGold transition cursor-pointer"
-                >
-                  Cancellation & Refund Policy
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onOpenPolicy('shipping')}
-                  className="hover:text-roseGold transition cursor-pointer"
-                >
-                  Shipping & Dispatch Timelines
-                </button>
-              </li>
-              <li>
-                <button
+                  type="button"
                   onClick={() => onOpenPolicy('privacy')}
-                  className="hover:text-roseGold transition cursor-pointer"
+                  className="font-serif text-base sm:text-lg text-charcoal hover:text-[#9C7A5E] transition-colors cursor-pointer text-left block"
                 >
-                  Photo Privacy & Safety Policy
+                  Privacy Policy
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('faq')}
-                  className="hover:text-roseGold transition cursor-pointer"
+                  type="button"
+                  onClick={() => onOpenPolicy('cancellation')}
+                  className="font-serif text-base sm:text-lg text-charcoal hover:text-[#9C7A5E] transition-colors cursor-pointer text-left block"
                 >
-                  Frequently Asked Questions (FAQ)
+                  Refund Policy
                 </button>
               </li>
-              <li className="pt-2">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onOpenPolicy('shipping')}
+                  className="font-serif text-base sm:text-lg text-charcoal hover:text-[#9C7A5E] transition-colors cursor-pointer text-left block"
+                >
+                  Shipping Policy
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Column with WhatsApp, Email & Instagram */}
+          <div className="col-span-1 space-y-3">
+            <h4 className="font-serif text-sm text-charcoal/70 tracking-wide">
+              Contact
+            </h4>
+            <ul className="space-y-3 text-sm sm:text-base">
+              <li>
+                <a
+                  href="mailto:artisanmagz@gmail.com"
+                  className="flex items-center gap-2.5 text-charcoal hover:text-[#9C7A5E] transition-colors group"
+                >
+                  <Mail className="w-5 h-5 text-charcoal shrink-0" />
+                  <span className="font-sans">artisanmagz@gmail.com</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.instagram.com/artisan.magz?stkn=bXVmN2RsanZlMGdp"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2.5 text-[#9C7A5E] hover:text-charcoal transition-colors group"
+                >
+                  <InstagramIcon className="w-5 h-5 text-[#9C7A5E] shrink-0" />
+                  <span className="font-sans font-medium">@artisan.magz</span>
+                </a>
+              </li>
+              <li>
                 <a
                   href="https://wa.me/917000041053"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[11px] bg-sage-800/80 hover:bg-sage text-[#FDFCF5] hover:text-charcoal px-3 py-1.5 rounded-lg transition"
+                  className="flex items-center gap-2.5 text-charcoal hover:text-[#25D366] transition-colors group"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  <span>WhatsApp Help: +91 70000 41053</span>
+                  <WhatsAppIcon className="w-5 h-5 text-[#25D366] shrink-0" />
+                  <span className="font-sans font-medium">+91 70000 41053</span>
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-6 border-t border-taupe-700/30 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-taupe-400">
-          <p>© {new Date().getFullYear()} Artisan Magz Studio. Handcrafted with love in India.</p>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>100% Secure Checkout</span>
-            <span>•</span>
-            <span>UPI / Cards / NetBanking</span>
-            <span>•</span>
-            <span>WhatsApp Order Routing</span>
-          </div>
+        {/* Divider & Copyright */}
+        <div className="mt-12 pt-6 border-t border-[#EAE4DC] text-center text-xs sm:text-sm text-charcoal/70 font-sans">
+          <p>© {new Date().getFullYear()} Artisan Magz. All rights reserved. Made with love in India.</p>
         </div>
       </div>
     </footer>
