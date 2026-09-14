@@ -13,6 +13,7 @@ import { FeaturedProducts } from './components/home/FeaturedProducts';
 import { ProductDetail } from './components/product/ProductDetail';
 import { HamperBuilder } from './components/hamper/HamperBuilder';
 import { MagazineBuilder } from './components/magazine/MagazineBuilder';
+import { MultiPageBookViewer } from './components/book/MultiPageBookViewer';
 import { ReviewsPage } from './components/reviews/ReviewsPage';
 import { CartDrawer } from './components/cart/CartDrawer';
 import { CheckoutModal } from './components/cart/CheckoutModal';
@@ -202,7 +203,14 @@ export const App: React.FC = () => {
             )}
 
             {currentView === 'magazine-builder' && (
-              <MagazineBuilder onBack={() => handleNavigate('home')} />
+              <MagazineBuilder
+                onBack={() => handleNavigate('home')}
+                onOpenBookViewer={() => handleNavigate('book-viewer')}
+              />
+            )}
+
+            {(currentView === 'book-viewer' || currentView === 'book-layout' || currentView === 'book') && (
+              <MultiPageBookViewer onBack={() => handleNavigate('home')} />
             )}
 
             {currentView === 'hamper' && (

@@ -23,6 +23,7 @@ import confetti from 'canvas-confetti';
 
 interface MagazineBuilderProps {
   onBack: () => void;
+  onOpenBookViewer?: () => void;
 }
 
 // 4 Page packages matching user specifications
@@ -182,7 +183,7 @@ const ADD_ONS: AddOnOption[] = [
   },
 ];
 
-export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
+export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack, onOpenBookViewer }) => {
   const { addToCart, openCart, sendWhatsAppOrder } = useCart();
   const baseMagazine = PRODUCTS.find((p) => p.id === 'prod-mag-01') || PRODUCTS[0];
 
@@ -372,14 +373,28 @@ export const MagazineBuilder: React.FC<MagazineBuilderProps> = ({ onBack }) => {
             </span>
           </div>
 
-          {/* Quick Cart Trigger */}
-          <button
-            onClick={openCart}
-            className="flex items-center gap-1.5 bg-cream-100 hover:bg-cream-200 text-charcoal px-3 py-1.5 rounded-full text-xs font-semibold border border-taupe-200 cursor-pointer transition"
-          >
-            <ShoppingBag className="w-3.5 h-3.5 text-roseGold" />
-            <span>Bag</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {onOpenBookViewer && (
+              <button
+                type="button"
+                onClick={onOpenBookViewer}
+                className="flex items-center gap-1.5 bg-roseGold/10 hover:bg-roseGold/20 text-roseGold px-3 py-1.5 rounded-full text-xs font-semibold border border-roseGold/30 cursor-pointer transition shadow-2xs"
+                title="Preview Multi-Page Book Spread Layout"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-roseGold" />
+                <span className="hidden sm:inline">Book Spreads</span>
+              </button>
+            )}
+
+            {/* Quick Cart Trigger */}
+            <button
+              onClick={openCart}
+              className="flex items-center gap-1.5 bg-cream-100 hover:bg-cream-200 text-charcoal px-3 py-1.5 rounded-full text-xs font-semibold border border-taupe-200 cursor-pointer transition"
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-roseGold" />
+              <span>Bag</span>
+            </button>
+          </div>
         </div>
 
       </header>
