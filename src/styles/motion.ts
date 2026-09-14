@@ -84,11 +84,11 @@ export const modalBackdropVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.22, ease: 'easeOut' },
+    transition: { duration: 0.24, ease: 'easeOut' },
   },
   exit: {
     opacity: 0,
-    transition: { duration: 0.18, ease: 'easeIn' },
+    transition: { duration: 0.28, ease: [0.4, 0, 0.2, 1] },
   },
 };
 
@@ -105,7 +105,7 @@ export const modalDialogVariants: Variants = {
     opacity: 0,
     scale: 0.94,
     y: 12,
-    transition: { duration: 0.16, ease: 'easeIn' },
+    transition: { duration: 0.18, ease: [0.4, 0, 0.2, 1] },
   },
 };
 
@@ -118,7 +118,7 @@ export const drawerSlideRightVariants: Variants = {
   },
   exit: {
     x: '100%',
-    transition: { duration: 0.28, ease: [0.32, 1, 0.23, 1] },
+    transition: { duration: 0.28, ease: [0.4, 0, 0.2, 1] },
   },
 };
 
@@ -130,7 +130,7 @@ export const drawerSlideLeftVariants: Variants = {
   },
   exit: {
     x: '-100%',
-    transition: { duration: 0.28, ease: [0.32, 1, 0.23, 1] },
+    transition: { duration: 0.28, ease: [0.4, 0, 0.2, 1] },
   },
 };
 

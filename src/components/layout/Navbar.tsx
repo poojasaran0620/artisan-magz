@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Gift, Menu, X, Sparkles, User, Package, MapPin, ChevronDown } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
-import { springs, modalBackdropVariants, drawerSlideLeftVariants } from '../../styles/motion';
+import { springs } from '../../styles/motion';
 import { BrandLogo } from '../ui/BrandLogo';
 import { UserMenuDropdown } from '../account/UserMenuDropdown';
 
@@ -185,244 +185,205 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
         </div>
       </div>
 
-      {/* Mobile SideNav Drawer with AnimatePresence */}
+      {/* Mobile Navigation Dropdown with AnimatePresence */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            key="mobile-sidenav-wrapper"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="fixed inset-0 z-50 lg:hidden overflow-hidden"
+            key="mobile-nav-dropdown"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+            className="overflow-hidden lg:hidden bg-cream-50/95 backdrop-blur-md border-b border-taupe-200/60"
           >
-            {/* Backdrop with Genuine Fade-In and Fade-Out */}
-            <motion.div
-              variants={modalBackdropVariants}
-              onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-              aria-label="Close navigation overlay"
-            />
-
-            {/* Slide-out Left Drawer Container */}
-            <div className="fixed inset-y-0 left-0 max-w-full flex pr-10 pointer-events-none">
-              <motion.div
-                variants={drawerSlideLeftVariants}
-                className="w-[85vw] max-w-xs sm:max-w-sm bg-[#FDFCF5] shadow-2xl flex flex-col justify-between border-r border-taupe-200/80 pointer-events-auto h-full"
+            <div className="px-5 py-4 space-y-1 shadow-soft">
+              {/* 1. Home */}
+              <button
+                onClick={() => handleNavClick('home')}
+                className={`block w-full text-left py-2 font-medium transition hover:text-roseGold ${
+                  currentView === 'home' ? 'text-roseGold font-semibold' : 'text-charcoal'
+                }`}
               >
-                {/* Drawer Header */}
-                <div className="p-4 sm:p-5 border-b border-taupe-200/60 bg-white/90 backdrop-blur-md flex items-center justify-between shrink-0">
-                  <BrandLogo size="sm" />
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    transition={springs.snappy}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-8 h-8 rounded-full bg-cream-100 hover:bg-cream-200 text-charcoal flex items-center justify-center transition cursor-pointer"
-                    aria-label="Close navigation menu"
-                  >
-                    <X className="w-4 h-4" />
-                  </motion.button>
-                </div>
+                Home
+              </button>
 
-                {/* Nav Links (Scrollable Content) */}
-                <div className="px-5 py-4 overflow-y-auto flex-1 space-y-1">
-                  {/* 1. Home */}
-                  <button
-                    onClick={() => handleNavClick('home')}
-                    className={`block w-full text-left py-2.5 px-3 rounded-xl font-medium transition ${
-                      currentView === 'home'
-                        ? 'bg-cream-100 text-roseGold font-semibold'
-                        : 'text-charcoal hover:bg-cream-50 hover:text-roseGold'
+              {/* 2. Categories (Expandable) */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                  className="flex items-center justify-between w-full text-left py-2 font-medium text-charcoal hover:text-roseGold transition cursor-pointer"
+                >
+                  <span>Categories</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-taupe-600 transition-transform duration-200 ${
+                      isCategoriesOpen ? 'rotate-180 text-roseGold' : ''
                     }`}
-                  >
-                    Home
-                  </button>
+                  />
+                </button>
 
-                  {/* 2. Categories (Expandable) */}
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
-                      className="flex items-center justify-between w-full text-left py-2.5 px-3 rounded-xl font-medium text-charcoal hover:bg-cream-50 hover:text-roseGold transition cursor-pointer"
+                <AnimatePresence>
+                  {isCategoriesOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                      className="overflow-hidden pl-4 py-1 space-y-2 border-l border-roseGold/40 ml-2 mt-1 mb-2"
                     >
-                      <span>Categories</span>
-                      <ChevronDown
-                        className={`w-4 h-4 text-taupe-600 transition-transform duration-200 ${
-                          isCategoriesOpen ? 'rotate-180 text-roseGold' : ''
-                        }`}
-                      />
-                    </button>
+                      <button
+                        onClick={() => handleNavClick('product', 'prod-mag-01')}
+                        className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                      >
+                        Magazines
+                      </button>
+                      <button
+                        onClick={() => handleNavClick('product', 'prod-mini-mag-01')}
+                        className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                      >
+                        Pocket magazine
+                      </button>
+                      <button
+                        onClick={() => handleNavClick('frames')}
+                        className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                      >
+                        Photo frames
+                      </button>
+                      <button
+                        onClick={() => handleNavClick('hamper')}
+                        className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                      >
+                        Hamper
+                      </button>
+                      <button
+                        onClick={() => handleNavClick('product', 'prod-combo-01')}
+                        className="block w-full text-left py-1 text-sm text-charcoal/80 hover:text-roseGold transition"
+                      >
+                        Combos
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-                    <AnimatePresence>
-                      {isCategoriesOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden pl-4 py-1 space-y-1 border-l-2 border-roseGold/40 ml-4 my-1"
-                        >
-                          <button
-                            onClick={() => handleNavClick('product', 'prod-mag-01')}
-                            className="block w-full text-left py-1.5 px-2 text-sm text-charcoal/80 hover:text-roseGold transition"
-                          >
-                            Magazines
-                          </button>
-                          <button
-                            onClick={() => handleNavClick('product', 'prod-mini-mag-01')}
-                            className="block w-full text-left py-1.5 px-2 text-sm text-charcoal/80 hover:text-roseGold transition"
-                          >
-                            Pocket magazine
-                          </button>
-                          <button
-                            onClick={() => handleNavClick('frames')}
-                            className="block w-full text-left py-1.5 px-2 text-sm text-charcoal/80 hover:text-roseGold transition"
-                          >
-                            Photo frames
-                          </button>
-                          <button
-                            onClick={() => handleNavClick('hamper')}
-                            className="block w-full text-left py-1.5 px-2 text-sm text-charcoal/80 hover:text-roseGold transition"
-                          >
-                            Hamper
-                          </button>
-                          <button
-                            onClick={() => handleNavClick('product', 'prod-combo-01')}
-                            className="block w-full text-left py-1.5 px-2 text-sm text-charcoal/80 hover:text-roseGold transition"
-                          >
-                            Combos
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+              {/* 3. FAQ */}
+              <button
+                type="button"
+                onClick={() => handleNavClick('faq')}
+                className={`block w-full text-left py-2 font-medium transition hover:text-roseGold ${
+                  currentView === 'faq' ? 'text-roseGold font-semibold' : 'text-charcoal'
+                }`}
+              >
+                FAQ
+              </button>
+
+              {/* 4. About us */}
+              <button
+                type="button"
+                onClick={() => handleNavClick('about')}
+                className={`block w-full text-left py-2 font-medium transition hover:text-roseGold ${
+                  currentView === 'about' ? 'text-roseGold font-semibold' : 'text-charcoal'
+                }`}
+              >
+                About us
+              </button>
+
+              {/* 5. Bulk order */}
+              <button
+                type="button"
+                onClick={() => handleNavClick('bulk-order')}
+                className={`block w-full text-left py-2 font-medium transition hover:text-roseGold ${
+                  currentView === 'bulk-order' ? 'text-roseGold font-semibold' : 'text-charcoal'
+                }`}
+              >
+                Bulk order
+              </button>
+
+              {/* 6. Contact us */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  window.open(
+                    'https://wa.me/917000041053?text=Hi%20Artisan%20Magz!%20I%20have%20a%20question%20about%20your%20products.',
+                    '_blank'
+                  );
+                }}
+                className="block w-full text-left py-2 font-medium text-charcoal hover:text-roseGold transition"
+              >
+                Contact us
+              </button>
+
+              {/* 7. In the end: Login / Sign up */}
+              <div className="pt-3 border-t border-taupe-200/60 mt-2">
+                {isAuthenticated && user ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        {user.avatarUrl ? (
+                          <img
+                            src={user.avatarUrl}
+                            alt={user.name}
+                            className="w-8 h-8 rounded-full object-cover border border-roseGold"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-roseGold text-white flex items-center justify-center text-xs font-bold">
+                            {user.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div>
+                          <span className="text-xs font-bold text-charcoal block">{user.name}</span>
+                          <span className="text-[10px] text-taupe-600 block">{user.email}</span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          signOut();
+                        }}
+                        className="text-xs text-red-600 font-semibold px-2 py-1 cursor-pointer"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+
+                    <div className="flex gap-2 pt-1">
+                      <button
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          openOrdersModal();
+                        }}
+                        className="flex-1 py-1.5 px-2.5 bg-white text-charcoal rounded-lg text-xs font-medium border border-taupe-200 flex items-center justify-center gap-1.5 cursor-pointer hover:bg-cream-100 transition"
+                      >
+                        <Package className="w-3.5 h-3.5 text-roseGold" />
+                        <span>My Orders</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          openAddressesModal();
+                        }}
+                        className="flex-1 py-1.5 px-2.5 bg-white text-charcoal rounded-lg text-xs font-medium border border-taupe-200 flex items-center justify-center gap-1.5 cursor-pointer hover:bg-cream-100 transition"
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-roseGold" />
+                        <span>Addresses</span>
+                      </button>
+                    </div>
                   </div>
-
-                  {/* 3. FAQ */}
-                  <button
-                    type="button"
-                    onClick={() => handleNavClick('faq')}
-                    className={`block w-full text-left py-2.5 px-3 rounded-xl font-medium transition ${
-                      currentView === 'faq'
-                        ? 'bg-cream-100 text-roseGold font-semibold'
-                        : 'text-charcoal hover:bg-cream-50 hover:text-roseGold'
-                    }`}
-                  >
-                    FAQ
-                  </button>
-
-                  {/* 4. About us */}
-                  <button
-                    type="button"
-                    onClick={() => handleNavClick('about')}
-                    className={`block w-full text-left py-2.5 px-3 rounded-xl font-medium transition ${
-                      currentView === 'about'
-                        ? 'bg-cream-100 text-roseGold font-semibold'
-                        : 'text-charcoal hover:bg-cream-50 hover:text-roseGold'
-                    }`}
-                  >
-                    About us
-                  </button>
-
-                  {/* 5. Bulk order */}
-                  <button
-                    type="button"
-                    onClick={() => handleNavClick('bulk-order')}
-                    className={`block w-full text-left py-2.5 px-3 rounded-xl font-medium transition ${
-                      currentView === 'bulk-order'
-                        ? 'bg-cream-100 text-roseGold font-semibold'
-                        : 'text-charcoal hover:bg-cream-50 hover:text-roseGold'
-                    }`}
-                  >
-                    Bulk order
-                  </button>
-
-                  {/* 6. Contact us */}
+                ) : (
                   <button
                     type="button"
                     onClick={() => {
                       setMobileMenuOpen(false);
-                      window.open(
-                        'https://wa.me/917000041053?text=Hi%20Artisan%20Magz!%20I%20have%20a%20question%20about%20your%20products.',
-                        '_blank'
-                      );
+                      openAuthModal();
                     }}
-                    className="block w-full text-left py-2.5 px-3 rounded-xl font-medium text-charcoal hover:bg-cream-50 hover:text-roseGold transition"
+                    className="w-full py-2.5 px-4 bg-white hover:bg-cream-100 text-charcoal rounded-xl text-xs font-bold border border-taupe-300 shadow-xs flex items-center justify-center gap-2 cursor-pointer transition"
                   >
-                    Contact us
+                    <User className="w-4 h-4 text-roseGold" />
+                    <span>Login / Sign Up</span>
                   </button>
-                </div>
-
-                {/* Footer Section: User Auth & Account */}
-                <div className="p-4 border-t border-taupe-200/60 bg-cream-50/80 shrink-0">
-                  {isAuthenticated && user ? (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          {user.avatarUrl ? (
-                            <img
-                              src={user.avatarUrl}
-                              alt={user.name}
-                              className="w-8 h-8 rounded-full object-cover border border-roseGold"
-                            />
-                          ) : (
-                            <div className="w-8 h-8 rounded-full bg-roseGold text-white flex items-center justify-center text-xs font-bold">
-                              {user.name.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <div>
-                            <span className="text-xs font-bold text-charcoal block">{user.name}</span>
-                            <span className="text-[10px] text-taupe-600 block">{user.email}</span>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => {
-                            setMobileMenuOpen(false);
-                            signOut();
-                          }}
-                          className="text-xs text-red-600 font-semibold px-2 py-1 cursor-pointer"
-                        >
-                          Sign Out
-                        </button>
-                      </div>
-
-                      <div className="flex gap-2 pt-1">
-                        <button
-                          onClick={() => {
-                            setMobileMenuOpen(false);
-                            openOrdersModal();
-                          }}
-                          className="flex-1 py-1.5 px-2.5 bg-white text-charcoal rounded-lg text-xs font-medium border border-taupe-200 flex items-center justify-center gap-1.5 cursor-pointer hover:bg-cream-100 transition"
-                        >
-                          <Package className="w-3.5 h-3.5 text-roseGold" />
-                          <span>My Orders</span>
-                        </button>
-                        <button
-                          onClick={() => {
-                            setMobileMenuOpen(false);
-                            openAddressesModal();
-                          }}
-                          className="flex-1 py-1.5 px-2.5 bg-white text-charcoal rounded-lg text-xs font-medium border border-taupe-200 flex items-center justify-center gap-1.5 cursor-pointer hover:bg-cream-100 transition"
-                        >
-                          <MapPin className="w-3.5 h-3.5 text-roseGold" />
-                          <span>Addresses</span>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        openAuthModal();
-                      }}
-                      className="w-full py-2.5 px-4 bg-white hover:bg-cream-100 text-charcoal rounded-xl text-xs font-bold border border-taupe-300 shadow-xs flex items-center justify-center gap-2 cursor-pointer transition"
-                    >
-                      <User className="w-4 h-4 text-roseGold" />
-                      <span>Login / Sign Up</span>
-                    </button>
-                  )}
-                </div>
-              </motion.div>
+                )}
+              </div>
             </div>
           </motion.div>
         )}
