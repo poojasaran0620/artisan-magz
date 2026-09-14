@@ -46,9 +46,9 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
     },
     {
       id: 'song-album',
-      title: 'Song Photo Album',
+      title: 'Songs Book',
       image: songProduct?.images[0] || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
-      alt: 'Song Book & Spotify Plaque',
+      alt: 'Songs Book Multi-Page Layout',
       onClick: () => songProduct && onSelectProduct(songProduct.id),
       position: 'object-center',
     },

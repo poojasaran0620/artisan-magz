@@ -58,6 +58,10 @@ export const App: React.FC = () => {
         setCurrentView('hamper');
         return;
       }
+      if (id === 'prod-song-01' || id === 'songbook' || id === 'song-album' || id === 'songs-book') {
+        setCurrentView('book-viewer');
+        return;
+      }
       setSelectedProductId(id);
       setInitialVariantId(undefined);
       setInitialTemplateId(undefined);
@@ -80,6 +84,10 @@ export const App: React.FC = () => {
     }
     if (productId === 'hampers' || productId === 'prod-hamper-01' || productId === 'hamper') {
       setCurrentView('hamper');
+      return;
+    }
+    if (productId === 'prod-song-01' || productId === 'songbook' || productId === 'song-album' || productId === 'songs-book') {
+      setCurrentView('book-viewer');
       return;
     }
     setSelectedFrameOption(null);
@@ -199,6 +207,7 @@ export const App: React.FC = () => {
                 onNavigateHamper={() => handleNavigate('hamper')}
                 onOpenPolicy={(policy) => setActivePolicy(policy)}
                 onDirectCheckout={() => setIsCheckoutModalOpen(true)}
+                onOpenBookViewer={() => setCurrentView('book-viewer')}
               />
             )}
 

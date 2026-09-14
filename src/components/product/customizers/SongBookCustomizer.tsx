@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product, ProductVariant, CustomizationData } from '../../../types/product';
 import { formatPrice } from '../../../utils/formatters';
-import { Music, Upload, Eye, Check, Play, Pause, Disc } from 'lucide-react';
+import { Music, Upload, Eye, Check, Play, Pause, Disc, BookOpen } from 'lucide-react';
 
 interface SongBookCustomizerProps {
   product: Product;
@@ -9,6 +9,7 @@ interface SongBookCustomizerProps {
   onVariantChange: (variant: ProductVariant) => void;
   customization: CustomizationData;
   onChange: (data: Partial<CustomizationData>) => void;
+  onOpenBookViewer?: () => void;
 }
 
 export const SongBookCustomizer: React.FC<SongBookCustomizerProps> = ({
@@ -17,6 +18,7 @@ export const SongBookCustomizer: React.FC<SongBookCustomizerProps> = ({
   onVariantChange,
   customization,
   onChange,
+  onOpenBookViewer,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const songTitle = customization.songTitle || 'Until I Found You';
@@ -35,6 +37,34 @@ export const SongBookCustomizer: React.FC<SongBookCustomizerProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Dedicated Multi-Page Book Layout Highlight */}
+      <div className="bg-gradient-to-r from-[#FAF6F0] to-[#FFF9F5] border-2 border-roseGold/40 rounded-3xl p-4 sm:p-5 shadow-sm space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-1">
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase text-roseGold bg-roseGold/10 px-2.5 py-0.5 rounded-full">
+              ★ Physical Book Layout Ready ★
+            </span>
+            <h3 className="font-serif text-base sm:text-lg font-bold text-charcoal">
+              Multi-Page Songs Book &amp; Spreads
+            </h3>
+            <p className="text-xs text-charcoal/70 leading-relaxed">
+              Experience the physical printed book: Page 1 standalone cover, Pages 2–3 side-by-side spread, and Pages 4–5 spread with realistic paper depth and spine binding.
+            </p>
+          </div>
+        </div>
+
+        {onOpenBookViewer && (
+          <button
+            type="button"
+            onClick={onOpenBookViewer}
+            className="w-full py-3 px-4 bg-charcoal hover:bg-roseGold text-white rounded-2xl font-semibold text-xs transition duration-200 shadow-luxury flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Open Multi-Page Book Layout (Pages 1, 2–3, 4–5) ✨</span>
+          </button>
+        )}
+      </div>
+
       {/* Variant Selection */}
       <div className="space-y-3">
         <label className="block text-xs font-bold text-wine-900 uppercase tracking-wider">

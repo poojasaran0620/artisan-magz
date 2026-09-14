@@ -23,7 +23,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
     { id: 'mini-magazine', label: 'Mini Magazines' },
     { id: 'frame', label: 'Photo Frames' },
     { id: 'newspaper', label: 'Newspaper Cards' },
-    { id: 'songbook', label: 'Song Plaques' },
+    { id: 'songbook', label: 'Songs Book' },
     { id: 'hamper', label: 'Custom Hampers' },
   ];
 

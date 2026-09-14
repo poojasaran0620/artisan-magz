@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BookPage, BookSpread } from '../../types/book';
 import { buildBookSpreads, INITIAL_5_PAGE_BOOK } from '../../data/bookTemplates';
 import { PhysicalBookSpread } from './PhysicalBookSpread';
@@ -144,14 +144,14 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="font-serif italic font-bold text-lg sm:text-xl text-charcoal">
-                Artisan
+                Songs Book
               </span>
               <span className="text-[10px] tracking-[0.25em] font-bold uppercase text-roseGold">
-                MAGAZINE VIEWER
+                PHYSICAL BOOK SPREADS
               </span>
             </div>
             <p className="text-xs text-charcoal/60 font-sans hidden sm:block">
-              Physical Multi-Page Book Layout • Page 1 Standalone, Pages 2–3 &amp; 4–5 Dual Spreads
+              Page 1 Standalone Cover • Pages 2–3 &amp; 4–5 Side-by-Side Dual Spreads
             </p>
           </div>
         </div>
