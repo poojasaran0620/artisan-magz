@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BookPage, BookSpread } from '../../types/book';
 import { buildBookSpreads, INITIAL_5_PAGE_BOOK } from '../../data/bookTemplates';
 import { PhysicalBookSpread } from './PhysicalBookSpread';
+import { InteractiveFlipBook } from './InteractiveFlipBook';
 import {
   ChevronLeft,
   ChevronRight,
@@ -29,6 +30,7 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
   const [activeSpreadIndex, setActiveSpreadIndex] = useState<number>(0);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [viewMode, setViewMode] = useState<'flipbook' | 'spreads'>('flipbook');
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Compute spreads from pages list
@@ -167,6 +169,34 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
             </span>
           </div>
 
+          {/* 3D Flipbook vs Dual Spreads View Toggle */}
+          <div className="hidden sm:flex items-center bg-cream-100 p-0.5 rounded-full border border-taupe-200 text-xs font-semibold shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setViewMode('flipbook')}
+              className={`px-3 py-1 rounded-full transition cursor-pointer flex items-center gap-1.5 ${
+                viewMode === 'flipbook'
+                  ? 'bg-charcoal text-white shadow-2xs'
+                  : 'text-charcoal/70 hover:text-charcoal'
+              }`}
+            >
+              <Sparkles className="w-3 h-3 text-roseGold" />
+              <span>3D Page-Flip</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('spreads')}
+              className={`px-3 py-1 rounded-full transition cursor-pointer flex items-center gap-1.5 ${
+                viewMode === 'spreads'
+                  ? 'bg-charcoal text-white shadow-2xs'
+                  : 'text-charcoal/70 hover:text-charcoal'
+              }`}
+            >
+              <BookOpen className="w-3 h-3" />
+              <span>Flat Spreads</span>
+            </button>
+          </div>
+
           {/* Mode Toggle */}
           <button
             onClick={() => setIsEditable((prev) => !prev)}
@@ -192,35 +222,51 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
       </header>
 
       {/* ================= MAIN SPREAD STAGE ================= */}
-      <main className="flex-1 flex flex-col items-center justify-center px-3 sm:px-6 relative py-4 sm:py-6">
-        {/* Floating Left Navigation Button */}
-        <button
-          onClick={handlePrev}
-          disabled={!canGoPrev}
-          aria-label="Previous Spread"
-          className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/95 backdrop-blur-md border border-taupe-200 shadow-luxury flex items-center justify-center text-charcoal hover:bg-cream-100 disabled:opacity-20 disabled:hover:bg-white/95 disabled:cursor-not-allowed transition z-40 cursor-pointer active:scale-95"
-        >
-          <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
-        </button>
+      <main className="flex-1 flex flex-col items-center justify-center px-2 sm:px-6 relative py-2 sm:py-6">
+        {viewMode === 'flipbook' ? (
+          <div className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center">
+            <InteractiveFlipBook
+              pages={pages}
+              isEditable={isEditable}
+              onPhotoClick={handlePhotoClick}
+              onPageChange={(pageNumber) => {
+                const spreadIdx = pageNumber <= 1 ? 0 : Math.floor((pageNumber - 2) / 2) + 1;
+                setActiveSpreadIndex(Math.min(spreadIdx, spreads.length - 1));
+              }}
+            />
+          </div>
+        ) : (
+          <>
+            {/* Floating Left Navigation Button */}
+            <button
+              onClick={handlePrev}
+              disabled={!canGoPrev}
+              aria-label="Previous Spread"
+              className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/95 backdrop-blur-md border border-taupe-200 shadow-luxury flex items-center justify-center text-charcoal hover:bg-cream-100 disabled:opacity-20 disabled:hover:bg-white/95 disabled:cursor-not-allowed transition z-40 cursor-pointer active:scale-95"
+            >
+              <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
+            </button>
 
-        {/* Physical Book Spread Component */}
-        <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
-          <PhysicalBookSpread
-            spread={activeSpread}
-            isEditable={isEditable}
-            onPhotoClick={handlePhotoClick}
-          />
-        </div>
+            {/* Physical Book Spread Component */}
+            <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
+              <PhysicalBookSpread
+                spread={activeSpread}
+                isEditable={isEditable}
+                onPhotoClick={handlePhotoClick}
+              />
+            </div>
 
-        {/* Floating Right Navigation Button */}
-        <button
-          onClick={handleNext}
-          disabled={!canGoNext}
-          aria-label="Next Spread"
-          className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/95 backdrop-blur-md border border-taupe-200 shadow-luxury flex items-center justify-center text-charcoal hover:bg-cream-100 disabled:opacity-20 disabled:hover:bg-white/95 disabled:cursor-not-allowed transition z-40 cursor-pointer active:scale-95"
-        >
-          <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
-        </button>
+            {/* Floating Right Navigation Button */}
+            <button
+              onClick={handleNext}
+              disabled={!canGoNext}
+              aria-label="Next Spread"
+              className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/95 backdrop-blur-md border border-taupe-200 shadow-luxury flex items-center justify-center text-charcoal hover:bg-cream-100 disabled:opacity-20 disabled:hover:bg-white/95 disabled:cursor-not-allowed transition z-40 cursor-pointer active:scale-95"
+            >
+              <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
+            </button>
+          </>
+        )}
       </main>
 
       {/* ================= BOTTOM FILMSTRIP / SPREAD THUMBNAIL DRAWER ================= */}
