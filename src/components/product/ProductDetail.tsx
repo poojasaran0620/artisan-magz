@@ -1,8 +1,11 @@
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Product, ProductVariant, CustomizationData } from '../../types/product';
 import { formatPrice, calculateEstimatedDelivery } from '../../utils/formatters';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useToast } from '../../context/ToastContext';
+import { springs, luxuryEase, buttonTapSpring } from '../../styles/motion';
 import { MagazineCustomizer } from './customizers/MagazineCustomizer';
 import { FrameCustomizer } from './customizers/FrameCustomizer';
 import { NewspaperCustomizer } from './customizers/NewspaperCustomizer';
@@ -54,6 +57,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 }) => {
   const { addToCart, sendWhatsAppOrder } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
+  const { showToast } = useToast();
 
   // Determine initial variant
   const initialVar = initialVariantId
@@ -142,6 +146,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
     });
 
     addToCart(product, selectedVariant, customization, 1);
+    showToast('Added to Keepsake Bag 🛍️', 'cart');
   };
 
   const handleBuyNow = () => {
@@ -153,6 +158,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
     });
 
     addToCart(product, selectedVariant, customization, 1);
+    showToast('Proceeding to Checkout ✨', 'success');
     if (onDirectCheckout) {
       onDirectCheckout();
     }
@@ -189,13 +195,20 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           {/* Left Column: Image Gallery & Highlights */}
           <div className="lg:col-span-6 space-y-4">
             <div className="sticky top-24 space-y-4">
-              {/* Main Image Viewport - Full uncropped photo */}
+              {/* Main Image Viewport - Full uncropped photo with AnimatePresence Crossfade */}
               <div className="relative aspect-[3/4] sm:aspect-square rounded-3xl overflow-hidden bg-[#FAF8F5] border border-roseGold-light shadow-luxury flex items-center justify-center p-2">
-                <img
-                  src={displayImages[activeImageIndex] || displayImages[0]}
-                  alt={displayTitle}
-                  className="w-full h-full object-contain"
-                />
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={displayImages[activeImageIndex] || displayImages[0]}
+                    src={displayImages[activeImageIndex] || displayImages[0]}
+                    alt={displayTitle}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.22 }}
+                    className="w-full h-full object-contain"
+                  />
+                </AnimatePresence>
 
                 {/* Badge */}
                 {product.badge && (
@@ -204,16 +217,31 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                   </span>
                 )}
 
-                {/* Wishlist Button */}
-                <button
-                  onClick={() => toggleWishlist(product.id)}
-                  className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition ${
+                {/* Wishlist Button with Spring Physics */}
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.85 }}
+                  transition={springs.snappy}
+                  onClick={() => {
+                    const willLike = !isLiked;
+                    toggleWishlist(product.id);
+                    showToast(
+                      willLike ? 'Saved to Wishlist ❤️' : 'Removed from Wishlist',
+                      'wishlist'
+                    );
+                  }}
+                  className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer ${
                     isLiked ? 'bg-blush-500 text-white shadow' : 'bg-white/85 text-wine-900 hover:bg-white'
                   }`}
                   aria-label="Wishlist"
                 >
-                  <Heart className={`w-5 h-5 ${isLiked ? 'fill-white text-white' : 'text-wine-900'}`} />
-                </button>
+                  <motion.div
+                    animate={{ scale: isLiked ? [1, 1.25, 1] : 1 }}
+                    transition={springs.bouncy}
+                  >
+                    <Heart className={`w-5 h-5 ${isLiked ? 'fill-white text-white' : 'text-wine-900'}`} />
+                  </motion.div>
+                </motion.button>
               </div>
 
               {/* Thumbnails row */}
@@ -361,29 +389,35 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
             {/* Desktop Action Buttons: Add to Bag, Buy Now, and WhatsApp */}
             <div className="hidden md:grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.015 }}
+                whileTap={buttonTapSpring}
                 onClick={handleAddToCart}
                 className="py-3.5 px-4 bg-white hover:bg-cream-100 text-charcoal border-2 border-charcoal rounded-2xl font-semibold text-xs sm:text-sm shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <ShoppingBag className="w-4 h-4" />
                 <span>Add to Bag</span>
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.015 }}
+                whileTap={buttonTapSpring}
                 onClick={handleBuyNow}
-                className="py-3.5 px-4 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] rounded-2xl font-semibold text-xs sm:text-sm shadow-soft hover:shadow-soft-lg active:scale-95 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                className="py-3.5 px-4 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] rounded-2xl font-semibold text-xs sm:text-sm shadow-soft hover:shadow-soft-lg transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Zap className="w-4 h-4 text-roseGold-light" />
                 <span>Buy Now • {formatPrice(currentPrice)}</span>
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.015 }}
+                whileTap={buttonTapSpring}
                 onClick={handleWhatsAppBuyNow}
                 className="py-3.5 px-4 bg-charcoal hover:bg-charcoal-dark text-white rounded-2xl font-semibold text-xs sm:text-sm shadow transition flex items-center justify-center gap-1.5 cursor-pointer border border-taupe-200"
               >
                 <MessageCircle className="w-4 h-4 text-sage-400" />
                 <span>Order via WhatsApp 💬</span>
-              </button>
+              </motion.button>
             </div>
 
             {/* Pincode Delivery Estimator */}
@@ -439,164 +473,239 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               )}
             </div>
 
-            {/* Expandable Accordions */}
+            {/* Expandable Accordions with Framer Motion AnimatePresence */}
             <div className="space-y-3 pt-2">
               {/* Accordion 1: Product Details */}
-              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden">
+              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden shadow-2xs">
                 <button
                   type="button"
                   onClick={() => toggleAccordion('details')}
-                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider"
+                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider cursor-pointer group select-none"
                 >
-                  <span>Product Details & Specifications</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-wine-900/60 transition-transform duration-200 ${
-                      openAccordions.details ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <span className="group-hover:text-blush-600 transition-colors">Product Details & Specifications</span>
+                  <motion.div
+                    animate={{ rotate: openAccordions.details ? 180 : 0 }}
+                    transition={springs.smooth}
+                  >
+                    <ChevronDown
+                      className={`w-4 h-4 transition-colors ${
+                        openAccordions.details ? 'text-blush-600' : 'text-wine-900/60'
+                      }`}
+                    />
+                  </motion.div>
                 </button>
-                {openAccordions.details && (
-                  <div className="px-5 pb-4 text-xs text-wine-900/80 leading-relaxed border-t border-cream-100 pt-3 space-y-2">
-                    <p>{product.description}</p>
-                    <ul className="list-disc list-inside space-y-1 pt-1 text-wine-900/70">
-                      {product.features.map((feat, i) => (
-                        <li key={i}>{feat}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <AnimatePresence initial={false}>
+                  {openAccordions.details && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: luxuryEase }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-4 text-xs text-wine-900/80 leading-relaxed border-t border-cream-100 pt-3 space-y-2">
+                        <p>{product.description}</p>
+                        <ul className="list-disc list-inside space-y-1 pt-1 text-wine-900/70">
+                          {product.features.map((feat, i) => (
+                            <li key={i}>{feat}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Accordion 2: What's Included */}
-              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden">
+              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden shadow-2xs">
                 <button
                   type="button"
                   onClick={() => toggleAccordion('included')}
-                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider"
+                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider cursor-pointer group select-none"
                 >
-                  <span>What's Included (Exact Package Checklist)</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-wine-900/60 transition-transform duration-200 ${
-                      openAccordions.included ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <span className="group-hover:text-blush-600 transition-colors">What's Included (Exact Package Checklist)</span>
+                  <motion.div
+                    animate={{ rotate: openAccordions.included ? 180 : 0 }}
+                    transition={springs.smooth}
+                  >
+                    <ChevronDown
+                      className={`w-4 h-4 transition-colors ${
+                        openAccordions.included ? 'text-blush-600' : 'text-wine-900/60'
+                      }`}
+                    />
+                  </motion.div>
                 </button>
-                {openAccordions.included && (
-                  <div className="px-5 pb-4 text-xs text-wine-900/80 border-t border-cream-100 pt-3 space-y-2">
-                    {product.whatsIncluded.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span>{item}</span>
+                <AnimatePresence initial={false}>
+                  {openAccordions.included && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: luxuryEase }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-4 text-xs text-wine-900/80 border-t border-cream-100 pt-3 space-y-2">
+                        {product.whatsIncluded.map((item, i) => (
+                          <div key={i} className="flex items-start gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Accordion 3: Things Required from You */}
-              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden">
+              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden shadow-2xs">
                 <button
                   type="button"
                   onClick={() => toggleAccordion('required')}
-                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider"
+                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider cursor-pointer group select-none"
                 >
-                  <span>Things Required from You (Clear Guidelines)</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-wine-900/60 transition-transform duration-200 ${
-                      openAccordions.required ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <span className="group-hover:text-blush-600 transition-colors">Things Required from You (Clear Guidelines)</span>
+                  <motion.div
+                    animate={{ rotate: openAccordions.required ? 180 : 0 }}
+                    transition={springs.smooth}
+                  >
+                    <ChevronDown
+                      className={`w-4 h-4 transition-colors ${
+                        openAccordions.required ? 'text-blush-600' : 'text-wine-900/60'
+                      }`}
+                    />
+                  </motion.div>
                 </button>
-                {openAccordions.required && (
-                  <div className="px-5 pb-4 text-xs text-wine-900/80 border-t border-cream-100 pt-3 space-y-2">
-                    <p className="text-[11px] text-wine-900/60">
-                      You can input text/photos above or easily send remaining high-res files directly to our WhatsApp support team after placing your order:
-                    </p>
-                    {product.thingsRequired.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <Sparkles className="w-3.5 h-3.5 text-blush-600 shrink-0 mt-0.5" />
-                        <span>{item}</span>
+                <AnimatePresence initial={false}>
+                  {openAccordions.required && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: luxuryEase }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-4 text-xs text-wine-900/80 border-t border-cream-100 pt-3 space-y-2">
+                        <p className="text-[11px] text-wine-900/60">
+                          You can input text/photos above or easily send remaining high-res files directly to our WhatsApp support team after placing your order:
+                        </p>
+                        {product.thingsRequired.map((item, i) => (
+                          <div key={i} className="flex items-start gap-2">
+                            <Sparkles className="w-3.5 h-3.5 text-blush-600 shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Accordion 4: Timelines & Shipping */}
-              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden">
+              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden shadow-2xs">
                 <button
                   type="button"
                   onClick={() => toggleAccordion('shipping')}
-                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider"
+                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider cursor-pointer group select-none"
                 >
-                  <span>Timelines & Express Shipping</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-wine-900/60 transition-transform duration-200 ${
-                      openAccordions.shipping ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <span className="group-hover:text-blush-600 transition-colors">Timelines & Express Shipping</span>
+                  <motion.div
+                    animate={{ rotate: openAccordions.shipping ? 180 : 0 }}
+                    transition={springs.smooth}
+                  >
+                    <ChevronDown
+                      className={`w-4 h-4 transition-colors ${
+                        openAccordions.shipping ? 'text-blush-600' : 'text-wine-900/60'
+                      }`}
+                    />
+                  </motion.div>
                 </button>
-                {openAccordions.shipping && (
-                  <div className="px-5 pb-4 text-xs text-wine-900/80 border-t border-cream-100 pt-3 space-y-2">
-                    <p>
-                      <strong>Dispatch:</strong> {product.dispatchesIn}
-                    </p>
-                    <p>
-                      <strong>Delivery:</strong> {product.deliveryTimeline}
-                    </p>
-                    <p className="text-[11px] text-wine-900/60">
-                      Need urgent 24-48h milestone rush delivery? DM us on WhatsApp after ordering and our dispatch team will prioritize your print slot.
-                    </p>
-                  </div>
-                )}
+                <AnimatePresence initial={false}>
+                  {openAccordions.shipping && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: luxuryEase }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-4 text-xs text-wine-900/80 border-t border-cream-100 pt-3 space-y-2">
+                        <p>
+                          <strong>Dispatch:</strong> {product.dispatchesIn}
+                        </p>
+                        <p>
+                          <strong>Delivery:</strong> {product.deliveryTimeline}
+                        </p>
+                        <p className="text-[11px] text-wine-900/60">
+                          Need urgent 24-48h milestone rush delivery? DM us on WhatsApp after ordering and our dispatch team will prioritize your print slot.
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Accordion 5: Policies Drawer */}
-              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden">
+              <div className="border border-roseGold-light/60 rounded-2xl bg-white overflow-hidden shadow-2xs">
                 <button
                   type="button"
                   onClick={() => toggleAccordion('policies')}
-                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider"
+                  className="w-full px-5 py-3.5 text-left flex items-center justify-between text-xs font-bold text-wine-900 uppercase tracking-wider cursor-pointer group select-none"
                 >
-                  <span>Policies (Privacy, Non-Cancellation, Guarantees)</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-wine-900/60 transition-transform duration-200 ${
-                      openAccordions.policies ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <span className="group-hover:text-blush-600 transition-colors">Policies (Privacy, Non-Cancellation, Guarantees)</span>
+                  <motion.div
+                    animate={{ rotate: openAccordions.policies ? 180 : 0 }}
+                    transition={springs.smooth}
+                  >
+                    <ChevronDown
+                      className={`w-4 h-4 transition-colors ${
+                        openAccordions.policies ? 'text-blush-600' : 'text-wine-900/60'
+                      }`}
+                    />
+                  </motion.div>
                 </button>
-                {openAccordions.policies && (
-                  <div className="px-5 pb-4 text-xs text-wine-900/80 border-t border-cream-100 pt-3 space-y-3">
-                    <div>
-                      <h5 className="font-bold text-wine-900">Customized Orders Policy:</h5>
-                      <p className="text-[11px] text-wine-900/70">
-                        Since all gifts are uniquely customized with personal names and photos, cancellations are only possible within 2 hours of placing the order before printing commences.
-                      </p>
-                    </div>
+                <AnimatePresence initial={false}>
+                  {openAccordions.policies && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: luxuryEase }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-4 text-xs text-wine-900/80 border-t border-cream-100 pt-3 space-y-3">
+                        <div>
+                          <h5 className="font-bold text-wine-900">Customized Orders Policy:</h5>
+                          <p className="text-[11px] text-wine-900/70">
+                            Since all gifts are uniquely customized with personal names and photos, cancellations are only possible within 2 hours of placing the order before printing commences.
+                          </p>
+                        </div>
 
-                    <div>
-                      <h5 className="font-bold text-wine-900">100% Photo Privacy:</h5>
-                      <p className="text-[11px] text-wine-900/70">
-                        Your personal couple/family photos are treated with strict confidentiality and automatically purged from our production servers 14 days after successful delivery.
-                      </p>
-                    </div>
+                        <div>
+                          <h5 className="font-bold text-wine-900">100% Photo Privacy:</h5>
+                          <p className="text-[11px] text-wine-900/70">
+                            Your personal couple/family photos are treated with strict confidentiality and automatically purged from our production servers 14 days after successful delivery.
+                          </p>
+                        </div>
 
-                    <div className="pt-1 flex gap-3 text-[11px]">
-                      <button
-                        onClick={() => onOpenPolicy('cancellation')}
-                        className="text-blush-700 underline font-semibold"
-                      >
-                        Read Full Refund Policy
-                      </button>
-                      <button
-                        onClick={() => onOpenPolicy('privacy')}
-                        className="text-blush-700 underline font-semibold"
-                      >
-                        Read Privacy Terms
-                      </button>
-                    </div>
-                  </div>
-                )}
+                        <div className="pt-1 flex gap-3 text-[11px]">
+                          <button
+                            onClick={() => onOpenPolicy('cancellation')}
+                            className="text-blush-700 underline font-semibold cursor-pointer"
+                          >
+                            Read Full Refund Policy
+                          </button>
+                          <button
+                            onClick={() => onOpenPolicy('privacy')}
+                            className="text-blush-700 underline font-semibold cursor-pointer"
+                          >
+                            Read Privacy Terms
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>
@@ -604,7 +713,12 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
       </div>
 
       {/* Sticky Mobile Bottom Bar (Always Accessible on Mobile Devices with Add to Cart & Buy Now) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#FDFCF5]/95 backdrop-blur-md border-t border-taupe-200/80 p-2.5 px-4 shadow-luxury md:hidden flex items-center justify-between gap-2.5">
+      <motion.div
+        initial={{ y: 80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={springs.smooth}
+        className="fixed bottom-0 left-0 right-0 z-40 bg-[#FDFCF5]/95 backdrop-blur-md border-t border-taupe-200/80 p-2.5 px-4 shadow-luxury md:hidden flex items-center justify-between gap-2.5"
+      >
         <div className="flex items-center gap-2 min-w-0">
           <img
             src={product.images[0]}
@@ -629,32 +743,35 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 flex-1 justify-end">
-          <button
+          <motion.button
+            whileTap={buttonTapSpring}
             onClick={handleWhatsAppBuyNow}
-            className="p-2.5 bg-charcoal hover:bg-charcoal-dark text-white rounded-xl text-xs font-semibold shadow flex items-center justify-center shrink-0 border border-taupe-200"
+            className="p-2.5 bg-charcoal hover:bg-charcoal-dark text-white rounded-xl text-xs font-semibold shadow flex items-center justify-center shrink-0 border border-taupe-200 cursor-pointer"
             title="Order via WhatsApp"
             aria-label="Order via WhatsApp"
           >
             <MessageCircle className="w-4 h-4 text-sage-400" />
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileTap={buttonTapSpring}
             onClick={handleAddToCart}
-            className="px-2.5 py-2.5 bg-white hover:bg-cream-100 text-charcoal border border-charcoal/80 rounded-xl text-xs font-bold shadow-sm flex items-center justify-center gap-1 shrink-0"
+            className="px-2.5 py-2.5 bg-white hover:bg-cream-100 text-charcoal border border-charcoal/80 rounded-xl text-xs font-bold shadow-sm flex items-center justify-center gap-1 shrink-0 cursor-pointer"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Add</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileTap={buttonTapSpring}
             onClick={handleBuyNow}
-            className="flex-1 py-2.5 px-3 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] rounded-xl text-xs font-bold shadow-soft flex items-center justify-center gap-1 active:scale-95 transition"
+            className="flex-1 py-2.5 px-3 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] rounded-xl text-xs font-bold shadow-soft flex items-center justify-center gap-1 transition cursor-pointer"
           >
             <Zap className="w-3.5 h-3.5 text-roseGold-light" />
             <span>Buy Now</span>
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

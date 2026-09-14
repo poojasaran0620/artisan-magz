@@ -1,8 +1,10 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, BookOpen } from 'lucide-react';
 import { MagazineTemplate } from '../../types/product';
 import { InteractiveFlipbook } from '../magazine/InteractiveFlipbook';
 import { MagazinePageContent } from '../magazine/MagazinePageSpread';
+import { modalBackdropVariants, modalDialogVariants, buttonTapSpring } from '../../styles/motion';
 
 interface TemplatePreviewModalProps {
   template: MagazineTemplate | null;
@@ -15,45 +17,57 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
   onClose,
   onSelectTemplate,
 }) => {
-  if (!template) return null;
+  const isOpen = Boolean(template);
 
   // Convert template into rich MagazinePageContent structure
-  const pages: MagazinePageContent[] = [
-    {
-      id: `${template.id}-cover`,
-      pageNumber: 1,
-      type: 'cover',
-      title: template.name,
-      subtitle: template.tagline,
-      date: 'Bespoke Studio Edition',
-      image: template.coverImage,
-    },
-    ...template.previewPages.map((imgUrl, idx) => ({
-      id: `${template.id}-p${idx + 2}`,
-      pageNumber: idx + 2,
-      type: (idx % 2 === 0 ? 'editorial' : 'collage') as MagazinePageContent['type'],
-      title: idx % 2 === 0 ? 'Chapter of Us' : 'Memories Reel',
-      caption: `Handcrafted layouts designed specifically for ${template.suitableFor.toLowerCase()}.`,
-      image: imgUrl,
-    })),
-    {
-      id: `${template.id}-back`,
-      pageNumber: template.previewPages.length + 2,
-      type: 'backCover',
-      title: 'Artisan Magz Studio',
-      image: '/artisan_logo_horizontal.png',
-    },
-  ];
+  const pages: MagazinePageContent[] = template
+    ? [
+        {
+          id: `${template.id}-cover`,
+          pageNumber: 1,
+          type: 'cover',
+          title: template.name,
+          subtitle: template.tagline,
+          date: 'Bespoke Studio Edition',
+          image: template.coverImage,
+        },
+        ...template.previewPages.map((imgUrl, idx) => ({
+          id: `${template.id}-p${idx + 2}`,
+          pageNumber: idx + 2,
+          type: (idx % 2 === 0 ? 'editorial' : 'collage') as MagazinePageContent['type'],
+          title: idx % 2 === 0 ? 'Chapter of Us' : 'Memories Reel',
+          caption: `Handcrafted layouts designed specifically for ${template.suitableFor.toLowerCase()}.`,
+          image: imgUrl,
+        })),
+        {
+          id: `${template.id}-back`,
+          pageNumber: template.previewPages.length + 2,
+          type: 'backCover',
+          title: 'Artisan Magz Studio',
+          image: '/artisan_logo_horizontal.png',
+        },
+      ]
+    : [];
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-charcoal/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-fadeIn"
-      onClick={onClose}
-    >
-      <div
-        className="bg-[#FDFCF5] rounded-3xl max-w-4xl w-full overflow-hidden shadow-luxury border border-taupe-200/80 relative flex flex-col max-h-[96vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isOpen && template && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="fixed inset-0 z-50 bg-charcoal/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6"
+          onClick={onClose}
+        >
+          <motion.div
+            variants={modalDialogVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="bg-[#FDFCF5] rounded-3xl max-w-4xl w-full overflow-hidden shadow-luxury border border-taupe-200/80 relative flex flex-col max-h-[96vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-taupe-200/60 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
@@ -124,7 +138,9 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             <span>Customize with This Template</span>
           </button>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

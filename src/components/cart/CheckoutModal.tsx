@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { modalBackdropVariants, modalDialogVariants, buttonTapSpring } from '../../styles/motion';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatPrice } from '../../utils/formatters';
@@ -68,8 +70,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
       }));
     }
   }, [user, savedAddresses]);
-
-  if (!isOpen) return null;
 
   const handleSelectSavedAddress = (addr: typeof savedAddresses[0]) => {
     setFormData((prev) => ({
@@ -196,8 +196,22 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
-      <div className="relative w-full max-w-xl bg-[#FCFAF7] rounded-3xl shadow-2xl border border-roseGold-light overflow-hidden my-8">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6"
+        >
+          <motion.div
+            variants={modalDialogVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="relative w-full max-w-xl bg-[#FCFAF7] rounded-3xl shadow-2xl border border-roseGold-light overflow-hidden my-8"
+          >
         {/* Header */}
         <div className="p-5 bg-white border-b border-roseGold-light/40 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -205,7 +219,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
               <Sparkles className="w-4 h-4" />
             </span>
             <div>
-              <h3 className="font-serif text-lg font-bold text-wine-900">
+              <h3 className="font-sans text-base sm:text-lg font-bold text-wine-900">
                 {step === 'success' ? 'Order Confirmed! 🎉' : !isAuthenticated ? 'Sign In Required' : 'Secure Checkout'}
               </h3>
               <p className="text-[11px] text-wine-900/60">
@@ -230,7 +244,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
             </div>
 
             <div className="space-y-1.5">
-              <h3 className="font-serif text-xl font-bold text-wine-900">
+              <h3 className="font-sans text-lg sm:text-xl font-bold text-wine-900">
                 Sign In to Continue
               </h3>
               <p className="text-xs text-wine-900/60 max-w-xs mx-auto">
@@ -578,7 +592,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
               <span className="text-xs font-bold text-blush-600 uppercase tracking-widest">
                 Milestone Captured
               </span>
-              <h3 className="font-serif text-2xl font-bold text-wine-900">
+              <h3 className="font-sans text-xl sm:text-2xl font-bold text-wine-900">
                 Thank you, {formData.fullName}!
               </h3>
               <p className="text-xs text-wine-900/70 max-w-sm mx-auto">
@@ -666,7 +680,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
             </div>
           </div>
         )}
-      </div>
-    </div>
-  );
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
 };

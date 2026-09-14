@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { ToastProvider } from './context/ToastContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { WelcomeHeader } from './components/home/WelcomeHeader';
@@ -106,16 +108,26 @@ export const App: React.FC = () => {
     <AuthProvider>
       <CartProvider>
         <WishlistProvider>
-          <div className="min-h-screen flex flex-col bg-[#FDFCF5] selection:bg-[#FFDBE5] selection:text-[#333333]">
-          {/* Main Navigation (AnnouncementBar disabled per user request) */}
-          <Navbar
-            onNavigate={handleNavigate}
-            currentView={currentView}
-            onOpenPolicy={(policy) => setActivePolicy(policy)}
-          />
+          <ToastProvider>
+            <div className="min-h-screen flex flex-col bg-[#FDFCF5] selection:bg-[#FFDBE5] selection:text-[#333333]">
+            {/* Main Navigation (AnnouncementBar disabled per user request) */}
+            <Navbar
+              onNavigate={handleNavigate}
+              currentView={currentView}
+              onOpenPolicy={(policy) => setActivePolicy(policy)}
+            />
 
-          {/* Main Content Area */}
-          <main className="flex-grow">
+            {/* Main Content Area */}
+          {/* Main Content Area with Fluid Page Transition */}
+          <AnimatePresence mode="wait">
+            <motion.main
+              key={currentView}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="flex-grow"
+            >
             {currentView === 'home' && (
               <>
                 {/* 1. Top Welcome Header */}
@@ -219,7 +231,8 @@ export const App: React.FC = () => {
             {currentView === 'admin' && (
               <AdminDashboard onBack={() => handleNavigate('home')} />
             )}
-          </main>
+            </motion.main>
+          </AnimatePresence>
 
           {/* Footer (BottomNav disabled per user request) */}
           <Footer
@@ -257,9 +270,10 @@ export const App: React.FC = () => {
           <MyOrdersModal />
           <SavedAddressesModal />
         </div>
-      </WishlistProvider>
-    </CartProvider>
-  </AuthProvider>
+      </ToastProvider>
+    </WishlistProvider>
+  </CartProvider>
+</AuthProvider>
   );
 };
 

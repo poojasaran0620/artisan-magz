@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react';
 import { StoryHighlight } from '../../types/product';
+import { modalBackdropVariants, modalDialogVariants, buttonTapSpring } from '../../styles/motion';
 
 interface StoryViewerModalProps {
   highlight: StoryHighlight | null;
@@ -46,9 +48,8 @@ export const StoryViewerModal: React.FC<StoryViewerModalProps> = ({
     return () => clearInterval(timer);
   }, [highlight, currentIndex, onClose]);
 
-  if (!highlight) return null;
-
-  const currentStory = highlight.stories[currentIndex];
+  const isOpen = Boolean(highlight);
+  const currentStory = highlight ? highlight.stories[currentIndex] : null;
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -60,7 +61,7 @@ export const StoryViewerModal: React.FC<StoryViewerModalProps> = ({
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (currentIndex < highlight.stories.length - 1) {
+    if (highlight && currentIndex < highlight.stories.length - 1) {
       setCurrentIndex((curr) => curr + 1);
       setProgress(0);
     } else {
@@ -69,14 +70,24 @@ export const StoryViewerModal: React.FC<StoryViewerModalProps> = ({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-sm sm:max-w-md h-[80vh] max-h-[700px] bg-[#1a0c11] rounded-3xl overflow-hidden shadow-2xl flex flex-col justify-between"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isOpen && highlight && currentStory && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4"
+          onClick={onClose}
+        >
+          <motion.div
+            variants={modalDialogVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="relative w-full max-w-sm sm:max-w-md h-[80vh] max-h-[700px] bg-[#1a0c11] rounded-3xl overflow-hidden shadow-2xl flex flex-col justify-between"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Progress bars */}
         <div className="absolute top-3 left-3 right-3 z-30 flex items-center gap-1.5">
           {highlight.stories.map((story, i) => (
@@ -163,7 +174,9 @@ export const StoryViewerModal: React.FC<StoryViewerModalProps> = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

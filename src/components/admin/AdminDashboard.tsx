@@ -312,7 +312,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
 
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-roseGold" />
-            <h1 className="font-serif text-base sm:text-lg font-bold text-charcoal">
+            <h1 className="font-sans text-sm sm:text-base font-bold text-charcoal">
               Admin Dashboard
             </h1>
           </div>

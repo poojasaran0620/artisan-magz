@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import {
   FileText,
   Palette,
@@ -11,6 +12,7 @@ import {
   FileCheck,
   Sparkles,
 } from 'lucide-react';
+import { springs, luxuryEase } from '../../styles/motion';
 
 export const HowToOrderSection: React.FC = () => {
   const steps = [
@@ -89,28 +91,33 @@ export const HowToOrderSection: React.FC = () => {
             </p>
           </div>
 
-          {/* 5 Numbered Step Cards matching Reference Image 2 */}
+          {/* 5 Numbered Step Cards with Staggered Scroll Entrance */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {steps.map((s) => {
+            {steps.map((s, idx) => {
               const IconComponent = s.icon;
               return (
-                <div
+                <motion.div
                   key={s.step}
-                  className="bg-white/95 rounded-3xl p-5 sm:p-6 border border-taupe-200/80 shadow-soft hover:shadow-soft-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 relative overflow-hidden"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ delay: idx * 0.08, duration: 0.4, ease: luxuryEase }}
+                  whileHover={{ y: -6, scale: 1.015 }}
+                  className="bg-white/95 rounded-3xl p-5 sm:p-6 border border-taupe-200/80 shadow-soft hover:shadow-luxury transition-shadow duration-300 flex flex-col justify-between group relative overflow-hidden cursor-default"
                 >
                   {/* Top: Step Number & Dot */}
                   <div className="flex items-center justify-between mb-4">
                     <span className="font-serif text-xl sm:text-2xl font-bold text-roseGold/90">
                       {s.step}
                     </span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-roseGold/60 group-hover:bg-roseGold transition-colors" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-roseGold/60 group-hover:bg-roseGold group-hover:scale-125 transition-all duration-300" />
                   </div>
 
                   {/* Body: Title & Description */}
                   <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <IconComponent className="w-4 h-4 text-roseGold" />
-                      <h3 className="font-serif text-base font-bold text-charcoal leading-snug">
+                      <IconComponent className="w-4 h-4 text-roseGold group-hover:scale-110 transition-transform duration-300" />
+                      <h3 className="font-sans text-sm sm:text-base font-bold text-charcoal leading-snug">
                         {s.title}
                       </h3>
                     </div>
@@ -118,7 +125,7 @@ export const HowToOrderSection: React.FC = () => {
                       {s.desc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -127,7 +134,13 @@ export const HowToOrderSection: React.FC = () => {
         {/* ========================================================================= */}
         {/* PART 2: HOW TO UPLOAD PHOTOS                                             */}
         {/* ========================================================================= */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-roseGold-light/40 shadow-luxury space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.45, ease: luxuryEase }}
+          className="bg-white rounded-3xl p-6 sm:p-10 border border-roseGold-light/40 shadow-luxury space-y-8"
+        >
           <div className="text-center space-y-1.5 max-w-xl mx-auto">
             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-roseGold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-roseGold" />
@@ -142,12 +155,17 @@ export const HowToOrderSection: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {uploadSteps.map((u) => {
+            {uploadSteps.map((u, idx) => {
               const IconComp = u.icon;
               return (
-                <div
+                <motion.div
                   key={u.badge}
-                  className="bg-[#FAF8F5] rounded-2xl p-5 border border-taupe-200/60 shadow-xs space-y-3 flex flex-col justify-between"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ delay: idx * 0.1, duration: 0.4, ease: luxuryEase }}
+                  whileHover={{ y: -6, scale: 1.015 }}
+                  className="bg-[#FAF8F5] rounded-2xl p-5 border border-taupe-200/60 shadow-xs hover:shadow-soft-lg transition-shadow duration-300 space-y-3 flex flex-col justify-between"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
@@ -157,7 +175,7 @@ export const HowToOrderSection: React.FC = () => {
                       <IconComp className="w-4 h-4 text-roseGold" />
                     </div>
 
-                    <h4 className="font-serif text-base font-bold text-charcoal">
+                    <h4 className="font-sans text-sm sm:text-base font-bold text-charcoal">
                       {u.title}
                     </h4>
 
@@ -172,7 +190,7 @@ export const HowToOrderSection: React.FC = () => {
                       <span>{u.highlight}</span>
                     </span>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -182,7 +200,7 @@ export const HowToOrderSection: React.FC = () => {
             <span className="font-bold text-roseGold">🔒 Privacy Guaranteed:</span>
             <span>Your personal photos are kept strictly confidential, encrypted, and deleted after printing & delivery.</span>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

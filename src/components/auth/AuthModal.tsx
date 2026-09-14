@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { X, Sparkles, ShieldCheck, Heart, Truck, ArrowRight, Mail } from 'lucide-react';
+import { modalBackdropVariants, modalDialogVariants, buttonTapSpring } from '../../styles/motion';
 
 export const AuthModal: React.FC = () => {
   const { isAuthModalOpen, closeAuthModal, signInWithGoogle, signInWithEmail, isLoading } = useAuth();
   const [emailInput, setEmailInput] = useState('');
   const [nameInput, setNameInput] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
-
-  if (!isAuthModalOpen) return null;
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,14 +23,24 @@ export const AuthModal: React.FC = () => {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200"
-      onClick={closeAuthModal}
-    >
-      <div
-        className="bg-[#FFFDF9] rounded-3xl max-w-md w-full overflow-hidden shadow-luxury border border-white/80 p-6 sm:p-8 space-y-6 relative max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isAuthModalOpen && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="fixed inset-0 z-50 bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={closeAuthModal}
+        >
+          <motion.div
+            variants={modalDialogVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="bg-[#FFFDF9] rounded-3xl max-w-md w-full overflow-hidden shadow-luxury border border-white/80 p-6 sm:p-8 space-y-6 relative max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Close Button */}
         <button
           onClick={closeAuthModal}
@@ -166,7 +176,9 @@ export const AuthModal: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

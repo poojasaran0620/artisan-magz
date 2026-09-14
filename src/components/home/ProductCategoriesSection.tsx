@@ -1,6 +1,8 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ArrowRight, Hammer } from 'lucide-react';
 import { PRODUCTS } from '../../data/products';
+import { springs, luxuryEase } from '../../styles/motion';
 
 interface ProductCategoriesSectionProps {
   onSelectProduct: (productId: string, templateId?: string, variantId?: string) => void;
@@ -101,7 +103,11 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
 
             {/* Spotlight Single Bestseller Card: Custom Magazine */}
             <div className="max-w-xs sm:max-w-sm mx-auto">
-              <div className="bg-[#FFFDF9] rounded-3xl p-4 sm:p-5 text-charcoal shadow-luxury border border-white/60 flex flex-col items-center text-center gap-3.5 group hover:-translate-y-0.5 transition duration-300 relative overflow-hidden">
+              <motion.div
+                whileHover={{ y: -6, scale: 1.02 }}
+                transition={springs.smooth}
+                className="bg-[#FFFDF9] rounded-3xl p-4 sm:p-5 text-charcoal shadow-luxury border border-white/60 flex flex-col items-center text-center gap-3.5 relative overflow-hidden group cursor-pointer"
+              >
                 {/* Bestseller Crown Tag */}
                 <div className="absolute top-2.5 right-2.5 z-10 bg-charcoal text-[#FDFCF5] text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm flex items-center gap-1">
                   <span>#1 Bestseller 🔥</span>
@@ -130,17 +136,20 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
                     Magazines
                   </h3>
 
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.96 }}
+                    transition={springs.snappy}
                     onClick={() => onSelectProduct(magazineProduct.id)}
-                    className="w-full py-2.5 sm:py-3 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] rounded-xl text-xs sm:text-sm font-bold shadow-soft hover:shadow-soft-lg active:scale-98 transition flex items-center justify-center gap-2 cursor-pointer group/btn"
+                    className="w-full py-2.5 sm:py-3 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] rounded-xl text-xs sm:text-sm font-bold shadow-soft hover:shadow-soft-lg transition flex items-center justify-center gap-2 cursor-pointer group/btn"
                   >
-                    <Hammer className="w-3.5 h-3.5 text-roseGold-light group-hover/btn:rotate-12 transition-transform" />
+                    <Hammer className="w-3.5 h-3.5 text-roseGold-light group-hover/btn:rotate-12 transition-transform duration-300" />
                     <span>Build</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-roseGold-light group-hover/btn:translate-x-0.5 transition-transform" />
-                  </button>
+                    <ArrowRight className="w-3.5 h-3.5 text-roseGold-light group-hover/btn:translate-x-1 transition-transform duration-300" />
+                  </motion.button>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -175,13 +184,19 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
           </p>
         </div>
 
-        {/* Side-by-Side Grid (2 columns on mobile, 3 on tablet, 5 on desktop) */}
+        {/* Side-by-Side Grid (2 columns on mobile, 3 on tablet, 5 on desktop) with Staggered Viewport Entrance */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-5 max-w-7xl mx-auto">
-          {moreProducts.map((prod) => (
-            <div
+          {moreProducts.map((prod, idx) => (
+            <motion.div
               key={prod.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ delay: idx * 0.07, duration: 0.4, ease: luxuryEase }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
               onClick={prod.onClick}
-              className="bg-white rounded-3xl p-2.5 sm:p-3 border border-taupe-200/80 shadow-luxury hover:shadow-soft-lg transition-all duration-300 flex flex-col group cursor-pointer text-center hover:-translate-y-1"
+              className="bg-white rounded-3xl p-2.5 sm:p-3 border border-taupe-200/80 shadow-luxury hover:shadow-soft-lg transition-shadow duration-300 flex flex-col group cursor-pointer text-center"
             >
               {/* Product Photo - flush fit without empty whitespace */}
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cream-100 shadow-xs border border-taupe-200/50">
@@ -198,7 +213,7 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
                   {prod.title}
                 </h3>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

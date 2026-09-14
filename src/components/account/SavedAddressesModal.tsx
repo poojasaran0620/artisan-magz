@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, SavedAddress } from '../../context/AuthContext';
 import { X, MapPin, Plus, Trash2, CheckCircle2, Home } from 'lucide-react';
+import { modalBackdropVariants, modalDialogVariants, buttonTapSpring } from '../../styles/motion';
 
 export const SavedAddressesModal: React.FC = () => {
   const {
@@ -19,8 +21,6 @@ export const SavedAddressesModal: React.FC = () => {
   const [streetAddress, setStreetAddress] = useState('');
   const [city, setCity] = useState('');
   const [pincode, setPincode] = useState('');
-
-  if (!isAddressesModalOpen) return null;
 
   const handleSaveNew = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,14 +49,24 @@ export const SavedAddressesModal: React.FC = () => {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200"
-      onClick={closeAddressesModal}
-    >
-      <div
-        className="bg-[#FFFDF9] rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-luxury border border-white/80 overflow-hidden relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isAddressesModalOpen && (
+        <motion.div
+          variants={modalBackdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="fixed inset-0 z-50 bg-charcoal/70 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={closeAddressesModal}
+        >
+          <motion.div
+            variants={modalDialogVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="bg-[#FFFDF9] rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-luxury border border-white/80 overflow-hidden relative"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Header */}
         <div className="p-5 sm:p-6 border-b border-taupe-200/60 flex items-center justify-between bg-cream-50/80">
           <div className="flex items-center gap-2.5">
@@ -64,7 +74,7 @@ export const SavedAddressesModal: React.FC = () => {
               <MapPin className="w-5 h-5 text-roseGold" />
             </div>
             <div>
-              <h2 className="font-serif text-xl font-bold text-charcoal">Saved Delivery Addresses</h2>
+              <h2 className="font-sans text-lg sm:text-xl font-bold text-charcoal">Saved Delivery Addresses</h2>
               <p className="text-xs text-taupe-600">Speed up checkout with saved addresses</p>
             </div>
           </div>
@@ -148,7 +158,7 @@ export const SavedAddressesModal: React.FC = () => {
             /* Add Address Form */
             <form onSubmit={handleSaveNew} className="space-y-3 bg-white p-4 rounded-2xl border border-taupe-200">
               <div className="flex items-center justify-between pb-2 border-b border-taupe-100">
-                <h3 className="font-serif font-bold text-sm text-charcoal">New Delivery Address</h3>
+                <h3 className="font-sans font-bold text-sm text-charcoal">New Delivery Address</h3>
                 <button
                   type="button"
                   onClick={() => setIsAdding(false)}
@@ -263,7 +273,9 @@ export const SavedAddressesModal: React.FC = () => {
             </form>
           )}
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
