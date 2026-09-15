@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MapPin, Sparkles, Building2, Home, Briefcase, Heart, Navigation, Loader2 } from 'lucide-react';
+import { X, MapPin, Sparkles, Building2, Home, Briefcase, Heart, Navigation, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import type { SavedAddress } from '../../context/AuthContext';
 import { INDIAN_STATES } from '../../data/indiaLocations';
 import { modalBackdropVariants, modalDialogVariants } from '../../styles/motion';
-import { lookupIndianPincode, preloadPincodeDatabase } from '../../services/pincodeService';
+import { lookupIndianPincode, preloadPincodeDatabase, validateIndianPincodeFormat } from '../../services/pincodeService';
 
 interface AddressFormModalProps {
   isOpen: boolean;
@@ -49,12 +49,30 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
     }
   }, [isOpen]);
 
-  // 100% Wholesome India Post Pincode Auto-Resolution
+  // Robust Indian PIN Code Auto-Resolution with Error Handling
   const handlePincodeChange = async (val: string) => {
     const clean = val.replace(/\D/g, '').slice(0, 6);
     setPincode(clean);
     setPinResolvedText(null);
 
+    // Clear stale PIN error while typing
+    setErrors((prev) => {
+      if (!prev.pincode) return prev;
+      const next = { ...prev };
+      delete next.pincode;
+      return next;
+    });
+
+    // Immediate validation: Indian PIN codes cannot begin with 0
+    if (clean.length > 0 && clean.startsWith('0')) {
+      setErrors((prev) => ({
+        ...prev,
+        pincode: 'Indian PIN codes cannot start with 0',
+      }));
+      return;
+    }
+
+    // Trigger lookup when 6 digits are reached
     if (clean.length === 6) {
       setIsResolvingPin(true);
       const res = await lookupIndianPincode(clean);
@@ -63,7 +81,16 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
       if (res.success) {
         if (res.city) setCity(res.city);
         if (res.state) setState(res.state);
-        setPinResolvedText(res.postOfficeName ? `📍 ${res.postOfficeName}, ${res.city}` : `📍 ${res.city}, ${res.state}`);
+        setPinResolvedText(
+          res.isHeuristic
+            ? `📍 ${res.city || res.state}`
+            : `✓ Verified: ${res.city}, ${res.state}`
+        );
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          pincode: res.error || 'Unrecognized PIN code. Please verify or manually enter City & State.',
+        }));
       }
     }
   };
@@ -80,7 +107,11 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
     if (!areaStreet.trim()) newErrors.areaStreet = 'Area / Colony / Street is required';
     if (!city.trim()) newErrors.city = 'City is required';
     if (!state.trim()) newErrors.state = 'State is required';
-    if (!pincode.trim() || pincode.length !== 6) newErrors.pincode = '6-digit PIN code required';
+
+    const pinValidation = validateIndianPincodeFormat(pincode);
+    if (!pinValidation.isValid) {
+      newErrors.pincode = pinValidation.error || 'Valid 6-digit PIN code required';
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -302,9 +333,15 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                     }`}
                   />
                   {errors.pincode ? (
-                    <p className="text-[10px] text-red-600 mt-1">{errors.pincode}</p>
+                    <div className="flex items-start gap-1 mt-1.5 text-[10px] text-red-600 font-medium leading-tight">
+                      <AlertCircle className="w-3 h-3 shrink-0 mt-0.5 text-red-500" />
+                      <span>{errors.pincode}</span>
+                    </div>
                   ) : pinResolvedText ? (
-                    <p className="text-[10px] text-emerald-700 font-medium mt-1 truncate">{pinResolvedText}</p>
+                    <div className="flex items-center gap-1 mt-1.5 text-[10px] text-emerald-700 font-medium truncate">
+                      <CheckCircle2 className="w-3 h-3 shrink-0 text-emerald-600" />
+                      <span>{pinResolvedText}</span>
+                    </div>
                   ) : (
                     <p className="text-[9px] text-taupe-500 mt-1">Auto-fills City & State</p>
                   )}

@@ -26,10 +26,12 @@ import {
   Briefcase,
   Heart,
   Navigation,
+  AlertCircle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { AddressFormModal } from '../account/AddressFormModal';
 import { SavedAddress } from '../../context/AuthContext';
+import { lookupIndianPincode, preloadPincodeDatabase, validateIndianPincodeFormat } from '../../services/pincodeService';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -70,6 +72,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
   });
 
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [checkoutPinError, setCheckoutPinError] = useState<string | null>(null);
+  const [isResolvingCheckoutPin, setIsResolvingCheckoutPin] = useState(false);
+  const [checkoutPinResolvedText, setCheckoutPinResolvedText] = useState<string | null>(null);
+
+  // Background preload offline database when checkout opens
+  useEffect(() => {
+    if (isOpen) {
+      preloadPincodeDatabase();
+    }
+  }, [isOpen]);
 
   // Sync if user logs in or addresses change
   useEffect(() => {
@@ -92,6 +104,39 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
       }
     }
   }, [user, savedAddresses, selectedAddressId]);
+
+  const handleCheckoutPincodeChange = async (val: string) => {
+    const clean = val.replace(/\D/g, '').slice(0, 6);
+    setFormData((prev) => ({ ...prev, pincode: clean }));
+    setCheckoutPinResolvedText(null);
+    setCheckoutPinError(null);
+
+    if (clean.length > 0 && clean.startsWith('0')) {
+      setCheckoutPinError('Indian PIN codes cannot start with 0');
+      return;
+    }
+
+    if (clean.length === 6) {
+      setIsResolvingCheckoutPin(true);
+      const res = await lookupIndianPincode(clean);
+      setIsResolvingCheckoutPin(false);
+
+      if (res.success) {
+        setFormData((prev) => ({
+          ...prev,
+          city: res.city || prev.city,
+          state: res.state || prev.state,
+        }));
+        setCheckoutPinResolvedText(
+          res.isHeuristic
+            ? `📍 ${res.city || res.state}`
+            : `✓ ${res.city}, ${res.state}`
+        );
+      } else {
+        setCheckoutPinError(res.error || 'Unrecognized PIN code. Please verify.');
+      }
+    }
+  };
 
   const handleSelectSavedAddress = (addr: SavedAddress) => {
     setSelectedAddressId(addr.id);
@@ -131,6 +176,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate PIN code format
+    const pinCheck = validateIndianPincodeFormat(formData.pincode);
+    if (!pinCheck.isValid) {
+      setCheckoutPinError(pinCheck.error || 'Valid 6-digit PIN code required');
+      alert(pinCheck.error || 'Please enter a valid 6-digit Indian PIN code');
+      return;
+    }
 
     // Build order payload (shared between razorpay and COD)
     const orderPayload = {
@@ -568,20 +621,43 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                     />
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <div>
-                      <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                        PIN Code *
-                      </label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-[11px] font-semibold text-wine-900/80">
+                          PIN Code *
+                        </label>
+                        {isResolvingCheckoutPin && (
+                          <span className="flex items-center gap-1 text-[9px] text-roseGold font-medium">
+                            <Loader2 className="w-2.5 h-2.5 animate-spin" /> Verifying...
+                          </span>
+                        )}
+                      </div>
                       <input
                         type="text"
                         required
                         maxLength={6}
+                        autoComplete="postal-code"
                         value={formData.pincode}
-                        onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
+                        onChange={(e) => handleCheckoutPincodeChange(e.target.value)}
                         placeholder="560038"
-                        className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400 font-mono"
+                        className={`w-full text-xs bg-white border rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400 font-mono ${
+                          checkoutPinError ? 'border-red-400 bg-red-50/20' : 'border-roseGold-light'
+                        }`}
                       />
+                      {checkoutPinError ? (
+                        <div className="flex items-start gap-1 mt-1 text-[10px] text-red-600 font-medium leading-tight">
+                          <AlertCircle className="w-3 h-3 shrink-0 mt-0.5 text-red-500" />
+                          <span>{checkoutPinError}</span>
+                        </div>
+                      ) : checkoutPinResolvedText ? (
+                        <div className="flex items-center gap-1 mt-1 text-[10px] text-emerald-700 font-medium truncate">
+                          <CheckCircle2 className="w-3 h-3 shrink-0 text-emerald-600" />
+                          <span>{checkoutPinResolvedText}</span>
+                        </div>
+                      ) : (
+                        <p className="text-[9px] text-taupe-500 mt-0.5">Auto-fills City & State</p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
@@ -590,6 +666,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                       <input
                         type="text"
                         required
+                        autoComplete="address-level2"
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                         placeholder="Bengaluru"
