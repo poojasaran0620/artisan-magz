@@ -56,13 +56,14 @@ export async function preloadPincodeDatabase(): Promise<Record<string, [string, 
 
   loadPromise = (async () => {
     try {
-      if (typeof window === 'undefined' && typeof process !== 'undefined' && process.versions?.node) {
+      const gProcess = (globalThis as Record<string, any>).process;
+      if (typeof window === 'undefined' && gProcess?.versions?.node) {
         // Node.js test environment: read from filesystem
         const fsMod = 'node:fs';
         const pathMod = 'node:path';
         const fs = await import(/* @vite-ignore */ fsMod);
         const path = await import(/* @vite-ignore */ pathMod);
-        const localPath = path.resolve(process.cwd(), 'public/data/india-pincodes.json');
+        const localPath = path.resolve(gProcess.cwd(), 'public/data/india-pincodes.json');
         if (fs.existsSync(localPath)) {
           localDb = JSON.parse(fs.readFileSync(localPath, 'utf8'));
           return localDb;
