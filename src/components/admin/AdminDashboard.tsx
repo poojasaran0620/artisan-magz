@@ -21,6 +21,7 @@ import {
   type SortOrder,
 } from './AdminOrderFilters';
 import { AdminOrderCard } from './AdminOrderCard';
+import { AdminProfilesTab } from './AdminProfilesTab';
 import { sendOrderEmail } from '../../services/emailService';
 
 interface AdminDashboardProps {
@@ -53,7 +54,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Tabs & Bulk Inquiries
-  const [activeTab, setActiveTab] = useState<'orders' | 'bulk'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'profiles' | 'bulk'>('orders');
   const [bulkInquiries, setBulkInquiries] = useState<BulkInquiryRecord[]>([]);
 
   // Filters
@@ -350,6 +351,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
 
           <button
             type="button"
+            onClick={() => setActiveTab('profiles')}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer flex items-center gap-2 ${
+              activeTab === 'profiles'
+                ? 'bg-charcoal text-white shadow-soft'
+                : 'bg-cream-100 text-charcoal hover:bg-cream-200'
+            }`}
+          >
+            <span>Customer Profiles</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => {
               setActiveTab('bulk');
               loadBulkInquiries();
@@ -434,6 +447,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBack }) => {
               </div>
             )}
           </>
+        )}
+
+        {/* ── Tab Content: Customer Profiles ──────────────────────── */}
+        {activeTab === 'profiles' && (
+          <AdminProfilesTab
+            orders={orders}
+            onSelectCustomerOrders={(email) => {
+              setActiveTab('orders');
+              setSearchQuery(email);
+            }}
+          />
         )}
 
         {/* ── Tab Content: Bulk Inquiries ─────────────────────────── */}

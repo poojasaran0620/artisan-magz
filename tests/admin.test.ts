@@ -66,3 +66,132 @@ it('resolveInquiryCustomerName falls back to legacy firstName and lastName', () 
   assert.equal(resolveInquiryCustomerName({}), 'Customer');
 });
 
+// ── Customer Profile Aggregation Tests ─────────────────────────────────
+
+interface MockOrder {
+  id: string;
+  orderNumber: string;
+  createdAt: string;
+  totalAmount: number;
+  deliveryAddress: {
+    recipientName: string;
+    email?: string;
+    phone: string;
+    city: string;
+    state: string;
+  };
+}
+
+function compileProfilesFromOrders(orders: MockOrder[], adminEmails: readonly string[]) {
+  const map = new Map<string, {
+    email: string;
+    name: string;
+    role: 'admin' | 'customer';
+    ordersCount: number;
+    totalSpent: number;
+    city?: string;
+  }>();
+
+  // Seed admins
+  adminEmails.forEach((email) => {
+    map.set(email.toLowerCase().trim(), {
+      email: email.toLowerCase().trim(),
+      name: email.split('@')[0],
+      role: 'admin',
+      ordersCount: 0,
+      totalSpent: 0,
+    });
+  });
+
+  // Aggregate orders
+  orders.forEach((o) => {
+    const email = (o.deliveryAddress.email || `${o.deliveryAddress.phone}@artisanmagz.in`).toLowerCase().trim();
+    const isAdm = adminEmails.includes(email);
+    const existing = map.get(email);
+    if (existing) {
+      existing.ordersCount += 1;
+      existing.totalSpent += o.totalAmount;
+      if (!existing.city) existing.city = o.deliveryAddress.city;
+    } else {
+      map.set(email, {
+        email,
+        name: o.deliveryAddress.recipientName,
+        role: isAdm ? 'admin' : 'customer',
+        ordersCount: 1,
+        totalSpent: o.totalAmount,
+        city: o.deliveryAddress.city,
+      });
+    }
+  });
+
+  return Array.from(map.values());
+}
+
+it('aggregates customer profiles accurately from orders and admin emails', () => {
+  const sampleOrders: MockOrder[] = [
+    {
+      id: 'ord-1',
+      orderNumber: 'AM-1001',
+      createdAt: '2026-09-01T10:00:00Z',
+      totalAmount: 1499,
+      deliveryAddress: {
+        recipientName: 'Priya Sharma',
+        email: 'priya@gmail.com',
+        phone: '9876543210',
+        city: 'Bengaluru',
+        state: 'Karnataka',
+      },
+    },
+    {
+      id: 'ord-2',
+      orderNumber: 'AM-1002',
+      createdAt: '2026-09-05T12:00:00Z',
+      totalAmount: 2499,
+      deliveryAddress: {
+        recipientName: 'Priya Sharma',
+        email: 'priya@gmail.com',
+        phone: '9876543210',
+        city: 'Bengaluru',
+        state: 'Karnataka',
+      },
+    },
+    {
+      id: 'ord-3',
+      orderNumber: 'AM-1003',
+      createdAt: '2026-09-08T15:00:00Z',
+      totalAmount: 999,
+      deliveryAddress: {
+        recipientName: 'Rohan Roy',
+        email: 'rohan@outlook.com',
+        phone: '9812345678',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+      },
+    },
+  ];
+
+  const profiles = compileProfilesFromOrders(sampleOrders, ADMIN_EMAILS);
+
+  // Contains 3 admin accounts + 2 distinct customer profiles = 5 profiles total
+  assert.equal(profiles.length, 5);
+
+  const priya = profiles.find((p) => p.email === 'priya@gmail.com');
+  assert.ok(priya);
+  assert.equal(priya.name, 'Priya Sharma');
+  assert.equal(priya.role, 'customer');
+  assert.equal(priya.ordersCount, 2);
+  assert.equal(priya.totalSpent, 3998); // 1499 + 2499
+  assert.equal(priya.city, 'Bengaluru');
+
+  const rohan = profiles.find((p) => p.email === 'rohan@outlook.com');
+  assert.ok(rohan);
+  assert.equal(rohan.ordersCount, 1);
+  assert.equal(rohan.totalSpent, 999);
+  assert.equal(rohan.city, 'Mumbai');
+
+  const adminPooja = profiles.find((p) => p.email === 'poojasaran0620@gmail.com');
+  assert.ok(adminPooja);
+  assert.equal(adminPooja.role, 'admin');
+});
+
+
