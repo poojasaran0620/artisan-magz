@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Sparkles, Building2, Home, Briefcase, Heart, Navigation, Loader2 } from 'lucide-react';
 import type { SavedAddress } from '../../context/AuthContext';
 import { INDIAN_STATES } from '../../data/indiaLocations';
 import { modalBackdropVariants, modalDialogVariants } from '../../styles/motion';
-import { lookupIndianPincode } from '../../services/pincodeService';
+import { lookupIndianPincode, preloadPincodeDatabase } from '../../services/pincodeService';
 
 interface AddressFormModalProps {
   isOpen: boolean;
@@ -41,6 +41,13 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
   const [isResolvingPin, setIsResolvingPin] = useState(false);
   const [pinResolvedText, setPinResolvedText] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Background preload offline database as soon as modal opens
+  useEffect(() => {
+    if (isOpen) {
+      preloadPincodeDatabase();
+    }
+  }, [isOpen]);
 
   // 100% Wholesome India Post Pincode Auto-Resolution
   const handlePincodeChange = async (val: string) => {
