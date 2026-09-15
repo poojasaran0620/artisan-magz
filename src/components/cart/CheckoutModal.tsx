@@ -21,8 +21,15 @@ import {
   Wallet,
   Loader2,
   LogIn,
+  Plus,
+  Home,
+  Briefcase,
+  Heart,
+  Navigation,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { AddressFormModal } from '../account/AddressFormModal';
+import { SavedAddress } from '../../context/AuthContext';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -32,23 +39,32 @@ interface CheckoutModalProps {
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
   const { cartItems, total, subtotal, shippingFee, discountAmount, discountCode, clearCart, sendWhatsAppOrder } =
     useCart();
-  const { user, isAuthenticated, savedAddresses, recordOrder, openOrdersModal, openAuthModal, signInWithGoogle, signInWithEmail } = useAuth();
+  const { user, isAuthenticated, savedAddresses, addSavedAddress, recordOrder, openOrdersModal, openAuthModal, signInWithGoogle, signInWithEmail } = useAuth();
 
   const [step, setStep] = useState<'form' | 'success'>('form');
   const [orderId, setOrderId] = useState('');
   const [copiedOrderId, setCopiedOrderId] = useState(false);
+  const [isAddAddressOpen, setIsAddAddressOpen] = useState(false);
+
+  // Selected Address ID for Zomato-style picker
+  const [selectedAddressId, setSelectedAddressId] = useState<string>(() => {
+    const def = savedAddresses.find((a) => a.isDefault) || savedAddresses[0];
+    return def ? def.id : 'manual';
+  });
 
   // Form State
   const defaultAddress = savedAddresses.find((a) => a.isDefault) || savedAddresses[0];
 
   const [formData, setFormData] = useState({
-    fullName: user ? user.name : (defaultAddress ? defaultAddress.recipientName : 'Ananya Roy'),
+    fullName: user ? user.name : (defaultAddress ? defaultAddress.recipientName : 'Priya Sharma'),
     phone: defaultAddress ? defaultAddress.phone : (user?.phone || '9876543210'),
-    email: user ? user.email : 'ananya.roy@gmail.com',
-    address: defaultAddress ? defaultAddress.streetAddress : 'Flat 402, Lotus Residency, Off Link Road, Andheri West',
-    city: defaultAddress ? defaultAddress.city : 'Mumbai',
-    state: 'Maharashtra',
-    pincode: defaultAddress ? defaultAddress.pincode : '400053',
+    email: user ? user.email : 'priya.sharma@gmail.com',
+    houseFlat: defaultAddress ? defaultAddress.houseFlat : 'Flat 402, Lotus Residency',
+    areaStreet: defaultAddress ? defaultAddress.areaStreet : '14th Main Road, Indiranagar',
+    landmark: defaultAddress?.landmark || 'Near Indiranagar Metro',
+    city: defaultAddress ? defaultAddress.city : 'Bengaluru',
+    state: defaultAddress ? defaultAddress.state : 'Karnataka',
+    pincode: defaultAddress ? defaultAddress.pincode : '560038',
     giftNote: 'Please pack with extra soft shred paper and luxury ribbon bow! 🌸',
     paymentMethod: 'razorpay',
   });
@@ -57,29 +73,60 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
 
   // Sync if user logs in or addresses change
   useEffect(() => {
-    if (user) {
-      const addr = savedAddresses.find((a) => a.isDefault) || savedAddresses[0];
-      setFormData((prev) => ({
-        ...prev,
-        fullName: user.name || prev.fullName,
-        email: user.email || prev.email,
-        phone: addr ? addr.phone : prev.phone,
-        address: addr ? addr.streetAddress : prev.address,
-        city: addr ? addr.city : prev.city,
-        pincode: addr ? addr.pincode : prev.pincode,
-      }));
+    if (savedAddresses.length > 0) {
+      const active = savedAddresses.find((a) => a.id === selectedAddressId) || savedAddresses.find((a) => a.isDefault) || savedAddresses[0];
+      if (active) {
+        setSelectedAddressId(active.id);
+        setFormData((prev) => ({
+          ...prev,
+          fullName: active.recipientName,
+          phone: active.phone,
+          email: user?.email || prev.email,
+          houseFlat: active.houseFlat,
+          areaStreet: active.areaStreet,
+          landmark: active.landmark || '',
+          city: active.city,
+          state: active.state,
+          pincode: active.pincode,
+        }));
+      }
     }
-  }, [user, savedAddresses]);
+  }, [user, savedAddresses, selectedAddressId]);
 
-  const handleSelectSavedAddress = (addr: typeof savedAddresses[0]) => {
+  const handleSelectSavedAddress = (addr: SavedAddress) => {
+    setSelectedAddressId(addr.id);
     setFormData((prev) => ({
       ...prev,
       fullName: addr.recipientName,
       phone: addr.phone,
-      address: addr.streetAddress,
+      houseFlat: addr.houseFlat,
+      areaStreet: addr.areaStreet,
+      landmark: addr.landmark || '',
       city: addr.city,
+      state: addr.state,
       pincode: addr.pincode,
     }));
+  };
+
+  const handleAddNewAddressFromCheckout = (newAddrData: Omit<SavedAddress, 'id'>) => {
+    const saved = addSavedAddress({
+      ...newAddrData,
+      isDefault: savedAddresses.length === 0,
+    });
+    handleSelectSavedAddress(saved);
+  };
+
+  const getTagIcon = (label: string) => {
+    switch (label) {
+      case 'Work':
+        return Briefcase;
+      case 'Partner':
+        return Heart;
+      case 'Other':
+        return Navigation;
+      default:
+        return Home;
+    }
   };
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
@@ -104,8 +151,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
         recipientName: formData.fullName,
         phone: formData.phone,
         email: formData.email,
-        address: formData.address,
+        houseFlat: formData.houseFlat,
+        areaStreet: formData.areaStreet,
+        landmark: formData.landmark || undefined,
         city: formData.city,
+        state: formData.state,
         pincode: formData.pincode,
       },
     };
@@ -144,9 +194,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
         setOrderId(recorded.orderNumber);
         setStep('success');
         sendOrderEmail(recorded, 'placed');
-      } catch (err) {
-        console.error('Payment error:', err);
-        alert('Something went wrong with payment. Please try again.');
+      } catch (err: any) {
+        console.error('Razorpay checkout error:', err);
+        alert('Payment initialization failed. Please try again or choose Cash on Delivery / WhatsApp.');
         setIsProcessingPayment(false);
         return;
       } finally {
@@ -184,11 +234,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
     setStep('form');
   };
 
+  const fullStreetAddress = [formData.houseFlat, formData.areaStreet, formData.landmark ? `(Near: ${formData.landmark})` : '']
+    .filter(Boolean)
+    .join(', ');
+
   const handleWhatsAppWithInfo = () => {
     sendWhatsAppOrder({
       name: formData.fullName,
       phone: formData.phone,
-      address: formData.address,
+      address: `${fullStreetAddress}, ${formData.city}, ${formData.state}`,
       city: formData.city,
       pincode: formData.pincode,
       notes: `${formData.giftNote} (Order Reference: ${orderId})`,
@@ -196,7 +250,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
   };
 
   return (
-    <AnimatePresence>
+    <>
+      <AnimatePresence>
       {isOpen && (
         <motion.div
           variants={modalBackdropVariants}
@@ -328,65 +383,240 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
               </span>
             </div>
 
-            {/* Recipient Details */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-wine-900 uppercase tracking-wider">
-                1. Shipping & Contact Details
-              </h4>
+            {/* Recipient Details & Delivery Address (Zomato-style Selection) */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-wine-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-roseGold" />
+                  <span>1. Delivery Destination</span>
+                </h4>
+                {savedAddresses.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setIsAddAddressOpen(true)}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-roseGold hover:text-roseGold-dark hover:underline cursor-pointer"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Add New Address</span>
+                  </button>
+                )}
+              </div>
 
-              {savedAddresses.length > 0 && (
-                <div className="p-2.5 bg-cream-100/80 rounded-xl border border-taupe-200/60">
-                  <span className="text-[10px] font-bold text-taupe-700 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-roseGold" />
-                    <span>Autofill from Saved Address:</span>
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {savedAddresses.map((addr) => (
-                      <button
-                        key={addr.id}
-                        type="button"
-                        onClick={() => handleSelectSavedAddress(addr)}
-                        className="px-2.5 py-1 bg-white hover:bg-cream-200 text-charcoal rounded-lg text-[11px] font-medium border border-taupe-300/70 transition shadow-2xs cursor-pointer flex items-center gap-1"
-                      >
-                        <span>{addr.label}:</span>
-                        <span className="font-semibold text-charcoal">{addr.recipientName.split(' ')[0]}</span>
-                      </button>
-                    ))}
+              {/* Zomato-Style Saved Address Cards */}
+              {savedAddresses.length > 0 ? (
+                <div className="space-y-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {savedAddresses.map((addr) => {
+                      const TagIcon = getTagIcon(addr.label);
+                      const isSelected = selectedAddressId === addr.id;
+                      return (
+                        <div
+                          key={addr.id}
+                          onClick={() => handleSelectSavedAddress(addr)}
+                          className={`p-3 rounded-2xl border text-left cursor-pointer transition relative flex flex-col justify-between ${
+                            isSelected
+                              ? 'bg-blush-50/60 border-roseGold ring-1 ring-roseGold/40 shadow-xs'
+                              : 'bg-white border-taupe-200/80 hover:border-taupe-300 hover:bg-cream-50/50'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center gap-1.5">
+                              <span
+                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 uppercase tracking-wider ${
+                                  isSelected
+                                    ? 'bg-roseGold text-white'
+                                    : 'bg-cream-100 text-charcoal border border-taupe-200/60'
+                                }`}
+                              >
+                                <TagIcon className="w-3 h-3" />
+                                <span>{addr.label}</span>
+                              </span>
+                              {addr.isDefault && (
+                                <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded-full">
+                                  Default
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Radio indicator */}
+                            <div
+                              className={`w-4 h-4 rounded-full border flex items-center justify-center transition shrink-0 ${
+                                isSelected ? 'border-roseGold bg-roseGold' : 'border-taupe-300 bg-white'
+                              }`}
+                            >
+                              {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                            </div>
+                          </div>
+
+                          <div className="mt-2 space-y-0.5">
+                            <div className="text-xs font-bold text-charcoal truncate">{addr.recipientName}</div>
+                            <div className="text-[11px] text-charcoal/80 leading-snug line-clamp-2">
+                              {addr.houseFlat}, {addr.areaStreet}
+                            </div>
+                            {addr.landmark && (
+                              <div className="text-[10px] text-taupe-600 truncate">
+                                Landmark: {addr.landmark}
+                              </div>
+                            )}
+                            <div className="text-[10px] text-taupe-600">
+                              {addr.city}, {addr.state} - <span className="font-mono">{addr.pincode}</span>
+                            </div>
+                            <div className="text-[10px] text-taupe-500 pt-0.5 font-mono">
+                              +91 {addr.phone}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Zomato-Style "+ Add New Address" Card */}
+                    <button
+                      type="button"
+                      onClick={() => setIsAddAddressOpen(true)}
+                      className="p-3.5 rounded-2xl border-2 border-dashed border-roseGold/40 hover:border-roseGold bg-blush-50/30 hover:bg-blush-50 text-roseGold font-bold text-xs flex flex-col items-center justify-center gap-1.5 transition cursor-pointer min-h-[110px]"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-roseGold/10 flex items-center justify-center">
+                        <Plus className="w-4 h-4 text-roseGold" />
+                      </div>
+                      <span className="font-semibold text-xs">Add New Delivery Address</span>
+                      <span className="text-[10px] text-taupe-600 font-normal">Fast 1-click address saving</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* No saved address: Inline Granular Address Form */
+                <div className="space-y-3 bg-white p-4 rounded-2xl border border-taupe-200/80 shadow-2xs">
+                  <div className="flex items-center justify-between pb-1 border-b border-taupe-100">
+                    <span className="text-xs font-bold text-charcoal">Delivery Contact & Address</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddAddressOpen(true)}
+                      className="text-[11px] text-roseGold font-semibold hover:underline cursor-pointer flex items-center gap-1"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span>Use Address Modal</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
+                        Recipient Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.fullName}
+                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                        placeholder="e.g. Priya Sharma"
+                        className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
+                        WhatsApp Mobile Number *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        placeholder="10-digit mobile"
+                        className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400 font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
+                      Flat / House No. / Building *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.houseFlat}
+                      onChange={(e) => setFormData({ ...formData, houseFlat: e.target.value })}
+                      placeholder="e.g. Flat 402, Lotus Residency"
+                      className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
+                      Area / Colony / Street / Sector *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.areaStreet}
+                      onChange={(e) => setFormData({ ...formData, areaStreet: e.target.value })}
+                      placeholder="e.g. 14th Main Road, Indiranagar"
+                      className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
+                      Landmark <span className="text-taupe-400 font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.landmark}
+                      onChange={(e) => setFormData({ ...formData, landmark: e.target.value })}
+                      placeholder="e.g. Near Indiranagar Metro Station"
+                      className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
+                        PIN Code *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={6}
+                        value={formData.pincode}
+                        onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
+                        placeholder="560038"
+                        className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400 font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
+                        City *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.city}
+                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                        placeholder="Bengaluru"
+                        className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
+                        State *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.state}
+                        onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                        placeholder="Karnataka"
+                        className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                    WhatsApp Mobile Number *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400 font-mono"
-                  />
-                </div>
-              </div>
-
+              {/* Email for invoices */}
               <div>
                 <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                  Email Address (For Invoices) *
+                  Email Address (For Order Updates & Invoices) *
                 </label>
                 <input
                   type="email"
@@ -397,69 +627,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                 />
               </div>
 
+              {/* Special Instructions */}
               <div>
                 <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                  Delivery Street Address *
-                </label>
-                <textarea
-                  rows={2}
-                  required
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-2">
-                <div>
-                  <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                    City *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                    State *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.state}
-                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                    className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                    Pincode *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={6}
-                    value={formData.pincode}
-                    onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
-                    className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-wine-900/80 mb-1">
-                  Special Gifting Instructions / Landmark
+                  Special Gifting Instructions / Notes for Artisans
                 </label>
                 <input
                   type="text"
                   value={formData.giftNote}
                   onChange={(e) => setFormData({ ...formData, giftNote: e.target.value })}
+                  placeholder="e.g. Please pack with extra ribbon bow"
                   className="w-full text-xs bg-white border border-roseGold-light rounded-xl px-3 py-2 focus:ring-1 focus:ring-blush-400"
                 />
               </div>
@@ -564,7 +741,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                   sendWhatsAppOrder(cartItems, {
                     name: formData.fullName,
                     phone: formData.phone,
-                    address: formData.address,
+                    address: `${fullStreetAddress}, ${formData.city}, ${formData.state}`,
                     city: formData.city,
                     pincode: formData.pincode,
                     notes: formData.giftNote,
@@ -636,8 +813,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping Address:</span>
-                  <span className="font-medium text-right max-w-[200px] truncate">
-                    {formData.address}, {formData.city} - {formData.pincode}
+                  <span className="font-medium text-right max-w-[220px] truncate">
+                    {formData.houseFlat}, {formData.areaStreet}, {formData.city} - {formData.pincode}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -684,5 +861,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
       </motion.div>
     )}
   </AnimatePresence>
+
+  {/* Zomato-Style Add New Address Modal */}
+  <AddressFormModal
+    isOpen={isAddAddressOpen}
+    onClose={() => setIsAddAddressOpen(false)}
+    onSave={handleAddNewAddressFromCheckout}
+    title="Add New Delivery Address"
+  />
+</>
 );
 };

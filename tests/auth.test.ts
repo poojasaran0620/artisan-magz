@@ -19,8 +19,11 @@ test('saved address default assignment logic', () => {
     label: 'Home',
     recipientName: 'Priya Sharma',
     phone: '9876543210',
-    streetAddress: '14th Main Road, Indiranagar',
+    houseFlat: 'Flat 402, Lotus Residency',
+    areaStreet: '14th Main Road, Indiranagar',
+    landmark: 'Near Indiranagar Metro',
     city: 'Bengaluru',
+    state: 'Karnataka',
     pincode: '560038',
   });
 
@@ -28,11 +31,13 @@ test('saved address default assignment logic', () => {
   assert.equal(addresses.length, 1);
 
   const second = addAddress({
-    label: "Partner's Place",
+    label: 'Partner',
     recipientName: 'Rohan Roy',
     phone: '9812345678',
-    streetAddress: 'Link Road, Andheri West',
+    houseFlat: 'B-201, Sunshine Heights',
+    areaStreet: 'Link Road, Andheri West',
     city: 'Mumbai',
+    state: 'Maharashtra',
     pincode: '400053',
     isDefault: false,
   });
@@ -74,8 +79,11 @@ test('order recording generates valid orderNumber, status, and items', () => {
       recipientName: 'Priya Sharma',
       phone: '9876543210',
       email: 'priya.sharma@gmail.com',
-      address: '14th Main Road, Indiranagar',
+      houseFlat: 'Flat 402, Lotus Residency',
+      areaStreet: '14th Main Road, Indiranagar',
+      landmark: 'Near Indiranagar Metro',
       city: 'Bengaluru',
+      state: 'Karnataka',
       pincode: '560038',
     },
   });

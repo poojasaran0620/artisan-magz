@@ -23,11 +23,14 @@ export interface AuthUser {
 
 export interface SavedAddress {
   id: string;
-  label: string;
+  label: 'Home' | 'Work' | 'Partner' | 'Other' | (string & {});
   recipientName: string;
   phone: string;
-  streetAddress: string;
+  houseFlat: string;
+  areaStreet: string;
+  landmark?: string;
   city: string;
+  state: string;
   pincode: string;
   isDefault?: boolean;
 }
@@ -41,6 +44,18 @@ export interface OrderItemSummary {
   customizationSummary?: string;
 }
 
+export interface DeliveryAddress {
+  recipientName: string;
+  phone: string;
+  email?: string;
+  houseFlat: string;
+  areaStreet: string;
+  landmark?: string;
+  city: string;
+  state: string;
+  pincode: string;
+}
+
 export interface OrderRecord {
   id: string;
   orderNumber: string;
@@ -50,14 +65,7 @@ export interface OrderRecord {
   totalAmount: number;
   paymentId?: string;
   paymentMethod?: 'razorpay' | 'cod' | 'whatsapp';
-  deliveryAddress: {
-    recipientName: string;
-    phone: string;
-    email?: string;
-    address: string;
-    city: string;
-    pincode: string;
-  };
+  deliveryAddress: DeliveryAddress;
 }
 
 interface AuthContextType {
@@ -94,8 +102,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AUTH_STORAGE_KEY = 'artisan_magz_auth_user_v1';
-const ADDRESSES_STORAGE_KEY = 'artisan_magz_addresses_v1';
-const ORDERS_STORAGE_KEY = 'artisan_magz_orders_v1';
+const ADDRESSES_STORAGE_KEY = 'artisan_magz_addresses_v2';
+const ORDERS_STORAGE_KEY = 'artisan_magz_orders_v2';
 
 // Sample initial address for demo convenience
 const INITIAL_SAMPLE_ADDRESSES: SavedAddress[] = [
@@ -104,8 +112,11 @@ const INITIAL_SAMPLE_ADDRESSES: SavedAddress[] = [
     label: 'Home',
     recipientName: 'Priya Sharma',
     phone: '9876543210',
-    streetAddress: 'Flat 402, Lotus Residency, 14th Main Road, Indiranagar',
+    houseFlat: 'Flat 402, Lotus Residency',
+    areaStreet: '14th Main Road, Indiranagar',
+    landmark: 'Near Indiranagar Metro',
     city: 'Bengaluru',
+    state: 'Karnataka',
     pincode: '560038',
     isDefault: true,
   },
@@ -216,8 +227,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           label: r.label || 'Home',
           recipientName: r.recipient_name,
           phone: r.phone,
-          streetAddress: r.street_address,
+          houseFlat: r.house_flat || r.street_address || '',
+          areaStreet: r.area_street || '',
+          landmark: r.landmark || undefined,
           city: r.city,
+          state: r.state || '',
           pincode: r.pincode,
           isDefault: Boolean(r.is_default),
         }));
@@ -237,8 +251,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           deliveryAddress: o.delivery_address || {
             recipientName: '',
             phone: '',
-            address: '',
+            houseFlat: '',
+            areaStreet: '',
             city: '',
+            state: '',
             pincode: '',
           },
         }));
@@ -388,8 +404,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         label: newAddress.label,
         recipient_name: newAddress.recipientName,
         phone: newAddress.phone,
-        street_address: newAddress.streetAddress,
+        house_flat: newAddress.houseFlat,
+        area_street: newAddress.areaStreet,
+        landmark: newAddress.landmark || null,
         city: newAddress.city,
+        state: newAddress.state,
         pincode: newAddress.pincode,
         is_default: Boolean(newAddress.isDefault),
       }).then(({ error }) => {

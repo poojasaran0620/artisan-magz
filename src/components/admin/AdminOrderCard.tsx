@@ -194,9 +194,19 @@ export const AdminOrderCard: React.FC<AdminOrderCardProps> = ({
                 </div>
                 <div className="flex items-start gap-1.5 text-[11px] text-taupe-600">
                   <MapPin className="w-3.5 h-3.5 text-roseGold shrink-0 mt-0.5" />
-                  <span>
-                    {order.deliveryAddress.address}, {order.deliveryAddress.city} – {order.deliveryAddress.pincode}
-                  </span>
+                  <div>
+                    <div className="font-medium text-charcoal">
+                      {order.deliveryAddress.houseFlat}, {order.deliveryAddress.areaStreet}
+                    </div>
+                    {order.deliveryAddress.landmark && (
+                      <div className="text-[10px] text-taupe-500">
+                        Landmark: {order.deliveryAddress.landmark}
+                      </div>
+                    )}
+                    <div className="text-taupe-700">
+                      {order.deliveryAddress.city}, {order.deliveryAddress.state} – <span className="font-mono">{order.deliveryAddress.pincode}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
