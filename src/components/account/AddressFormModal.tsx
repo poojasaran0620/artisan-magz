@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MapPin, Sparkles, Building2, Home, Briefcase, Heart, Navigation, Search, Loader2 } from 'lucide-react';
+import { X, MapPin, Sparkles, Building2, Home, Briefcase, Heart, Navigation, Loader2 } from 'lucide-react';
 import type { SavedAddress } from '../../context/AuthContext';
-import { INDIAN_STATES, getPincodeHint } from '../../data/indiaLocations';
+import { INDIAN_STATES } from '../../data/indiaLocations';
 import { modalBackdropVariants, modalDialogVariants } from '../../styles/motion';
-import { searchLocationIQ, LocationSuggestion } from '../../services/locationService';
+import { lookupIndianPincode } from '../../services/pincodeService';
 
 interface AddressFormModalProps {
   isOpen: boolean;
@@ -38,72 +38,25 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
   const [state, setState] = useState(initialValues?.state || 'Karnataka');
   const [pincode, setPincode] = useState(initialValues?.pincode || '');
   const [isDefault, setIsDefault] = useState(initialValues?.isDefault || false);
+  const [isResolvingPin, setIsResolvingPin] = useState(false);
+  const [pinResolvedText, setPinResolvedText] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // LocationIQ Search state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
-
-  // Debounced LocationIQ search effect
-  useEffect(() => {
-    if (!searchQuery.trim() || searchQuery.trim().length < 3) {
-      setSuggestions([]);
-      setIsSearching(false);
-      return;
-    }
-
-    const abortCtrl = new AbortController();
-    setIsSearching(true);
-
-    const timer = setTimeout(async () => {
-      const results = await searchLocationIQ(searchQuery, abortCtrl.signal);
-      setSuggestions(results);
-      setIsSearching(false);
-      setShowSuggestions(results.length > 0);
-    }, 320);
-
-    return () => {
-      clearTimeout(timer);
-      abortCtrl.abort();
-    };
-  }, [searchQuery]);
-
-  // Close suggestions if clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
-        setShowSuggestions(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleSelectSuggestion = (sug: LocationSuggestion) => {
-    if (sug.houseFlat && !houseFlat) setHouseFlat(sug.houseFlat);
-    if (sug.areaStreet) setAreaStreet(sug.areaStreet);
-    if (sug.landmark && !landmark) setLandmark(sug.landmark);
-    if (sug.city) setCity(sug.city);
-    if (sug.state) setState(sug.state);
-    if (sug.pincode) setPincode(sug.pincode);
-
-    setShowSuggestions(false);
-    setSearchQuery('');
-  };
-
-  // Auto-fill city/state when pincode is typed
-  const handlePincodeChange = (val: string) => {
+  // 100% Wholesome India Post Pincode Auto-Resolution
+  const handlePincodeChange = async (val: string) => {
     const clean = val.replace(/\D/g, '').slice(0, 6);
     setPincode(clean);
+    setPinResolvedText(null);
 
     if (clean.length === 6) {
-      const hint = getPincodeHint(clean);
-      if (hint) {
-        if (hint.state) setState(hint.state);
-        if (hint.city && !city) setCity(hint.city);
+      setIsResolvingPin(true);
+      const res = await lookupIndianPincode(clean);
+      setIsResolvingPin(false);
+
+      if (res.success) {
+        if (res.city) setCity(res.city);
+        if (res.state) setState(res.state);
+        setPinResolvedText(res.postOfficeName ? `📍 ${res.postOfficeName}, ${res.city}` : `📍 ${res.city}, ${res.state}`);
       }
     }
   };
@@ -186,69 +139,6 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4 max-h-[78vh] overflow-y-auto">
-              {/* LocationIQ Street / Locality Search Bar (Zomato-style) */}
-              <div ref={searchContainerRef} className="relative">
-                <label className="block text-[11px] font-bold text-charcoal/80 uppercase tracking-wider mb-1.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1">
-                    <Search className="w-3.5 h-3.5 text-roseGold" />
-                    <span>Search Locality / Apartment / Street</span>
-                  </span>
-                  <span className="text-[10px] text-taupe-500 lowercase font-normal">auto-fills address</span>
-                </label>
-                <div className="relative">
-                  <Search className="w-4 h-4 text-taupe-400 absolute left-3.5 top-3" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => {
-                      if (suggestions.length > 0) setShowSuggestions(true);
-                    }}
-                    placeholder="e.g. Indiranagar 14th Main, Hiranandani Gardens, Cyber Hub..."
-                    className="w-full text-xs bg-white border border-roseGold/40 focus:border-roseGold rounded-xl pl-9 pr-8 py-2.5 shadow-2xs outline-none focus:ring-1 focus:ring-roseGold/30"
-                  />
-                  {isSearching ? (
-                    <Loader2 className="w-3.5 h-3.5 text-roseGold animate-spin absolute right-3 top-3.5" />
-                  ) : searchQuery ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSearchQuery('');
-                        setSuggestions([]);
-                        setShowSuggestions(false);
-                      }}
-                      className="text-taupe-400 hover:text-charcoal absolute right-3 top-3"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  ) : null}
-                </div>
-
-                {/* Autocomplete Suggestions Dropdown */}
-                {showSuggestions && suggestions.length > 0 && (
-                  <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl shadow-luxury border border-taupe-200/90 z-50 overflow-hidden divide-y divide-taupe-100 max-h-56 overflow-y-auto animate-in fade-in-50 zoom-in-95 duration-150">
-                    {suggestions.map((sug) => (
-                      <button
-                        key={sug.placeId}
-                        type="button"
-                        onClick={() => handleSelectSuggestion(sug)}
-                        className="w-full px-3.5 py-2.5 text-left hover:bg-cream-100 flex items-start gap-2.5 transition cursor-pointer group"
-                      >
-                        <MapPin className="w-3.5 h-3.5 text-roseGold shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-bold text-charcoal truncate">
-                            {sug.name || sug.displayName.split(',')[0]}
-                          </div>
-                          <div className="text-[11px] text-taupe-600 line-clamp-1">
-                            {sug.displayName}
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
               {/* Address Tag Selector (Zomato-style) */}
               <div>
                 <label className="block text-[11px] font-bold text-charcoal/80 uppercase tracking-wider mb-2">
@@ -286,6 +176,7 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                   <input
                     type="text"
                     required
+                    autoComplete="name"
                     placeholder="e.g. Priya Sharma"
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
@@ -305,6 +196,7 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                   <input
                     type="tel"
                     required
+                    autoComplete="tel"
                     placeholder="10-digit phone"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -328,6 +220,7 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                   <input
                     type="text"
                     required
+                    autoComplete="address-line1"
                     placeholder="e.g. Flat 402, Lotus Residency, 3rd Floor"
                     value={houseFlat}
                     onChange={(e) => setHouseFlat(e.target.value)}
@@ -349,6 +242,7 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                 <input
                   type="text"
                   required
+                  autoComplete="address-line2"
                   placeholder="e.g. 14th Main Road, HAL 2nd Stage, Indiranagar"
                   value={areaStreet}
                   onChange={(e) => setAreaStreet(e.target.value)}
@@ -382,12 +276,17 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                     <label className="block text-[11px] font-semibold text-charcoal/80">
                       PIN Code *
                     </label>
-                    <span className="text-[9px] text-roseGold font-medium">Verify PIN</span>
+                    {isResolvingPin && (
+                      <span className="flex items-center gap-1 text-[10px] text-roseGold font-medium">
+                        <Loader2 className="w-3 h-3 animate-spin" /> Verifying...
+                      </span>
+                    )}
                   </div>
                   <input
                     type="text"
                     required
                     maxLength={6}
+                    autoComplete="postal-code"
                     placeholder="6 digits"
                     value={pincode}
                     onChange={(e) => handlePincodeChange(e.target.value)}
@@ -397,8 +296,10 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                   />
                   {errors.pincode ? (
                     <p className="text-[10px] text-red-600 mt-1">{errors.pincode}</p>
+                  ) : pinResolvedText ? (
+                    <p className="text-[10px] text-emerald-700 font-medium mt-1 truncate">{pinResolvedText}</p>
                   ) : (
-                    <p className="text-[9px] text-taupe-500 mt-1">Check & adjust if your postal code differs</p>
+                    <p className="text-[9px] text-taupe-500 mt-1">Auto-fills City & State</p>
                   )}
                 </div>
 
@@ -409,6 +310,7 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                   <input
                     type="text"
                     required
+                    autoComplete="address-level2"
                     placeholder="e.g. Bengaluru"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
