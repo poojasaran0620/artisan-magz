@@ -378,9 +378,12 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
               {/* PIN Code, City, State Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-[11px] font-semibold text-charcoal/80 mb-1">
-                    PIN Code *
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[11px] font-semibold text-charcoal/80">
+                      PIN Code *
+                    </label>
+                    <span className="text-[9px] text-roseGold font-medium">Verify PIN</span>
+                  </div>
                   <input
                     type="text"
                     required
@@ -392,8 +395,10 @@ export const AddressFormModal: React.FC<AddressFormModalProps> = ({
                       errors.pincode ? 'border-red-400 bg-red-50/20' : 'border-taupe-300/80'
                     }`}
                   />
-                  {errors.pincode && (
+                  {errors.pincode ? (
                     <p className="text-[10px] text-red-600 mt-1">{errors.pincode}</p>
+                  ) : (
+                    <p className="text-[9px] text-taupe-500 mt-1">Check & adjust if your postal code differs</p>
                   )}
                 </div>
 
