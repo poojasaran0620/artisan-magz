@@ -8,6 +8,15 @@ import {
 } from '../../data/bookTemplates';
 import { PhysicalBookSpread } from './PhysicalBookSpread';
 import { InteractiveFlipBook } from './InteractiveFlipBook';
+import { useCart } from '../../context/CartContext';
+import { useToast } from '../../context/ToastContext';
+import { PRODUCTS } from '../../data/products';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '../ui/accordion';
 import {
   ChevronLeft,
   ChevronRight,
@@ -15,22 +24,28 @@ import {
   Eye,
   Edit3,
   Sparkles,
-  UploadCloud,
   Maximize2,
   Minimize2,
-  Layers,
   ArrowLeft,
+  ShoppingBag,
+  Zap,
+  Check,
 } from 'lucide-react';
 
 interface MultiPageBookViewerProps {
   initialPages?: BookPage[];
   onBack?: () => void;
+  onDirectCheckout?: () => void;
 }
 
 export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
   initialPages = SONGS_BOOK_PAGES,
   onBack,
+  onDirectCheckout,
 }) => {
+  const { addToCart, openCart } = useCart();
+  const { showToast } = useToast();
+  const tuChahiyeProduct = PRODUCTS.find((p) => p.id === 'prod-song-01') || PRODUCTS[0];
   const [pages, setPages] = useState<BookPage[]>(initialPages);
   const [activeTemplate, setActiveTemplate] = useState<'tu-chahiye' | 'chaar-kadam' | 'classic'>('tu-chahiye');
   const [activeSpreadIndex, setActiveSpreadIndex] = useState<number>(0);
@@ -52,6 +67,38 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
     }
     setActiveSpreadIndex(0);
     setTargetFlipPage(0);
+  };
+
+  const handleAddToCart = () => {
+    addToCart(
+      tuChahiyeProduct,
+      tuChahiyeProduct.variants ? tuChahiyeProduct.variants[0] : undefined,
+      {
+        headline: 'Tu Chahiye Magazine',
+        songTitle: 'Tu Chahiye',
+        specialInstructions: 'Songs Book Multi-Page Keepsake (6 Pages / 12 Sides)',
+      },
+      1
+    );
+    showToast('Added Tu Chahiye Magazine to Cart 🛍️', 'cart');
+    openCart();
+  };
+
+  const handleBuyNow = () => {
+    addToCart(
+      tuChahiyeProduct,
+      tuChahiyeProduct.variants ? tuChahiyeProduct.variants[0] : undefined,
+      {
+        headline: 'Tu Chahiye Magazine',
+        songTitle: 'Tu Chahiye',
+        specialInstructions: 'Songs Book Multi-Page Keepsake (6 Pages / 12 Sides)',
+      },
+      1
+    );
+    showToast('Proceeding to Checkout ✨', 'success');
+    if (onDirectCheckout) {
+      onDirectCheckout();
+    }
   };
 
 
@@ -167,17 +214,9 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
             </button>
           )}
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-serif italic font-bold text-lg sm:text-xl text-charcoal">
-                Songs Book
-              </span>
-              <span className="text-[10px] tracking-[0.25em] font-bold uppercase text-roseGold">
-                PHYSICAL BOOK SPREADS
-              </span>
-            </div>
-            <p className="text-xs text-charcoal/60 font-sans hidden sm:block">
-              Page 1 Standalone Cover • Pages 2–3 &amp; 4–5 Side-by-Side Dual Spreads
-            </p>
+            <span className="font-serif italic font-bold text-lg sm:text-xl text-charcoal">
+              Tu Chahiye Magazine
+            </span>
           </div>
         </div>
 
@@ -219,16 +258,6 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
             >
               <span>Classic Keepsake</span>
             </button>
-          </div>
-
-
-          <div className="hidden md:flex items-center gap-2 bg-cream-100 border border-taupe-200 px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-2xs">
-            <BookOpen className="w-4 h-4 text-roseGold" />
-            <span className="text-charcoal font-medium">{activeSpread.label}</span>
-            <span className="text-taupe-400">•</span>
-            <span className="text-charcoal/60 font-mono tabular-nums">
-              Spread {activeSpreadIndex + 1} of {spreads.length}
-            </span>
           </div>
 
           {/* 3D Flipbook vs Dual Spreads View Toggle */}
@@ -333,148 +362,174 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
         )}
       </main>
 
-      {/* ================= BOTTOM FILMSTRIP / SPREAD THUMBNAIL DRAWER ================= */}
-      <footer className="bg-[#FDFCF5] border-t border-taupe-200/80 px-4 sm:px-8 py-3.5 space-y-3">
-        <div className="max-w-4xl mx-auto flex items-center justify-between text-xs text-charcoal/70">
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-roseGold" />
-            <span className="font-semibold text-charcoal">Book Spreads</span>
-            <span className="text-taupe-400">•</span>
-            <span className="font-sans text-[11px]">
-              Showing {pages.length} pages in physical book layout
+      {/* ================= PRODUCT DETAILS, PRICING & ACCORDION ================= */}
+      <section className="w-full max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6">
+        {/* Title & Price Header */}
+        <div className="text-center space-y-2">
+          <h1 className="font-serif italic font-bold text-3xl sm:text-4xl text-charcoal tracking-tight">
+            Tu Chahiye Magazine
+          </h1>
+          <div className="flex items-center justify-center gap-3">
+            <span className="text-xl sm:text-2xl font-bold text-roseGold font-sans tabular-nums">
+              Rs. 700.00
+            </span>
+            <span className="text-sm text-charcoal/40 line-through font-sans tabular-nums">
+              Rs. 999.00
+            </span>
+            <span className="text-[10px] font-bold tracking-wider uppercase bg-sage-100 text-sage-800 px-2.5 py-0.5 rounded-full">
+              Special Edition
             </span>
           </div>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handleTemplateUpload(activeSpread.rightPage?.pageNumber || 1)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 bg-cream-100 hover:bg-cream-200 text-charcoal rounded-full border border-taupe-200 text-xs font-semibold transition cursor-pointer shadow-2xs"
-              title="Upload reference template JPG for active page"
-            >
-              <UploadCloud className="w-3.5 h-3.5 text-roseGold" />
-              <span>Upload Template JPG</span>
-            </button>
+        {/* Action Buttons: Add to Cart and Buy It Now */}
+        <div className="space-y-3 max-w-md mx-auto pt-2">
+          {/* Add to Cart Option */}
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="w-full py-3.5 px-6 bg-white hover:bg-cream-100 text-charcoal border-2 border-charcoal rounded-2xl font-semibold text-sm shadow-xs hover:shadow-soft transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+          >
+            <ShoppingBag className="w-4.5 h-4.5 text-charcoal" />
+            <span>Add to Cart</span>
+          </button>
+
+          {/* Buy It Now Option (direct to payment gateway) */}
+          <button
+            type="button"
+            onClick={handleBuyNow}
+            className="w-full py-3.5 px-6 bg-charcoal hover:bg-charcoal-dark text-[#FDFCF5] rounded-2xl font-semibold text-sm shadow-soft hover:shadow-luxury transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+          >
+            <Zap className="w-4.5 h-4.5 text-roseGold-light" />
+            <span>Buy It Now</span>
+          </button>
+        </div>
+
+        {/* ================= PRODUCT DESCRIPTION ACCORDIONS ================= */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-taupe-200/80 shadow-soft mt-8">
+          <div className="border-b border-taupe-200 pb-3 mb-2">
+            <h2 className="font-serif text-lg sm:text-xl font-bold text-charcoal">
+              Product Description
+            </h2>
           </div>
-        </div>
 
-        {/* Filmstrip Thumbnails */}
-        <div className="max-w-4xl mx-auto flex items-center justify-center gap-4 sm:gap-6 overflow-x-auto pb-1 pt-1">
-          {spreads.map((spread, idx) => {
-            const isSelected = activeSpreadIndex === idx;
-
-            const handleThumbnailClick = () => {
-              setActiveSpreadIndex(idx);
-              if (idx === 0) {
-                setTargetFlipPage(0);
-              } else {
-                setTargetFlipPage(idx * 2 - 1);
-              }
-            };
-
-            if (spread.type === 'single') {
-              // Single Page 1 Thumbnail
-              const coverImg = spread.rightPage?.referenceImage || spread.rightPage?.photos[0]?.url;
-
-              return (
-                <button
-                  key={spread.id}
-                  onClick={handleThumbnailClick}
-                  className={`flex flex-col items-center gap-1.5 group cursor-pointer transition-all ${
-                    isSelected ? 'scale-105' : 'opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <div
-                    className={`w-14 sm:w-16 aspect-[1/1.38] rounded-r-md rounded-l-xs overflow-hidden bg-charcoal border-2 transition ${
-                      isSelected
-                        ? 'border-roseGold ring-2 ring-roseGold/30 shadow-luxury'
-                        : 'border-taupe-300 hover:border-charcoal'
-                    }`}
-                  >
-                    {coverImg ? (
-                      <img
-                        src={coverImg}
-                        alt="Page 1 Cover"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-[#1E1B18] flex items-center justify-center text-[9px] text-white font-bold">
-                        P1
-                      </div>
-                    )}
-                  </div>
-                  <span
-                    className={`text-[10px] font-sans font-bold ${
-                      isSelected ? 'text-roseGold' : 'text-charcoal/70'
-                    }`}
-                  >
-                    Page 1 (Cover)
-                  </span>
-                </button>
-              );
-            }
-
-            // Dual Spread Thumbnail (Pages 2–3, 4–5, etc.)
-            const leftImg = spread.leftPage?.referenceImage || spread.leftPage?.photos[0]?.url;
-            const rightImg = spread.rightPage?.referenceImage || spread.rightPage?.photos[0]?.url;
-
-            return (
-              <button
-                key={spread.id}
-                onClick={handleThumbnailClick}
-                className={`flex flex-col items-center gap-1.5 group cursor-pointer transition-all ${
-                  isSelected ? 'scale-105' : 'opacity-70 hover:opacity-100'
-                }`}
-              >
-                <div
-                  className={`w-24 sm:w-28 aspect-[2/1.38] grid grid-cols-2 rounded-md overflow-hidden bg-white border-2 transition ${
-                    isSelected
-                      ? 'border-roseGold ring-2 ring-roseGold/30 shadow-luxury'
-                      : 'border-taupe-300 hover:border-charcoal'
-                  }`}
-                >
-                  {/* Left Page Mini */}
-                  <div className="relative border-r border-taupe-200 overflow-hidden bg-[#FAF8F5]">
-                    {leftImg ? (
-                      <img
-                        src={leftImg}
-                        alt={`Page ${spread.leftPage?.pageNumber}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[9px] text-charcoal/60 font-bold">
-                        P{spread.leftPage?.pageNumber}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right Page Mini */}
-                  <div className="relative overflow-hidden bg-[#FAF8F5]">
-                    {rightImg ? (
-                      <img
-                        src={rightImg}
-                        alt={`Page ${spread.rightPage?.pageNumber}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[9px] text-charcoal/60 font-bold">
-                        P{spread.rightPage?.pageNumber}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <span
-                  className={`text-[10px] font-sans font-bold ${
-                    isSelected ? 'text-roseGold' : 'text-charcoal/70'
-                  }`}
-                >
-                  {spread.label}
+          <Accordion type="single" collapsible className="w-full">
+            {/* Accordion 1: What's Included */}
+            <AccordionItem value="included">
+              <AccordionTrigger className="group">
+                <span className="text-sm font-semibold transition-colors group-hover:text-roseGold text-charcoal">
+                  What's Included
                 </span>
-              </button>
-            );
-          })}
-        </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <ul className="space-y-2.5 text-xs sm:text-sm text-charcoal/80 pt-1">
+                  <li className="flex items-start gap-2.5">
+                    <Check className="w-4 h-4 text-sage-600 mt-0.5 shrink-0" />
+                    <span>6 beautifully designed pages / 12 sides</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="w-4 h-4 text-sage-600 mt-0.5 shrink-0" />
+                    <span>Premium-quality printing</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="w-4 h-4 text-sage-600 mt-0.5 shrink-0" />
+                    <span>Aesthetic layouts tailored to your memories</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="w-4 h-4 text-sage-600 mt-0.5 shrink-0" />
+                    <span>Personalized captions, messages &amp; text</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="w-4 h-4 text-sage-600 mt-0.5 shrink-0" />
+                    <span>Thoughtfully designed to match your chosen vibe</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <Check className="w-4 h-4 text-sage-600 mt-0.5 shrink-0" />
+                    <span>Your photos transformed into a magazine-style keepsake</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
 
-      </footer>
+            {/* Accordion 2: What You Need to Share */}
+            <AccordionItem value="share">
+              <AccordionTrigger className="group">
+                <span className="text-sm font-semibold transition-colors group-hover:text-roseGold text-charcoal">
+                  What You Need to Share
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <ul className="space-y-2.5 text-xs sm:text-sm text-charcoal/80 pt-1">
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-roseGold font-bold text-base leading-none">•</span>
+                    <span>Minimum 20 photos required</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-roseGold font-bold text-base leading-none">•</span>
+                    <span>35–40 photos recommended for a fuller magazine experience</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-roseGold font-bold text-base leading-none">•</span>
+                    <span>Have more memories to include? You can choose additional pages while placing your order.</span>
+                  </li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Accordion 3: How It Works */}
+            <AccordionItem value="how-it-works">
+              <AccordionTrigger className="group">
+                <span className="text-sm font-semibold transition-colors group-hover:text-roseGold text-charcoal">
+                  How It Works
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <ol className="space-y-2.5 text-xs sm:text-sm text-charcoal/80 pt-1">
+                  <li className="flex items-start gap-3">
+                    <span className="w-5 h-5 rounded-full bg-cream-200 text-charcoal font-semibold text-[11px] flex items-center justify-center shrink-0 mt-0.5">1</span>
+                    <span>Place your order</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="w-5 h-5 rounded-full bg-cream-200 text-charcoal font-semibold text-[11px] flex items-center justify-center shrink-0 mt-0.5">2</span>
+                    <span>Share your photos and details with us</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="w-5 h-5 rounded-full bg-cream-200 text-charcoal font-semibold text-[11px] flex items-center justify-center shrink-0 mt-0.5">3</span>
+                    <span>We create your personalized design</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="w-5 h-5 rounded-full bg-cream-200 text-charcoal font-semibold text-[11px] flex items-center justify-center shrink-0 mt-0.5">4</span>
+                    <span>You review/approve the design</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="w-5 h-5 rounded-full bg-cream-200 text-charcoal font-semibold text-[11px] flex items-center justify-center shrink-0 mt-0.5">5</span>
+                    <span>Your magazine is printed and delivered</span>
+                  </li>
+                </ol>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Accordion 4: Privacy Policy */}
+            <AccordionItem value="privacy">
+              <AccordionTrigger className="group">
+                <span className="text-sm font-semibold transition-colors group-hover:text-roseGold text-charcoal">
+                  Privacy Policy
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2 text-xs sm:text-sm text-charcoal/80 leading-relaxed pt-1">
+                  <p className="font-semibold text-charcoal">
+                    Your memories are personal to you.
+                  </p>
+                  <p>
+                    We handle your photos and information with care. Your content will never be shared on our social media or used for promotional purposes without your permission.
+                  </p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </section>
     </div>
   );
 };

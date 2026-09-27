@@ -225,13 +225,13 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-song-01',
-    slug: 'custom-song-book-acrylic-plaque',
-    title: 'Melody of Us: Song Book & Spotify Plaque',
-    subtitle: 'Interactive musical keepsake with scannable Spotify code & personal lyrics',
+    slug: 'tu-chahiye-magazine',
+    title: 'Tu Chahiye Magazine',
+    subtitle: 'Songs Book Keepsake & Multi-Page Magazine Layout',
     category: 'songbook',
-    basePrice: 749,
-    originalPrice: 1099,
-    rating: 4.92,
+    basePrice: 700,
+    originalPrice: 999,
+    rating: 4.95,
     reviewCount: 220,
     badge: 'Trending Gift 🎵',
     images: [
@@ -239,52 +239,37 @@ export const PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1000&q=80',
       'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1000&q=80'
     ],
-    description: 'Every love story has its soundtrack. Our Song Book & Acrylic Plaque transforms your couple anthem or favorite memory track into an interactive art piece. Scan the code with your phone camera to instantly stream your song on Spotify, paired with your sweetest photo and custom inscribed lyrics.',
+    description: 'Transform your cherished memories into an editorial magazine keepsake. Featuring 6 beautifully designed pages / 12 sides with premium-quality printing and aesthetic layouts tailored to your memories.',
     variants: [
       {
-        id: 'song-acrylic-clear',
-        name: 'Crystal Clear Acrylic Plaque (with Pine Wood Base)',
-        price: 749,
-        originalPrice: 1099,
-        description: 'Sleek 3mm laser-cut acrylic with scannable soundwave and natural beechwood stand.',
-        recommendedPhotos: 1
-      },
-      {
-        id: 'song-led-plaque',
-        name: 'Luminescent LED Night-Light Plaque',
-        price: 1099,
-        originalPrice: 1499,
-        description: 'Warm glowing LED wooden base that illuminates your photo and song text at night.',
-        recommendedPhotos: 1
-      },
-      {
-        id: 'song-hardbound-book',
-        name: 'Deluxe "Our Playlist" Song Book (12 Songs)',
-        price: 1499,
-        originalPrice: 1999,
-        description: 'A pocket-sized book filled with your favorite songs, lyrics, and photos.',
-        recommendedPhotos: 6
+        id: 'tu-chahiye-standard',
+        name: 'Tu Chahiye Magazine (6 Pages / 12 Sides)',
+        price: 700,
+        originalPrice: 999,
+        description: '6 beautifully designed pages / 12 sides with aesthetic layouts and personalized captions.',
+        recommendedPhotos: 20
       }
     ],
     whatsIncluded: [
-      'Custom laser-printed acrylic plaque or bound songbook',
-      'Scannable Spotify playback soundwave code',
-      'Solid natural beechwood display easel or LED illumination base',
-      'Bespoke gift box packaging with crinkle paper and satin ribbon'
+      '6 beautifully designed pages / 12 sides',
+      'Premium-quality printing',
+      'Aesthetic layouts tailored to your memories',
+      'Personalized captions, messages & text',
+      'Thoughtfully designed to match your chosen vibe',
+      'Your photos transformed into a magazine-style keepsake'
     ],
     thingsRequired: [
-      'Song Title & Artist Name',
-      'Spotify song or playlist URL',
-      'Favorite couple photo for the album cover',
-      'Custom timestamp or dedicated quote'
+      'Minimum 20 photos required',
+      '35–40 photos recommended for a fuller magazine experience',
+      'Have more memories to include? You can choose additional pages while placing your order.'
     ],
     dispatchesIn: '2 - 3 Business Days',
     deliveryTimeline: 'Delivery in 4 - 6 days with damage-proof shipping box',
     features: [
-      '100% Scannable Spotify Soundwave',
-      'Warm LED Glow Base Option',
-      'Crystal Clarity Acrylic',
-      'Laser-Etched Scratch Resistant'
+      '6 Pages / 12 Sides Editorial Layout',
+      'Premium Photographic Matte Print',
+      'Tailored Captions & Messages',
+      'Bespoke Memory Keepsake'
     ]
   },
   {

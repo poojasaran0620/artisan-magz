@@ -294,7 +294,10 @@ export const App: React.FC = () => {
             )}
 
             {(currentView === 'book-viewer' || currentView === 'book-layout' || currentView === 'book') && (
-              <MultiPageBookViewer onBack={() => handleNavigate('home')} />
+              <MultiPageBookViewer
+                onBack={() => handleNavigate('home')}
+                onDirectCheckout={() => setIsCheckoutModalOpen(true)}
+              />
             )}
 
             {currentView === 'hamper' && (

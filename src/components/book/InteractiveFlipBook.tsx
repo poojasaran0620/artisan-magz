@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, forwardRef } from 'react';
 import HTMLFlipBook from 'react-pageflip';
-import { ChevronLeft, ChevronRight, Sparkles, Hand } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { BookPage } from '../../types/book';
 import { BookPageRenderer } from './BookPageRenderer';
 
@@ -197,14 +197,6 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
 
   return (
     <div className="flex flex-col items-center justify-center w-full select-none py-2 sm:py-6">
-      {/* Current Spread Pill Indicator matching Anchor Customs */}
-      <div className="mb-3 sm:mb-6 flex items-center gap-3">
-        <div className="inline-flex items-center gap-2 bg-charcoal text-white px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold shadow-luxury tracking-wide uppercase">
-          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-roseGold" />
-          <span>{currentSpreadLabel}</span>
-        </div>
-      </div>
-
       {/* 3D FlipBook Stage with Outer Depth Shadow */}
       <div className="relative flex items-center justify-center max-w-full overflow-hidden p-1 sm:p-4">
         <div className="relative filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]">
@@ -246,7 +238,7 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
         </div>
       </div>
 
-      {/* Bottom Controls matching Anchor Customs ("Drag or Click to Flip") */}
+      {/* Bottom Controls ("Drag or click to flip" with no hand icon) */}
       <div className="mt-3 sm:mt-6 flex items-center gap-2.5 sm:gap-4">
         <button
           type="button"
@@ -258,9 +250,8 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
           <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-white/90 backdrop-blur-xs border border-taupe-200 rounded-full text-charcoal/80 text-[10px] sm:text-xs font-semibold uppercase tracking-wider shadow-2xs">
-          <Hand className="w-3 h-3 text-roseGold animate-pulse" />
-          <span>Tap or drag corner to flip</span>
+        <div className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/90 backdrop-blur-xs border border-taupe-200 rounded-full text-charcoal/80 text-[10px] sm:text-xs font-semibold uppercase tracking-wider shadow-2xs">
+          <span>Drag or click to flip</span>
         </div>
 
         <button
