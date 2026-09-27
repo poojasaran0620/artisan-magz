@@ -1,17 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { PRODUCTS } from '../../data/products';
 import { springs, luxuryEase } from '../../styles/motion';
 
 interface ProductCategoriesSectionProps {
   onSelectProduct: (productId: string, templateId?: string, variantId?: string) => void;
   onHamperClick: () => void;
+  onCreateMagazine?: () => void;
 }
 
 export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> = ({
   onSelectProduct,
   onHamperClick,
+  onCreateMagazine,
 }) => {
   // Referenced Products
   const magazineProduct = PRODUCTS.find((p) => p.id === 'prod-mag-01') || PRODUCTS[0];
@@ -135,6 +137,33 @@ export const ProductCategoriesSection: React.FC<ProductCategoriesSectionProps> =
               </div>
             </motion.div>
           </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* "CREATE YOUR OWN MAGAZINE" CALLOUT BANNER                                 */}
+      {/* ========================================================================= */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20">
+        <div className="bg-[#FFFDF9] rounded-2xl p-6 sm:p-7 shadow-luxury border border-roseGold/30 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-roseGold/10 text-roseGold border border-roseGold/20">
+              <Sparkles className="w-3.5 h-3.5 text-roseGold" />
+              <span>Interactive Studio</span>
+            </div>
+            <h3 className="font-serif text-2xl font-bold text-wine-900">
+              Create Your Own Magazine
+            </h3>
+            <p className="text-xs sm:text-sm text-charcoal/70 font-sans max-w-lg">
+              Choose your occasion, pick your pages, and build a magazine filled with your favourite memories.
+            </p>
+          </div>
+          <button
+            onClick={() => onCreateMagazine ? onCreateMagazine() : onSelectProduct('create-magazine')}
+            className="px-6 py-3.5 rounded-xl bg-roseGold hover:bg-roseGold-dark text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer flex-shrink-0"
+          >
+            <span>Start Building</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
 

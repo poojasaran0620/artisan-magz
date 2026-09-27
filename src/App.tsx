@@ -172,6 +172,10 @@ export const App: React.FC = () => {
 
   const handleSelectProduct = (productId: string, templateId?: string, variantId?: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (productId === 'create-magazine' || productId === 'create-your-own-magazine' || productId === 'create-your-own') {
+      handleNavigate('create-magazine');
+      return;
+    }
     if (productId === 'frames' || productId === 'frames-collection' || productId === 'prod-frame-01') {
       setCurrentView('frames');
       return;
@@ -246,6 +250,7 @@ export const App: React.FC = () => {
                 <ProductCategoriesSection
                   onSelectProduct={handleSelectProduct}
                   onHamperClick={() => handleNavigate('hamper')}
+                  onCreateMagazine={() => handleNavigate('create-magazine')}
                 />
 
                 {/* 3. Process: How to Order & How to Upload Photos */}
@@ -281,6 +286,7 @@ export const App: React.FC = () => {
                 <ProductCategoriesSection
                   onSelectProduct={handleSelectProduct}
                   onHamperClick={() => handleNavigate('hamper')}
+                  onCreateMagazine={() => handleNavigate('create-magazine')}
                 />
                 <FeaturedProducts
                   onSelectProduct={handleSelectProduct}
