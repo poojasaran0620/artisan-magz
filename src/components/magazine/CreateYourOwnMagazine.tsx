@@ -16,6 +16,8 @@ import {
   Info,
   ExternalLink,
   Zap,
+  Eye,
+  X,
 } from 'lucide-react';
 import {
   CUSTOM_MAGAZINE_OCCASIONS,
@@ -49,13 +51,16 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
   const { showToast } = useToast();
 
   // State
-  const [selectedPackageId, setSelectedPackageId] = useState<string>('mag-12p');
   const [selectedOccasionId, setSelectedOccasionId] = useState<CustomOccasionId | null>(null);
+  const [selectedPackageId, setSelectedPackageId] = useState<string>('mag-12p');
+  const [selectedFormat, setSelectedFormat] = useState<'standard-a4' | 'mini-a5'>('standard-a4');
   const [selectedSpreadIds, setSelectedSpreadIds] = useState<string[]>([]);
   const [selectedAddOnId, setSelectedAddOnId] = useState<string>('none');
   const [pendingOccasionId, setPendingOccasionId] = useState<CustomOccasionId | null>(null);
   const [showOccasionChangeModal, setShowOccasionChangeModal] = useState<boolean>(false);
   const [targetFlipPage, setTargetFlipPage] = useState<number | undefined>(undefined);
+  const [previewingTemplate, setPreviewingTemplate] = useState<SpreadTemplate | null>(null);
+  const [previewingPackage, setPreviewingPackage] = useState<MagazinePackage | null>(null);
 
   // References for smooth scrolling
   const sizeSectionRef = useRef<HTMLDivElement>(null);
@@ -312,10 +317,24 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
     }
   };
 
+  // Randomise spreads selection (Matching reference Image 2)
+  const handleRandomiseSpreads = () => {
+    if (!selectedOccasionId || availableTemplates.length === 0) {
+      showToast('Please choose an occasion first to randomise templates.', 'info');
+      occasionSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    const shuffled = [...availableTemplates].sort(() => 0.5 - Math.random());
+    const picked = shuffled.slice(0, requiredSpreadsCount).map((t) => t.id);
+    setSelectedSpreadIds(picked);
+    setTargetFlipPage(1);
+    showToast(`🔀 Randomly selected ${picked.length} templates for you!`, 'success');
+  };
+
   // Add Custom Magazine to Cart or Direct Checkout
   const handleAddToCartAndCheckout = (directCheckout = true) => {
     if (!selectedOccasionId) {
-      showToast('Please choose an occasion for your magazine first in Step 2.', 'info');
+      showToast('Please choose an occasion for your magazine first in Step 1.', 'info');
       occasionSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
@@ -396,366 +415,187 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
               favourite memories.
             </p>
           </div>
-
-          {/* ========================================================================= */}
-          {/* HOW IT WORKS PROCESS SECTION (Directly after heading & supporting text) */}
-          {/* ========================================================================= */}
-          <div className="mt-8 pt-8 border-t border-taupe-200/60">
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-4 gap-1">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-roseGold" />
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-wine-900">
-                  How It Works
-                </h2>
-              </div>
-              <p className="text-xs text-charcoal/60 font-sans">
-                Follow these 5 simple steps to craft your bespoke print keepsake
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-              {/* Step 1 Card */}
-              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
-                    1
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
-                    Step 1
-                  </span>
-                </div>
-                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
-                  Select Pages
-                </h3>
-                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
-                  Choose 8, 12, 16, or 20 total pages for your custom magazine size.
-                </p>
-              </div>
-
-              {/* Step 2 Card */}
-              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
-                    2
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
-                    Step 2
-                  </span>
-                </div>
-                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
-                  Choose Occasion
-                </h3>
-                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
-                  Pick Birthday, Couple, Friends, Wedding, Travel, or Just Because.
-                </p>
-              </div>
-
-              {/* Step 3 Card */}
-              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
-                    3
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
-                    Step 3
-                  </span>
-                </div>
-                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
-                  Pick Templates
-                </h3>
-                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
-                  Select curated 2-page spreads that match your chosen total pages.
-                </p>
-              </div>
-
-              {/* Step 4 Card */}
-              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
-                    4
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
-                    Step 4
-                  </span>
-                </div>
-                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
-                  Add Gifting Extras
-                </h3>
-                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
-                  Opt for a luxury gift box or wax-sealed letter for an unforgettable gift.
-                </p>
-              </div>
-
-              {/* Step 5 Card */}
-              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="w-6 h-6 rounded-full bg-wine-900 text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
-                    5
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-wine-900 font-sans">
-                    Step 5
-                  </span>
-                </div>
-                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
-                  Live 3D Book &amp; Print
-                </h3>
-                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
-                  Watch your book fill up in real time, place order, and we print &amp; deliver.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 space-y-16">
+      {/* ========================================================================= */}
+      {/* MAIN BUILDER CONTAINER */}
+      {/* ========================================================================= */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-10">
+
         {/* ========================================================================= */}
-        {/* STEP 1: CHOOSE YOUR MAGAZINE SIZE (NUMBER OF PAGES) */}
+        {/* BOX 1: HOW IT WORKS (Compact Pink Box) */}
         {/* ========================================================================= */}
-        <section ref={sizeSectionRef} id="step-1-size" className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-taupe-200/60 pb-3 gap-2">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
-                Step 1 of 5
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-wine-900 mt-1">
-                Choose Your Magazine Size
-              </h2>
-            </div>
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-charcoal/70 font-sans">
-              <Layers className="w-3.5 h-3.5 text-roseGold" />
-              Formula: (Total Pages - 2) / 2 spreads
+        <section
+          id="how-it-works-box"
+          className="rounded-3xl bg-[#963354] p-5 sm:p-7 text-white shadow-xl border border-white/10"
+        >
+          <div className="text-center max-w-xl mx-auto mb-5">
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-roseGold-light/90 font-sans">
+              The Process
             </span>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-1">
+              How It Works
+            </h2>
+            <p className="text-xs sm:text-sm text-white/80 font-sans mt-1 leading-relaxed">
+              Follow these simple steps to build your custom magazine keepsake
+            </p>
           </div>
 
-          <p className="text-sm text-charcoal/70 max-w-3xl font-sans">
-            Every magazine features <strong>2 fixed cover pages</strong> (1 Front Cover + 1 Back
-            Cover). Inside pages are curated as <strong>2-page side-by-side spreads</strong>.
-            Select your preferred length below.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {CUSTOM_MAGAZINE_PACKAGES.map((pkg) => {
-              const isSelected = selectedPackageId === pkg.id;
-              return (
-                <button
-                  key={pkg.id}
-                  onClick={() => handleSelectPackage(pkg)}
-                  className={`group text-left p-5 rounded-xl border transition-all relative flex flex-col justify-between cursor-pointer ${
-                    isSelected
-                      ? 'border-roseGold bg-roseGold/5 shadow-md ring-1 ring-roseGold'
-                      : 'border-taupe-200/80 bg-white hover:border-roseGold/50 hover:shadow-sm'
-                  }`}
-                >
-                  {pkg.badge && (
-                    <span
-                      className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full font-sans ${
-                        isSelected ? 'bg-roseGold text-white' : 'bg-blush-100 text-roseGold'
-                      }`}
-                    >
-                      {pkg.badge}
-                    </span>
-                  )}
-
-                  <div>
-                    <h3 className="font-serif text-2xl font-bold text-wine-900">
-                      {pkg.name}
-                    </h3>
-                    <p className="text-xs font-bold text-roseGold uppercase tracking-wide mt-0.5 font-sans">
-                      {pkg.spreadsCount} Customizable Spreads
-                    </p>
-
-                    <div className="mt-3 flex items-baseline gap-2">
-                      <span className="font-serif text-2xl font-bold text-wine-900 tabular-nums">
-                        ₹{pkg.price.toLocaleString('en-IN')}
-                      </span>
-                      <span className="text-xs text-charcoal/50 line-through tabular-nums font-sans">
-                        ₹{pkg.originalPrice.toLocaleString('en-IN')}
-                      </span>
-                    </div>
-
-                    <div className="mt-4 p-2.5 rounded-lg bg-[#FAF2EC] text-xs text-wine-900/80 leading-relaxed font-sans">
-                      <p className="font-medium text-wine-900">
-                        {pkg.spreadsCount} Spreads = {pkg.spreadsCount * 2} Inside Pages
-                      </p>
-                      <p className="text-[11px] text-charcoal/70 mt-0.5">
-                        + 1 Front Cover + 1 Back Cover
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-5 pt-3 border-t border-taupe-200/40 flex items-center justify-between text-xs font-semibold font-sans">
-                    <span className={isSelected ? 'text-roseGold font-bold' : 'text-charcoal/60'}>
-                      {isSelected ? 'Active Selection' : 'Select Size'}
-                    </span>
-                    {isSelected && <Check className="w-4 h-4 text-roseGold" />}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* ========================================================================= */}
-          {/* INTERACTIVE 3D BOOK SPREAD (Directly below Number of Pages option) */}
-          {/* Dynamically scales to 8, 12, 16, or 20 pages; starts empty & fills up */}
-          {/* ========================================================================= */}
-          <div
-            ref={bookSpreadSectionRef}
-            className="mt-8 rounded-3xl bg-white border border-taupe-200/90 p-5 sm:p-8 shadow-soft"
-          >
-            {/* Header / Spread Status Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-taupe-200/70 pb-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {/* Step 1 */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-3 sm:p-3.5 border border-white/15 flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-roseGold animate-pulse" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
-                    Interactive 3D Book Spread
+                <div className="flex items-center justify-between mb-2">
+                  <span className="w-5 h-5 rounded-full bg-white text-[#963354] text-[11px] font-bold font-sans flex items-center justify-center tabular-nums">
+                    1
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-white/70 font-sans">
+                    Step 1
                   </span>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-wine-900 mt-1">
-                  {currentPackage.name} Magazine ({currentPackage.totalPages} Pages Spread)
+                <h3 className="font-serif font-bold text-sm text-white mb-0.5">
+                  Pick Occasion
                 </h3>
-                <p className="text-xs text-charcoal/70 mt-0.5 font-sans">
-                  {selectedSpreadIds.length === 0
-                    ? `Currently showing empty layout. As you select templates in Step 3, they will appear here in real-time!`
-                    : `${selectedSpreadIds.length} of ${requiredSpreadsCount} inside spreads filled. Drag page corners or click arrows to flip!`}
+                <p className="text-[11px] text-white/80 font-sans leading-tight">
+                  Choose from 6 curated celebration themes.
                 </p>
               </div>
+            </div>
 
-              {/* Progress Counters & Bar */}
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <p className="text-xs font-bold text-wine-900 font-sans tabular-nums">
-                    {selectedSpreadIds.length} / {requiredSpreadsCount} Spreads Selected
-                  </p>
-                  <p className="text-[11px] text-charcoal/60 font-sans tabular-nums">
-                    {selectedSpreadIds.length * 2 + 2} of {currentPackage.totalPages} Pages Filled
-                  </p>
+            {/* Step 2 */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-3 sm:p-3.5 border border-white/15 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="w-5 h-5 rounded-full bg-white text-[#963354] text-[11px] font-bold font-sans flex items-center justify-center tabular-nums">
+                    2
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-white/70 font-sans">
+                    Step 2
+                  </span>
                 </div>
-
-                <div className="w-24 sm:w-32 bg-taupe-100 rounded-full h-2.5 overflow-hidden">
-                  <div
-                    className="bg-roseGold h-full transition-all duration-300"
-                    style={{
-                      width: `${(selectedSpreadIds.length / requiredSpreadsCount) * 100}%`,
-                    }}
-                  />
-                </div>
+                <h3 className="font-serif font-bold text-sm text-white mb-0.5">
+                  Choose Pages
+                </h3>
+                <p className="text-[11px] text-white/80 font-sans leading-tight">
+                  Select 8, 12, 16, or 20 total pages.
+                </p>
               </div>
             </div>
 
-            {/* The 3D Page-Flip Book Stage (Tu Chahiye Magazine component) */}
-            <div className="py-4">
-              <InteractiveFlipBook
-                pages={dynamicBookPages}
-                targetPage={targetFlipPage}
-                isEditable={false}
-              />
+            {/* Step 3 */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-3 sm:p-3.5 border border-white/15 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="w-5 h-5 rounded-full bg-white text-[#963354] text-[11px] font-bold font-sans flex items-center justify-center tabular-nums">
+                    3
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-white/70 font-sans">
+                    Step 3
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-sm text-white mb-0.5">
+                  Live 3D Spread
+                </h3>
+                <p className="text-[11px] text-white/80 font-sans leading-tight">
+                  Watch pages fill dynamically in the flipbook.
+                </p>
+              </div>
             </div>
 
-            {/* Quick Spread Navigation Jump Pills */}
-            <div className="mt-4 pt-4 border-t border-taupe-200/60">
-              <div className="flex items-center justify-between text-xs text-charcoal/70 mb-2 font-sans">
-                <span className="font-semibold text-wine-900">Jump to Spread:</span>
-                <span className="text-[11px] text-charcoal/50">Click any spread to inspect</span>
+            {/* Step 4 */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-3 sm:p-3.5 border border-white/15 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="w-5 h-5 rounded-full bg-white text-[#963354] text-[11px] font-bold font-sans flex items-center justify-center tabular-nums">
+                    4
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-white/70 font-sans">
+                    Step 4
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-sm text-white mb-0.5">
+                  Pick Templates
+                </h3>
+                <p className="text-[11px] text-white/80 font-sans leading-tight">
+                  Choose curated 2-page spreads or auto-randomise.
+                </p>
               </div>
+            </div>
 
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-taupe-200">
-                {/* Front Cover Button */}
-                <button
-                  type="button"
-                  onClick={() => setTargetFlipPage(0)}
-                  className="px-3 py-1.5 rounded-lg border border-taupe-200 bg-white hover:bg-cream-100 text-xs font-sans font-medium text-charcoal whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95"
-                >
-                  Page 1 (Front Cover)
-                </button>
-
-                {/* Inside Spreads Buttons */}
-                {Array.from({ length: requiredSpreadsCount }).map((_, sIdx) => {
-                  const isFilled = Boolean(selectedSpreadTemplates[sIdx]);
-                  const leftP = sIdx * 2 + 2;
-                  const rightP = sIdx * 2 + 3;
-                  const targetPageIdx = sIdx * 2 + 1;
-
-                  return (
-                    <button
-                      key={sIdx}
-                      type="button"
-                      onClick={() => setTargetFlipPage(targetPageIdx)}
-                      className={`px-3 py-1.5 rounded-lg border text-xs font-sans whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95 flex items-center gap-1.5 ${
-                        isFilled
-                          ? 'border-roseGold bg-roseGold/10 text-wine-900 font-semibold'
-                          : 'border-dashed border-taupe-300 bg-white text-charcoal/60 hover:text-charcoal'
-                      }`}
-                    >
-                      <span className="tabular-nums">Spread {sIdx + 1} (p.{leftP}–{rightP})</span>
-                      {isFilled ? (
-                        <Check className="w-3 h-3 text-roseGold" />
-                      ) : (
-                        <span className="text-[10px] text-rose-500 font-medium">Empty</span>
-                      )}
-                    </button>
-                  );
-                })}
-
-                {/* Back Cover Button */}
-                <button
-                  type="button"
-                  onClick={() => setTargetFlipPage(currentPackage.totalPages - 1)}
-                  className="px-3 py-1.5 rounded-lg border border-taupe-200 bg-white hover:bg-cream-100 text-xs font-sans font-medium text-charcoal whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95"
-                >
-                  Page {currentPackage.totalPages} (Back Cover)
-                </button>
+            {/* Step 5 */}
+            <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-3 sm:p-3.5 border border-white/15 flex flex-col justify-between col-span-2 sm:col-span-1">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="w-5 h-5 rounded-full bg-white text-[#963354] text-[11px] font-bold font-sans flex items-center justify-center tabular-nums">
+                    5
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-white/70 font-sans">
+                    Step 5
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-sm text-white mb-0.5">
+                  Gifting &amp; Print
+                </h3>
+                <p className="text-[11px] text-white/80 font-sans leading-tight">
+                  Add gift box or wax seal, review and order!
+                </p>
               </div>
             </div>
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* STEP 2: CHOOSE YOUR OCCASION */}
+        {/* BOX 2: CHOOSE YOUR OCCASION (Compact Pink Box) */}
         {/* ========================================================================= */}
-        <section ref={occasionSectionRef} id="step-2-occasion" className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-taupe-200/60 pb-3 gap-2">
+        <section
+          ref={occasionSectionRef}
+          id="step-occasion-box"
+          className="rounded-3xl bg-[#963354] p-5 sm:p-7 text-white shadow-xl border border-white/10 space-y-5"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-white/15 pb-3 gap-2">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
-                Step 2 of 5
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/80 font-sans">
+                Step 1 of 5
               </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-wine-900 mt-1">
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white mt-0.5">
                 What is your magazine for?
               </h2>
             </div>
-            {currentOccasion && (
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-roseGold font-sans">
-                <Check className="w-3.5 h-3.5 text-roseGold" />
+            {currentOccasion ? (
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-roseGold-light font-sans bg-white/10 px-3 py-1 rounded-full border border-white/20">
+                <Check className="w-3.5 h-3.5 text-white" />
                 {currentOccasion.name} Selected
+              </span>
+            ) : (
+              <span className="text-xs text-white/70 font-sans">
+                Choose 1 celebration theme
               </span>
             )}
           </div>
 
-          <p className="text-sm text-charcoal/70 max-w-2xl font-sans">
-            Select one occasion category. Each occasion features hand-crafted, editorial-grade
+          <p className="text-xs sm:text-sm text-white/80 font-sans max-w-2xl leading-relaxed">
+            Select one occasion category. Each theme features hand-crafted, editorial-grade
             inside spread layouts tailored to your celebration.
           </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {CUSTOM_MAGAZINE_OCCASIONS.map((occ) => {
               const isSelected = selectedOccasionId === occ.id;
               return (
                 <button
                   key={occ.id}
                   onClick={() => handleSelectOccasion(occ.id)}
-                  className={`group relative text-left p-4 rounded-xl border transition-all flex flex-col justify-between h-full cursor-pointer ${
+                  className={`group relative text-left p-3.5 rounded-2xl border transition-all flex flex-col justify-between h-full cursor-pointer ${
                     isSelected
-                      ? 'border-roseGold bg-roseGold/5 shadow-md ring-1 ring-roseGold'
-                      : 'border-taupe-200/80 bg-white hover:border-roseGold/50 hover:shadow-sm'
+                      ? 'border-2 border-white ring-2 ring-white/50 bg-white/25 shadow-lg'
+                      : 'border-white/20 bg-white/10 hover:bg-white/20 hover:border-white/40'
                   }`}
                 >
                   {occ.badge && (
                     <span
-                      className={`absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full font-sans ${
-                        isSelected
-                          ? 'bg-roseGold text-white'
-                          : 'bg-taupe-100 text-charcoal/70 group-hover:bg-roseGold/10 group-hover:text-roseGold'
+                      className={`absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full font-sans ${
+                        isSelected ? 'bg-white text-[#963354]' : 'bg-white/20 text-white'
                       }`}
                     >
                       {occ.badge}
@@ -764,27 +604,27 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
 
                   <div>
                     <div
-                      className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 transition-colors ${
-                        isSelected ? 'bg-roseGold text-white' : 'bg-blush-50 text-wine-900'
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center mb-2.5 transition-colors ${
+                        isSelected ? 'bg-white text-[#963354]' : 'bg-white/15 text-white'
                       }`}
                     >
                       <BookOpen className="w-4 h-4" />
                     </div>
 
-                    <h3 className="font-serif font-bold text-base text-wine-900 group-hover:text-roseGold transition-colors">
+                    <h3 className="font-serif font-bold text-sm text-white leading-tight">
                       {occ.name}
                     </h3>
 
-                    <p className="text-xs text-charcoal/70 mt-1 line-clamp-2 leading-relaxed font-sans">
+                    <p className="text-[11px] text-white/80 mt-1 line-clamp-2 leading-tight font-sans">
                       {occ.tagline}
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-taupe-200/40 flex items-center justify-between text-xs font-semibold font-sans">
-                    <span className={isSelected ? 'text-roseGold font-bold' : 'text-charcoal/60'}>
+                  <div className="mt-3 pt-2 border-t border-white/15 flex items-center justify-between text-[11px] font-semibold font-sans">
+                    <span className={isSelected ? 'text-white font-bold' : 'text-white/70'}>
                       {isSelected ? 'Selected' : 'Choose'}
                     </span>
-                    {isSelected && <Check className="w-4 h-4 text-roseGold" />}
+                    {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
                   </div>
                 </button>
               );
@@ -793,54 +633,314 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
         </section>
 
         {/* ========================================================================= */}
-        {/* STEP 3: CHOOSE YOUR DESIGNS (INSIDE SPREADS) */}
+        {/* BOX 3: CHOOSE YOUR PACKAGE / NUMBER OF PAGES (Pink Box - Image 1 Style) */}
         {/* ========================================================================= */}
-        <section ref={templatesSectionRef} id="step-3-templates" className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-taupe-200/60 pb-3 gap-2">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-roseGold">
-                Step 3 of 5
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-wine-900 mt-1">
-                Choose Your Designs
-              </h2>
+        <section
+          ref={sizeSectionRef}
+          id="step-size-box"
+          className="rounded-3xl bg-[#963354] p-5 sm:p-7 text-white shadow-xl border border-white/10 text-center space-y-4"
+        >
+          {/* Format Toggle Section */}
+          <div>
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/80 font-sans block mb-2">
+              CHOOSE YOUR FORMAT
+            </span>
+            <div className="inline-flex p-1 rounded-full bg-black/20 border border-white/20">
+              <button
+                type="button"
+                onClick={() => setSelectedFormat('standard-a4')}
+                className={`px-4 sm:px-5 py-1.5 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer ${
+                  selectedFormat === 'standard-a4'
+                    ? 'bg-white text-[#963354] font-bold shadow-sm'
+                    : 'text-white/80 hover:text-white'
+                }`}
+              >
+                STANDARD • A4
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedFormat('mini-a5')}
+                className={`px-4 sm:px-5 py-1.5 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer ${
+                  selectedFormat === 'mini-a5'
+                    ? 'bg-white text-[#963354] font-bold shadow-sm'
+                    : 'text-white/80 hover:text-white'
+                }`}
+              >
+                MINI • A5
+              </button>
             </div>
+          </div>
 
-            {selectedOccasionId && (
+          <div className="max-w-xl mx-auto">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">
+              Choose your package
+            </h2>
+            <p className="text-xs sm:text-sm text-white/80 font-sans mt-1">
+              Pricing scales with page count. Front &amp; back covers included.
+            </p>
+          </div>
+
+          {/* Packages 4-Column Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-5 text-left">
+            {CUSTOM_MAGAZINE_PACKAGES.map((pkg) => {
+              const isSelected = selectedPackageId === pkg.id;
+              return (
+                <div
+                  key={pkg.id}
+                  className={`relative rounded-2xl border p-3 flex flex-col items-center justify-between transition-all bg-black/15 ${
+                    isSelected
+                      ? 'border-2 border-white ring-2 ring-white/50 bg-black/25 shadow-lg'
+                      : 'border-white/20 hover:border-white/40 hover:bg-black/20'
+                  }`}
+                >
+                  {/* Selected check badge */}
+                  {isSelected && (
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white text-[#963354] flex items-center justify-center shadow-sm">
+                      <Check className="w-3 h-3 stroke-[3]" />
+                    </div>
+                  )}
+
+                  {/* Thumbnail Preview Card */}
+                  <div className="w-full aspect-[3/4] max-h-32 rounded-xl bg-amber-50/90 border border-amber-200/80 p-2 flex flex-col items-center justify-center text-center shadow-inner relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#963354_1px,transparent_1px)] [background-size:8px_8px]" />
+                    <span className="font-serif font-bold text-xs sm:text-sm text-[#963354] uppercase tracking-wide relative z-10 leading-tight">
+                      {pkg.totalPages} PAGES
+                    </span>
+                    <span className="text-[10px] font-sans font-semibold tracking-wider text-[#963354]/80 uppercase relative z-10">
+                      MAGAZINE
+                    </span>
+                    <span className="text-[9px] text-charcoal/60 mt-1 relative z-10 font-sans">
+                      {pkg.spreadsCount} Spreads
+                    </span>
+                  </div>
+
+                  {/* Page Count */}
+                  <span className="font-serif font-bold text-xs text-white uppercase tracking-wider mt-2.5">
+                    {pkg.totalPages} PAGES
+                  </span>
+
+                  {/* White Rounded Price Tag Pill */}
+                  <div className="mt-1.5 bg-white text-[#963354] font-bold text-xs sm:text-sm px-3.5 py-1 rounded-lg font-sans tabular-nums shadow-sm">
+                    ₹{pkg.price.toLocaleString('en-IN')}
+                  </div>
+
+                  {/* Select & View Action Buttons */}
+                  <div className="mt-3 flex items-center gap-1.5 w-full pt-1">
+                    <button
+                      type="button"
+                      onClick={() => handleSelectPackage(pkg)}
+                      className={`flex-1 py-1.5 px-2 rounded-full text-[11px] font-sans font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                        isSelected
+                          ? 'bg-white text-[#963354] font-bold shadow-sm'
+                          : 'border border-white/40 hover:border-white text-white hover:bg-white/10'
+                      }`}
+                    >
+                      {isSelected ? (
+                        <>
+                          <Check className="w-3 h-3" />
+                          <span>Selected</span>
+                        </>
+                      ) : (
+                        <span>Select</span>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPreviewingPackage(pkg)}
+                      title="View package details"
+                      className="p-1.5 rounded-full border border-white/40 hover:border-white text-white hover:bg-white/10 transition-all cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="text-xs text-white/80 italic font-sans pt-1">
+            more pages, more stories to tell
+          </p>
+
+          {/* Scroll Down to 3D Book & Pick Templates CTA */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => bookSpreadSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
+              className="w-full max-w-md mx-auto py-3 px-6 rounded-full bg-white/20 hover:bg-white/30 text-white font-bold text-xs tracking-wider uppercase border border-white/30 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95"
+            >
+              <span>Scroll Down To View 3D Book &amp; Pick Templates</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* STAGE 4: INTERACTIVE 3D BOOK SPREAD (Directly below Number of Pages) */}
+        {/* Dynamically scales to 8, 12, 16, or 20 pages; starts empty & fills up */}
+        {/* ========================================================================= */}
+        <section
+          ref={bookSpreadSectionRef}
+          id="interactive-3d-spread-stage"
+          className="rounded-3xl bg-white border border-taupe-200/90 p-5 sm:p-8 shadow-soft"
+        >
+          {/* Header / Spread Status Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-taupe-200/70 pb-5">
+            <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold px-3 py-1 rounded-full bg-roseGold/10 text-roseGold border border-roseGold/20 font-sans tabular-nums">
-                  {selectedSpreadIds.length} of {requiredSpreadsCount} spreads selected
+                <span className="w-2.5 h-2.5 rounded-full bg-roseGold animate-pulse" />
+                <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
+                  Interactive 3D Book Spread
                 </span>
               </div>
-            )}
+              <h3 className="font-serif text-2xl font-bold text-wine-900 mt-1">
+                {currentPackage.name} Magazine ({currentPackage.totalPages} Pages Spread)
+              </h3>
+              <p className="text-xs text-charcoal/70 mt-0.5 font-sans">
+                {selectedSpreadIds.length === 0
+                  ? `Currently showing empty layout. As you select templates in the pink box below, they will appear here in real-time!`
+                  : `${selectedSpreadIds.length} of ${requiredSpreadsCount} inside spreads filled. Drag page corners or click arrows to flip!`}
+              </p>
+            </div>
+
+            {/* Progress Counters & Bar */}
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-xs font-bold text-wine-900 font-sans tabular-nums">
+                  {selectedSpreadIds.length} / {requiredSpreadsCount} Spreads Selected
+                </p>
+                <p className="text-[11px] text-charcoal/60 font-sans tabular-nums">
+                  {selectedSpreadIds.length * 2 + 2} of {currentPackage.totalPages} Pages Filled
+                </p>
+              </div>
+
+              <div className="w-24 sm:w-32 bg-taupe-100 rounded-full h-2.5 overflow-hidden">
+                <div
+                  className="bg-roseGold h-full transition-all duration-300"
+                  style={{
+                    width: `${(selectedSpreadIds.length / requiredSpreadsCount) * 100}%`,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* The 3D Page-Flip Book Stage (Tu Chahiye Magazine component) */}
+          <div className="py-4">
+            <InteractiveFlipBook
+              pages={dynamicBookPages}
+              targetPage={targetFlipPage}
+              isEditable={false}
+            />
+          </div>
+
+          {/* Quick Spread Navigation Jump Pills */}
+          <div className="mt-4 pt-4 border-t border-taupe-200/60">
+            <div className="flex items-center justify-between text-xs text-charcoal/70 mb-2 font-sans">
+              <span className="font-semibold text-wine-900">Jump to Spread:</span>
+              <span className="text-[11px] text-charcoal/50">Click any spread to inspect in 3D</span>
+            </div>
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-taupe-200">
+              {/* Front Cover Button */}
+              <button
+                type="button"
+                onClick={() => setTargetFlipPage(0)}
+                className="px-3 py-1.5 rounded-lg border border-taupe-200 bg-white hover:bg-cream-100 text-xs font-sans font-medium text-charcoal whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95"
+              >
+                Page 1 (Front Cover)
+              </button>
+
+              {/* Inside Spreads Buttons */}
+              {Array.from({ length: requiredSpreadsCount }).map((_, sIdx) => {
+                const isFilled = Boolean(selectedSpreadTemplates[sIdx]);
+                const leftP = sIdx * 2 + 2;
+                const rightP = sIdx * 2 + 3;
+                const targetPageIdx = sIdx * 2 + 1;
+
+                return (
+                  <button
+                    key={sIdx}
+                    type="button"
+                    onClick={() => setTargetFlipPage(targetPageIdx)}
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-sans whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95 flex items-center gap-1.5 ${
+                      isFilled
+                        ? 'border-roseGold bg-roseGold/10 text-wine-900 font-semibold'
+                        : 'border-dashed border-taupe-300 bg-white text-charcoal/60 hover:text-charcoal'
+                    }`}
+                  >
+                    <span className="tabular-nums">Spread {sIdx + 1} (p.{leftP}–{rightP})</span>
+                    {isFilled ? (
+                      <Check className="w-3 h-3 text-roseGold" />
+                    ) : (
+                      <span className="text-[10px] text-rose-500 font-medium">Empty</span>
+                    )}
+                  </button>
+                );
+              })}
+
+              {/* Back Cover Button */}
+              <button
+                type="button"
+                onClick={() => setTargetFlipPage(currentPackage.totalPages - 1)}
+                className="px-3 py-1.5 rounded-lg border border-taupe-200 bg-white hover:bg-cream-100 text-xs font-sans font-medium text-charcoal whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95"
+              >
+                Page {currentPackage.totalPages} (Back Cover)
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* BOX 5: PICK YOUR TEMPLATES (Pink Box - Image 2 Style) */}
+        {/* ========================================================================= */}
+        <section
+          ref={templatesSectionRef}
+          id="step-templates-box"
+          className="rounded-3xl bg-[#963354] p-5 sm:p-7 text-white shadow-xl border border-white/10 space-y-5"
+        >
+          {/* Header */}
+          <div className="text-center max-w-xl mx-auto">
+            <BookOpen className="w-6 h-6 text-white/90 mx-auto mb-1.5" />
+            <h2 className="font-serif text-xl sm:text-2xl font-bold uppercase tracking-widest text-white">
+              RIGHT - LEFT SIDE TEMPLATES
+            </h2>
+            <p className="text-xs uppercase tracking-widest text-white/80 font-sans mt-1 tabular-nums">
+              {selectedSpreadIds.length} OF {requiredSpreadsCount} SELECTED
+            </p>
+
+            {/* Randomise For Me Action Button */}
+            <button
+              type="button"
+              onClick={handleRandomiseSpreads}
+              className="mt-3.5 inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white text-[#963354] font-bold text-xs uppercase tracking-wider shadow-md hover:bg-cream-100 transition-all cursor-pointer active:scale-95"
+            >
+              <span>🔀 RANDOMISE FOR ME</span>
+            </button>
           </div>
 
           {!selectedOccasionId ? (
-            <div className="p-8 text-center rounded-xl bg-white border border-taupe-200/80 shadow-sm">
-              <BookOpen className="w-8 h-8 text-roseGold/60 mx-auto mb-2" />
-              <p className="text-sm text-charcoal/70 font-sans">
+            <div className="p-8 text-center rounded-2xl bg-white/10 border border-white/20">
+              <BookOpen className="w-8 h-8 text-white/60 mx-auto mb-2" />
+              <p className="text-sm text-white/90 font-sans">
                 Inside spread templates are filtered based on your occasion. Please{' '}
                 <button
+                  type="button"
                   onClick={() => {
                     occasionSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="text-roseGold font-bold underline cursor-pointer"
+                  className="text-white font-bold underline cursor-pointer hover:text-cream-100"
                 >
-                  choose an occasion in Step 2
+                  choose an occasion in the box above
                 </button>{' '}
                 to reveal curated spread templates.
               </p>
             </div>
           ) : (
             <div className="space-y-6">
-              <p className="text-sm text-charcoal/70 font-sans">
-                Curated 2-page spreads for your <strong>{currentOccasion?.name}</strong> magazine.
-                Each card shows the side-by-side layout (left & right page). Select{' '}
-                <strong>{requiredSpreadsCount} spreads</strong> to complete your layout.
-              </p>
-
-              {/* Template Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* 2-Column Templates Grid (Image 2 style) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4">
                 {availableTemplates.map((template) => {
                   const isSelected = selectedSpreadIds.includes(template.id);
                   const selectedOrder = selectedSpreadIds.indexOf(template.id);
@@ -849,47 +949,46 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                   return (
                     <div
                       key={template.id}
-                      className={`group rounded-xl border transition-all overflow-hidden flex flex-col justify-between bg-white ${
+                      className={`relative rounded-2xl border p-3.5 sm:p-4 flex flex-col justify-between transition-all bg-black/15 ${
                         isSelected
-                          ? 'border-roseGold ring-1 ring-roseGold shadow-md'
-                          : 'border-taupe-200/80 hover:border-roseGold/60 hover:shadow-md'
+                          ? 'border-2 border-white ring-2 ring-white/50 bg-black/25 shadow-lg'
+                          : 'border-white/20 hover:border-white/40 hover:bg-black/20'
                       }`}
                     >
                       {/* Top: 2-Page Visual Spread Miniature */}
-                      <div className="relative aspect-[16/10] bg-[#FAF2EC] p-3 border-b border-taupe-200/60">
-                        {/* Side by side pages */}
-                        <div className="grid grid-cols-2 gap-2 h-full">
+                      <div className="relative aspect-[16/10] bg-black/20 p-2 sm:p-2.5 rounded-xl border border-white/10 overflow-hidden">
+                        <div className="grid grid-cols-2 gap-1.5 h-full">
                           {/* Left Page */}
-                          <div className="relative rounded overflow-hidden shadow-sm bg-white border border-taupe-200 group-hover:scale-[1.02] transition-transform">
+                          <div className="relative rounded overflow-hidden shadow-xs bg-white border border-white/10 group-hover:scale-[1.02] transition-transform">
                             <img
                               src={template.leftPageImage}
                               alt={template.leftPageTitle}
                               className="w-full h-full object-cover"
                               loading="lazy"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent p-2 flex flex-col justify-end">
-                              <span className="text-[8px] uppercase tracking-wider text-roseGold-light font-bold">
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent p-1.5 flex flex-col justify-end">
+                              <span className="text-[7px] uppercase tracking-wider text-roseGold-light font-bold">
                                 Left Page
                               </span>
-                              <p className="text-[10px] font-bold text-white leading-tight truncate">
+                              <p className="text-[9px] font-bold text-white leading-tight truncate">
                                 {template.leftPageTitle}
                               </p>
                             </div>
                           </div>
 
                           {/* Right Page */}
-                          <div className="relative rounded overflow-hidden shadow-sm bg-white border border-taupe-200 group-hover:scale-[1.02] transition-transform">
+                          <div className="relative rounded overflow-hidden shadow-xs bg-white border border-white/10 group-hover:scale-[1.02] transition-transform">
                             <img
                               src={template.rightPageImage}
                               alt={template.rightPageTitle}
                               className="w-full h-full object-cover"
                               loading="lazy"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent p-2 flex flex-col justify-end">
-                              <span className="text-[8px] uppercase tracking-wider text-roseGold-light font-bold">
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent p-1.5 flex flex-col justify-end">
+                              <span className="text-[7px] uppercase tracking-wider text-roseGold-light font-bold">
                                 Right Page
                               </span>
-                              <p className="text-[10px] font-bold text-white leading-tight truncate">
+                              <p className="text-[9px] font-bold text-white leading-tight truncate">
                                 {template.rightPageTitle}
                               </p>
                             </div>
@@ -897,74 +996,75 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                         </div>
 
                         {/* Spread Number & Selection Badge */}
-                        <div className="absolute top-2 left-2 flex items-center gap-1.5">
-                          <span className="text-[9px] font-bold bg-white/90 text-wine-900 px-2 py-0.5 rounded shadow">
-                            Design #{template.spreadNumber}
+                        <div className="absolute top-2 left-2 flex items-center gap-1">
+                          <span className="text-[9px] font-bold bg-black/60 backdrop-blur-xs text-white px-2 py-0.5 rounded shadow">
+                            Template {String(template.spreadNumber).padStart(2, '0')}
                           </span>
                         </div>
 
                         {isSelected && (
                           <div className="absolute top-2 right-2">
-                            <span className="text-[9px] font-bold bg-roseGold text-white px-2 py-0.5 rounded-full shadow flex items-center gap-1">
-                              <Check className="w-3 h-3" /> Spread {selectedOrder + 1}
+                            <span className="text-[9px] font-bold bg-white text-[#963354] px-2 py-0.5 rounded-full shadow flex items-center gap-1 font-sans">
+                              <Check className="w-3 h-3 stroke-[3]" /> Spread {selectedOrder + 1}
                             </span>
                           </div>
                         )}
                       </div>
 
                       {/* Content Details */}
-                      <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                      <div className="mt-3 flex-1 flex flex-col justify-between">
                         <div>
-                          <h3 className="font-serif font-bold text-base text-wine-900">
-                            {template.name}
-                          </h3>
-                          <p className="text-xs text-charcoal/70 mt-1 leading-relaxed font-sans">
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-serif font-bold text-sm sm:text-base text-white">
+                              Template {String(template.spreadNumber).padStart(2, '0')}: {template.name}
+                            </h3>
+                          </div>
+                          <p className="text-[11px] text-white/80 mt-0.5 line-clamp-1 leading-tight font-sans">
                             {template.subtitle}
                           </p>
-
-                          {/* Tags */}
-                          <div className="flex flex-wrap gap-1.5 mt-2.5">
-                            {template.tags.map((tag) => (
-                              <span
-                                key={tag}
-                                className="text-[9px] font-semibold bg-taupe-100 text-charcoal/70 px-2 py-0.5 rounded"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
                         </div>
 
-                        {/* Action Button */}
-                        <div className="pt-2">
+                        {/* Action Buttons: Select & View */}
+                        <div className="mt-3 pt-2 border-t border-white/15 flex items-center gap-2">
                           {isSelected ? (
                             <button
+                              type="button"
                               onClick={() => handleToggleTemplate(template)}
-                              className="w-full py-2.5 px-4 rounded-lg bg-roseGold text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-roseGold-dark transition-colors shadow-sm"
+                              className="flex-1 py-1.5 px-3 rounded-full bg-white text-[#963354] text-xs font-bold font-sans flex items-center justify-center gap-1 shadow-sm hover:bg-cream-100 transition cursor-pointer"
                             >
-                              <Check className="w-4 h-4" />
-                              Selected (Spread {selectedOrder + 1}) — Click to Remove
+                              <Check className="w-3.5 h-3.5" />
+                              <span>Selected (Spread {selectedOrder + 1})</span>
                             </button>
                           ) : (
                             <button
+                              type="button"
                               onClick={() => handleToggleTemplate(template)}
                               disabled={isFull}
-                              className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                              className={`flex-1 py-1.5 px-3 rounded-full text-xs font-sans font-semibold transition flex items-center justify-center gap-1 ${
                                 isFull
-                                  ? 'bg-taupe-100 text-charcoal/40 cursor-not-allowed'
-                                  : 'bg-wine-900 text-white hover:bg-roseGold hover:shadow'
+                                  ? 'border border-white/20 text-white/40 cursor-not-allowed'
+                                  : 'border border-white/50 hover:border-white text-white hover:bg-white/10 cursor-pointer'
                               }`}
                             >
                               {isFull ? (
-                                'All Slots Filled'
+                                'Slots Full'
                               ) : (
                                 <>
                                   <Plus className="w-3.5 h-3.5" />
-                                  Select Spread
+                                  <span>Select</span>
                                 </>
                               )}
                             </button>
                           )}
+
+                          <button
+                            type="button"
+                            onClick={() => setPreviewingTemplate(template)}
+                            className="py-1.5 px-3 rounded-full border border-white/40 hover:border-white text-white text-xs font-sans font-medium flex items-center justify-center gap-1 hover:bg-white/10 transition cursor-pointer"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>View</span>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -974,30 +1074,30 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
 
               {/* Completion Banner */}
               {isComplete && (
-                <div className="p-5 rounded-xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0">
-                      <Check className="w-5 h-5" />
+                <div className="p-4 rounded-2xl bg-white text-[#963354] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-[#963354] text-white flex items-center justify-center flex-shrink-0">
+                      <Check className="w-4 h-4 stroke-[3]" />
                     </div>
                     <div>
-                      <h4 className="font-serif font-bold text-base text-emerald-950">
+                      <h4 className="font-serif font-bold text-sm text-[#963354]">
                         Your magazine layout is complete!
                       </h4>
-                      <p className="text-xs text-emerald-800 font-sans mt-0.5">
-                        You have selected all {requiredSpreadsCount} customizable spreads for your{' '}
-                        {currentPackage.name} magazine.
+                      <p className="text-[11px] text-charcoal/80 font-sans mt-0.5">
+                        All {requiredSpreadsCount} customizable spreads filled. Scroll down to add gifting upgrades &amp; checkout.
                       </p>
                     </div>
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => {
                       addOnsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="py-2.5 px-6 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow transition-colors flex items-center gap-1.5 whitespace-nowrap"
+                    className="py-2 px-5 rounded-full bg-[#963354] hover:bg-[#852846] text-white text-xs font-bold shadow transition-colors flex items-center gap-1 whitespace-nowrap cursor-pointer"
                   >
                     <span>Continue to Add-ons</span>
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
@@ -1006,19 +1106,19 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
         </section>
 
         {/* ========================================================================= */}
-        {/* STEP 4: ADD SOMETHING EXTRA? (ADD-ONS) */}
+        {/* BOX 6: ADD SOMETHING EXTRA? (ADD-ONS) */}
         {/* ========================================================================= */}
-        <section ref={addOnsSectionRef} id="step-4-addons" className="space-y-6">
+        <section ref={addOnsSectionRef} id="step-addons-box" className="space-y-6">
           <div className="flex items-baseline justify-between border-b border-taupe-200/60 pb-3">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-roseGold">
+              <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
                 Step 4 of 5
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-wine-900 mt-1">
                 Add Something Extra?
               </h2>
             </div>
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-charcoal/70">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-charcoal/70 font-sans">
               <Gift className="w-3.5 h-3.5 text-roseGold" />
               Optional Gifting Upgrades
             </span>
@@ -1029,22 +1129,22 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
             gifting moment. Select one or keep standard protective packaging.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {CUSTOM_MAGAZINE_ADDONS.map((addon) => {
               const isSelected = selectedAddOnId === addon.id;
               return (
                 <button
                   key={addon.id}
                   onClick={() => setSelectedAddOnId(addon.id)}
-                  className={`group text-left p-5 rounded-xl border transition-all relative flex flex-col justify-between ${
+                  className={`group text-left p-4 rounded-2xl border transition-all relative flex flex-col justify-between cursor-pointer ${
                     isSelected
                       ? 'border-roseGold bg-roseGold/5 shadow-md ring-1 ring-roseGold'
-                      : 'border-taupe-200/80 bg-white hover:border-roseGold/50 hover:shadow-sm'
+                      : 'border-taupe-200/80 bg-white hover:border-roseGold/50 hover:shadow-xs'
                   }`}
                 >
                   {addon.badge && (
                     <span
-                      className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full font-sans ${
                         isSelected ? 'bg-roseGold text-white' : 'bg-blush-100 text-roseGold'
                       }`}
                     >
@@ -1053,26 +1153,26 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                   )}
 
                   <div>
-                    <h3 className="font-serif font-bold text-base text-wine-900">
+                    <h3 className="font-serif font-bold text-sm text-wine-900">
                       {addon.name}
                     </h3>
 
-                    <div className="mt-2 flex items-baseline gap-2">
-                      <span className="font-serif text-xl font-bold text-wine-900 tabular-nums">
+                    <div className="mt-1.5 flex items-baseline gap-2">
+                      <span className="font-serif text-lg font-bold text-wine-900 tabular-nums">
                         {addon.price === 0 ? 'Free' : `+₹${addon.price}`}
                       </span>
                       {addon.originalPrice && (
-                        <span className="text-xs text-charcoal/50 line-through tabular-nums">
+                        <span className="text-xs text-charcoal/50 line-through tabular-nums font-sans">
                           ₹{addon.originalPrice}
                         </span>
                       )}
                     </div>
 
-                    <p className="text-xs text-charcoal/70 mt-2 font-sans leading-relaxed">
+                    <p className="text-xs text-charcoal/70 mt-1.5 font-sans leading-relaxed">
                       {addon.description}
                     </p>
 
-                    <ul className="mt-3 space-y-1.5 text-[11px] text-charcoal/75 font-sans">
+                    <ul className="mt-2.5 space-y-1 text-[11px] text-charcoal/75 font-sans">
                       {addon.benefits.map((b, idx) => (
                         <li key={idx} className="flex items-center gap-1.5">
                           <Check className="w-3 h-3 text-roseGold flex-shrink-0" />
@@ -1082,7 +1182,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                     </ul>
                   </div>
 
-                  <div className="mt-5 pt-3 border-t border-taupe-200/40 flex items-center justify-between text-xs font-semibold">
+                  <div className="mt-4 pt-2.5 border-t border-taupe-200/40 flex items-center justify-between text-xs font-semibold font-sans">
                     <span className={isSelected ? 'text-roseGold font-bold' : 'text-charcoal/60'}>
                       {isSelected ? 'Selected' : 'Select'}
                     </span>
@@ -1099,11 +1199,11 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
         {/* ========================================================================= */}
         <section
           ref={summarySectionRef}
-          id="step-5-summary"
-          className="bg-white rounded-2xl border border-taupe-200/80 p-6 sm:p-8 shadow-sm space-y-6"
+          id="step-summary-box"
+          className="bg-white rounded-3xl border border-taupe-200/80 p-6 sm:p-8 shadow-sm space-y-6"
         >
           <div className="border-b border-taupe-200/60 pb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-roseGold">
+            <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
               Step 5 of 5
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-wine-900 mt-1">
@@ -1114,7 +1214,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left 2 Columns: Specification Breakdown */}
             <div className="lg:col-span-2 space-y-5">
-              <div className="rounded-xl bg-[#FAF2EC]/50 border border-taupe-200/60 p-4 sm:p-5 space-y-3 font-sans">
+              <div className="rounded-2xl bg-[#FAF2EC]/50 border border-taupe-200/60 p-4 sm:p-5 space-y-3 font-sans">
                 <div className="flex items-center justify-between text-sm py-1 border-b border-taupe-200/40">
                   <span className="text-charcoal/70">Occasion:</span>
                   <span className="font-bold text-wine-900 font-serif">
@@ -1123,9 +1223,9 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between text-sm py-1 border-b border-taupe-200/40">
-                  <span className="text-charcoal/70">Package / Total Pages:</span>
+                  <span className="text-charcoal/70">Package / Format:</span>
                   <span className="font-bold text-wine-900">
-                    {currentPackage.name} ({currentPackage.totalPages} Total Pages)
+                    {currentPackage.name} ({currentPackage.totalPages} Pages) • {selectedFormat === 'standard-a4' ? 'Standard A4' : 'Mini A5'}
                   </span>
                 </div>
 
@@ -1150,7 +1250,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                 <h4 className="font-serif font-bold text-sm text-wine-900">
                   Layout Page Breakdown ({currentPackage.totalPages} Pages Total):
                 </h4>
-                <div className="bg-white rounded-lg border border-taupe-200 p-3 space-y-1.5 text-xs text-charcoal/80 font-sans">
+                <div className="bg-white rounded-xl border border-taupe-200 p-3 space-y-1.5 text-xs text-charcoal/80 font-sans">
                   <div className="flex items-center justify-between py-1 border-b border-taupe-100">
                     <span className="font-medium text-wine-900">Page 1: [ FRONT COVER ]</span>
                     <span className="text-charcoal/60">
@@ -1194,7 +1294,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
             </div>
 
             {/* Right Column: Pricing & Checkout CTA */}
-            <div className="rounded-xl border border-roseGold/30 bg-[#FAF2EC]/40 p-5 sm:p-6 flex flex-col justify-between space-y-6">
+            <div className="rounded-2xl border border-roseGold/30 bg-[#FAF2EC]/40 p-5 sm:p-6 flex flex-col justify-between space-y-6">
               <div className="space-y-3 font-sans">
                 <h4 className="font-serif font-bold text-lg text-wine-900">
                   Payment Summary
@@ -1272,7 +1372,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                 )}
 
                 <p className="text-[11px] text-charcoal/60 text-center font-sans leading-tight">
-                  ✨ High-resolution print preview & photo uploads will be coordinated with our design team.
+                  ✨ High-resolution print preview &amp; photo uploads will be coordinated with our design team.
                 </p>
               </div>
             </div>
@@ -1281,11 +1381,193 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
       </div>
 
       {/* ========================================================================= */}
-      {/* OCCASION CHANGE CONFIRMATION MODAL */}
+      {/* MODAL 1: TEMPLATE PREVIEW MODAL */}
+      {/* ========================================================================= */}
+      <AnimatePresence>
+        {previewingTemplate && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl p-5 sm:p-7 max-w-3xl w-full shadow-2xl border border-taupe-200 space-y-4 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-taupe-200">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
+                    Template {String(previewingTemplate.spreadNumber).padStart(2, '0')} Spread Preview
+                  </span>
+                  <h3 className="font-serif font-bold text-xl sm:text-2xl text-wine-900">
+                    {previewingTemplate.name}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPreviewingTemplate(null)}
+                  className="w-8 h-8 rounded-full bg-taupe-100 hover:bg-taupe-200 text-charcoal flex items-center justify-center transition cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* 2-Page Spread View */}
+              <div className="grid grid-cols-2 gap-3 aspect-[16/10] bg-[#FAF2EC] p-3 rounded-2xl border border-taupe-200">
+                <div className="relative rounded-lg overflow-hidden shadow-xs bg-white border border-taupe-200">
+                  <img
+                    src={previewingTemplate.leftPageImage}
+                    alt={previewingTemplate.leftPageTitle}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                    <span className="text-[9px] uppercase tracking-wider text-roseGold-light font-bold">
+                      Left Page
+                    </span>
+                    <p className="text-xs font-bold text-white truncate">
+                      {previewingTemplate.leftPageTitle}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="relative rounded-lg overflow-hidden shadow-xs bg-white border border-taupe-200">
+                  <img
+                    src={previewingTemplate.rightPageImage}
+                    alt={previewingTemplate.rightPageTitle}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                    <span className="text-[9px] uppercase tracking-wider text-roseGold-light font-bold">
+                      Right Page
+                    </span>
+                    <p className="text-xs font-bold text-white truncate">
+                      {previewingTemplate.rightPageTitle}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-xs text-charcoal/80 font-sans leading-relaxed">
+                {previewingTemplate.subtitle}
+              </p>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-taupe-200">
+                <button
+                  type="button"
+                  onClick={() => setPreviewingTemplate(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-charcoal/70 hover:bg-taupe-100 transition cursor-pointer"
+                >
+                  Close Preview
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleToggleTemplate(previewingTemplate);
+                    setPreviewingTemplate(null);
+                  }}
+                  className={`px-5 py-2 rounded-xl text-xs font-bold shadow transition cursor-pointer flex items-center gap-1.5 ${
+                    selectedSpreadIds.includes(previewingTemplate.id)
+                      ? 'bg-roseGold text-white hover:bg-roseGold-dark'
+                      : 'bg-wine-900 text-white hover:bg-wine-800'
+                  }`}
+                >
+                  {selectedSpreadIds.includes(previewingTemplate.id) ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Remove from Book</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Select This Spread</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ========================================================================= */}
+      {/* MODAL 2: PACKAGE PREVIEW MODAL */}
+      {/* ========================================================================= */}
+      <AnimatePresence>
+        {previewingPackage && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl border border-taupe-200 space-y-4"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-taupe-200">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
+                    Package Details
+                  </span>
+                  <h3 className="font-serif font-bold text-xl text-wine-900">
+                    {previewingPackage.name} Edition
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPreviewingPackage(null)}
+                  className="w-8 h-8 rounded-full bg-taupe-100 hover:bg-taupe-200 text-charcoal flex items-center justify-center transition cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-3 font-sans text-xs text-charcoal/80">
+                <div className="p-3.5 bg-[#FAF2EC] rounded-2xl space-y-1.5">
+                  <p className="font-serif font-bold text-sm text-wine-900">
+                    Total Pages: {previewingPackage.totalPages} Pages
+                  </p>
+                  <p className="text-charcoal/70">
+                    Formula: (Total Pages - 2) / 2 = <strong>{previewingPackage.spreadsCount} Inside Spreads</strong>
+                  </p>
+                  <p className="text-charcoal/70">
+                    Includes 1 Front Cover + 1 Back Cover + {previewingPackage.spreadsCount * 2} Interior Story Pages
+                  </p>
+                </div>
+
+                <div className="flex items-baseline justify-between pt-2 border-t border-taupe-200">
+                  <span className="font-medium text-charcoal">Package Price:</span>
+                  <span className="font-serif font-bold text-xl text-wine-900 tabular-nums">
+                    ₹{previewingPackage.price.toLocaleString('en-IN')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-taupe-200">
+                <button
+                  type="button"
+                  onClick={() => setPreviewingPackage(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-charcoal/70 hover:bg-taupe-100 transition cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleSelectPackage(previewingPackage);
+                    setPreviewingPackage(null);
+                  }}
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-[#963354] hover:bg-[#852846] text-white shadow transition cursor-pointer"
+                >
+                  Select Package
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ========================================================================= */}
+      {/* MODAL 3: OCCASION CHANGE CONFIRMATION MODAL */}
       {/* ========================================================================= */}
       <AnimatePresence>
         {showOccasionChangeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -1319,7 +1601,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                   onClick={confirmOccasionChange}
                   className="px-4 py-2 rounded-lg text-xs font-bold bg-roseGold hover:bg-roseGold-dark text-white shadow transition-colors"
                 >
-                  Reset & Change Occasion
+                  Reset &amp; Change Occasion
                 </button>
               </div>
             </motion.div>

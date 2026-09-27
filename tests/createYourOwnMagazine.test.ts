@@ -197,7 +197,7 @@ describe('Create Your Own Magazine System', () => {
       );
     });
 
-    it('CreateYourOwnMagazine.tsx renders How It Works process overview and 3D Interactive FlipBook directly below Step 1', () => {
+    it('CreateYourOwnMagazine.tsx renders How It Works, Occasion, Number of Pages, and 3D FlipBook in requested order', () => {
       const componentPath = path.join(
         ROOT_DIR,
         'src',
@@ -217,22 +217,28 @@ describe('Create Your Own Magazine System', () => {
         'Should compute dynamicBookPages matching selected package size'
       );
 
-      // Check ordering: Step 1 is Size and Step 2 is Occasion
-      const step1Index = content.indexOf('Choose Your Magazine Size');
+      // Check ordering: How It Works -> Occasion -> Package/Size -> FlipBook
+      const howItWorksIndex = content.indexOf('How It Works');
+      const occasionIndex = content.indexOf('What is your magazine for?');
+      const packageIndex = content.indexOf('Choose your package');
       const flipBookIndex = content.indexOf('<InteractiveFlipBook');
-      const step2Index = content.indexOf('What is your magazine for?');
 
-      assert.ok(step1Index !== -1, 'Step 1 Choose Your Magazine Size must exist');
+      assert.ok(howItWorksIndex !== -1, 'How It Works must exist');
+      assert.ok(occasionIndex !== -1, 'Occasion option must exist');
+      assert.ok(packageIndex !== -1, 'Package/Number of Pages option must exist');
       assert.ok(flipBookIndex !== -1, 'InteractiveFlipBook must exist');
-      assert.ok(step2Index !== -1, 'Step 2 What is your magazine for? must exist');
 
       assert.ok(
-        step1Index < flipBookIndex,
-        'InteractiveFlipBook must be located below Step 1 (Size)'
+        howItWorksIndex < occasionIndex,
+        'Occasion option must be located after How It Works'
       );
       assert.ok(
-        flipBookIndex < step2Index,
-        'InteractiveFlipBook must be located above Step 2 (Occasion)'
+        occasionIndex < packageIndex,
+        'Package / Number of Pages must be located after Occasion'
+      );
+      assert.ok(
+        packageIndex < flipBookIndex,
+        'InteractiveFlipBook must be located directly below Number of Pages'
       );
     });
   });
