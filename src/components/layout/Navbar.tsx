@@ -59,6 +59,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
               </button>
 
               <button
+                onClick={() => handleNavClick('create-magazine')}
+                className={`text-sm font-semibold transition hover:text-roseGold flex items-center gap-1.5 ${
+                  currentView === 'create-magazine' ? 'text-roseGold font-bold' : 'text-charcoal/80'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-roseGold" />
+                <span>Create Your Own</span>
+                <span className="text-[9px] bg-roseGold/10 text-roseGold px-1.5 py-0.5 rounded-full font-bold">
+                  New
+                </span>
+              </button>
+
+              <button
                 onClick={() => handleNavClick('product', 'prod-mag-01')}
                 className="text-sm font-bold text-roseGold hover:text-roseGold-dark transition flex items-center gap-1.5"
               >
@@ -328,6 +341,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
                       )}
                     </AnimatePresence>
                   </div>
+
+                  {/* Direct Create Your Own Mobile Link */}
+                  <button
+                    type="button"
+                    onClick={() => handleNavClick('create-magazine')}
+                    className={`flex items-center justify-between w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-bold transition cursor-pointer ${
+                      currentView === 'create-magazine'
+                        ? 'bg-roseGold/10 text-roseGold'
+                        : 'text-charcoal hover:bg-cream-100/80 hover:text-roseGold'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-roseGold" />
+                      <span>Create Your Own</span>
+                    </div>
+                    <span className="text-[10px] bg-roseGold text-white px-2 py-0.5 rounded-full font-bold">
+                      Builder ✨
+                    </span>
+                  </button>
 
                   {/* Direct Songs Book Spreads Mobile Link */}
                   <button

@@ -15,6 +15,7 @@ import { FeaturedProducts } from './components/home/FeaturedProducts';
 import { ProductDetail } from './components/product/ProductDetail';
 import { HamperBuilder } from './components/hamper/HamperBuilder';
 import { MagazineBuilder } from './components/magazine/MagazineBuilder';
+import { CreateYourOwnMagazine } from './components/magazine/CreateYourOwnMagazine';
 import { MultiPageBookViewer } from './components/book/MultiPageBookViewer';
 import { ReviewsPage } from './components/reviews/ReviewsPage';
 import { CartDrawer } from './components/cart/CartDrawer';
@@ -37,6 +38,16 @@ export const App: React.FC = () => {
       const params = new URLSearchParams(window.location.search);
       const viewParam = params.get('view');
       const hash = window.location.hash.toLowerCase();
+      if (
+        viewParam === 'create-magazine' ||
+        viewParam === 'create-your-own-magazine' ||
+        viewParam === 'create-your-own' ||
+        viewParam === 'custom-magazine' ||
+        hash.includes('create-magazine') ||
+        hash.includes('create-your-own')
+      ) {
+        return 'create-magazine';
+      }
       if (
         viewParam === 'book' ||
         viewParam === 'book-viewer' ||
@@ -65,6 +76,15 @@ export const App: React.FC = () => {
       const viewParam = params.get('view');
       const hash = window.location.hash.toLowerCase();
       if (
+        viewParam === 'create-magazine' ||
+        viewParam === 'create-your-own-magazine' ||
+        viewParam === 'create-your-own' ||
+        viewParam === 'custom-magazine' ||
+        hash.includes('create-magazine') ||
+        hash.includes('create-your-own')
+      ) {
+        setCurrentView('create-magazine');
+      } else if (
         viewParam === 'book' ||
         viewParam === 'book-viewer' ||
         viewParam === 'songbook' ||
@@ -91,6 +111,18 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (view === 'wishlist') {
       setIsWishlistModalOpen(true);
+      return;
+    }
+    if (
+      view === 'create-magazine' ||
+      view === 'create-your-own-magazine' ||
+      view === 'create-your-own' ||
+      view === 'custom-magazine'
+    ) {
+      setCurrentView('create-magazine');
+      if (typeof window !== 'undefined' && window.history.replaceState) {
+        window.history.replaceState(null, '', '?view=create-magazine');
+      }
       return;
     }
     if (view === 'book-viewer' || view === 'book' || view === 'songs-book') {
@@ -283,6 +315,16 @@ export const App: React.FC = () => {
                 onOpenPolicy={(policy) => setActivePolicy(policy)}
                 onDirectCheckout={() => setIsCheckoutModalOpen(true)}
                 onOpenBookViewer={() => setCurrentView('book-viewer')}
+              />
+            )}
+
+            {(currentView === 'create-magazine' ||
+              currentView === 'create-your-own-magazine' ||
+              currentView === 'create-your-own' ||
+              currentView === 'custom-magazine') && (
+              <CreateYourOwnMagazine
+                onBack={() => handleNavigate('home')}
+                onCheckout={() => setIsCheckoutModalOpen(true)}
               />
             )}
 
