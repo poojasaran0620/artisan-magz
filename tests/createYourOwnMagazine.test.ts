@@ -196,5 +196,44 @@ describe('Create Your Own Magazine System', () => {
         'CreateYourOwnMagazine should use tabular-nums for prices'
       );
     });
+
+    it('CreateYourOwnMagazine.tsx renders How It Works process overview and 3D Interactive FlipBook directly below Step 1', () => {
+      const componentPath = path.join(
+        ROOT_DIR,
+        'src',
+        'components',
+        'magazine',
+        'CreateYourOwnMagazine.tsx'
+      );
+      const content = fs.readFileSync(componentPath, 'utf-8');
+
+      assert.ok(content.includes('How It Works'), 'Should contain How It Works process section');
+      assert.ok(
+        content.includes('InteractiveFlipBook'),
+        'Should import and render InteractiveFlipBook'
+      );
+      assert.ok(
+        content.includes('dynamicBookPages'),
+        'Should compute dynamicBookPages matching selected package size'
+      );
+
+      // Check ordering: Step 1 is Size and Step 2 is Occasion
+      const step1Index = content.indexOf('Choose Your Magazine Size');
+      const flipBookIndex = content.indexOf('<InteractiveFlipBook');
+      const step2Index = content.indexOf('What is your magazine for?');
+
+      assert.ok(step1Index !== -1, 'Step 1 Choose Your Magazine Size must exist');
+      assert.ok(flipBookIndex !== -1, 'InteractiveFlipBook must exist');
+      assert.ok(step2Index !== -1, 'Step 2 What is your magazine for? must exist');
+
+      assert.ok(
+        step1Index < flipBookIndex,
+        'InteractiveFlipBook must be located below Step 1 (Size)'
+      );
+      assert.ok(
+        flipBookIndex < step2Index,
+        'InteractiveFlipBook must be located above Step 2 (Occasion)'
+      );
+    });
   });
 });

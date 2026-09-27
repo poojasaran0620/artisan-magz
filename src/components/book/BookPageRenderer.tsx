@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import { BookPage } from '../../types/book';
-import { Camera, Music, Sparkles } from 'lucide-react';
+import { Camera, Music, Sparkles, BookOpen, Plus } from 'lucide-react';
 
 interface BookPageRendererProps {
   page: BookPage;
@@ -156,8 +156,23 @@ export const BookPageRenderer: React.FC<BookPageRendererProps> = ({
 
       {/* Main Content Area */}
       <div className="relative z-20 flex-1 flex flex-col justify-center py-4 space-y-4">
-        {/* Template: Chapter Editorial (Page 2 & 4) */}
-        {page.templateId.includes('editorial') || page.templateId.includes('vows') ? (
+        {/* Template: Empty Slot (for custom builder) */}
+        {page.templateId.includes('empty') ? (
+          <div className="h-full flex-1 flex flex-col items-center justify-center text-center p-3 sm:p-5 border-2 border-dashed border-taupe-300/80 rounded-2xl bg-white/40 my-2">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-soft border border-taupe-200/80 flex items-center justify-center text-roseGold mb-2.5">
+              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <span className="text-[10px] font-sans font-bold tracking-widest uppercase text-roseGold mb-1">
+              {page.side === 'left' ? 'Left Page' : 'Right Page'} Slot
+            </span>
+            <h4 className="font-serif italic text-base sm:text-lg font-bold text-wine-900 leading-snug">
+              {page.title || 'Empty Spread Slot'}
+            </h4>
+            <p className="text-[11px] text-charcoal/60 mt-1 max-w-[220px] font-sans leading-relaxed">
+              Select an inside spread design in Step 3 to place your layout here.
+            </p>
+          </div>
+        ) : page.templateId.includes('editorial') || page.templateId.includes('vows') ? (
           <div className="space-y-4">
             <div className="space-y-1">
               <span className="text-[10px] font-sans font-bold tracking-[0.25em] uppercase text-roseGold block">

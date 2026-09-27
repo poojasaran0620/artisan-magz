@@ -201,7 +201,7 @@ export const InteractiveFlipBook: React.FC<InteractiveFlipBookProps> = ({
       <div className="relative flex items-center justify-center max-w-full overflow-hidden p-1 sm:p-4">
         <div className="relative filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]">
           <FlipBookComponent
-            key={`flipbook-${pageWidth}`}
+            key={`flipbook-${pageWidth}-${pages.length}-${pages.map((p) => p.id + (p.referenceImage ? '1' : '0')).join('')}`}
             ref={flipBookRef}
             width={pageWidth}
             height={pageHeight}

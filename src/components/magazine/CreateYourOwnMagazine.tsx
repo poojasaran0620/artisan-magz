@@ -12,8 +12,10 @@ import {
   ShoppingBag,
   Layers,
   ChevronRight,
+  ChevronLeft,
   Info,
   ExternalLink,
+  Zap,
 } from 'lucide-react';
 import {
   CUSTOM_MAGAZINE_OCCASIONS,
@@ -31,6 +33,8 @@ import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
 import { PRODUCTS } from '../../data/products';
 import { CustomizationData } from '../../types/product';
+import { BookPage } from '../../types/book';
+import { InteractiveFlipBook } from '../book/InteractiveFlipBook';
 
 interface CreateYourOwnMagazineProps {
   onBack: () => void;
@@ -41,19 +45,22 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
   onBack,
   onCheckout,
 }) => {
-  const { addToCart } = useCart();
+  const { addToCart, openCart } = useCart();
   const { showToast } = useToast();
 
   // State
-  const [selectedOccasionId, setSelectedOccasionId] = useState<CustomOccasionId | null>(null);
   const [selectedPackageId, setSelectedPackageId] = useState<string>('mag-12p');
+  const [selectedOccasionId, setSelectedOccasionId] = useState<CustomOccasionId | null>(null);
   const [selectedSpreadIds, setSelectedSpreadIds] = useState<string[]>([]);
   const [selectedAddOnId, setSelectedAddOnId] = useState<string>('none');
   const [pendingOccasionId, setPendingOccasionId] = useState<CustomOccasionId | null>(null);
   const [showOccasionChangeModal, setShowOccasionChangeModal] = useState<boolean>(false);
+  const [targetFlipPage, setTargetFlipPage] = useState<number | undefined>(undefined);
 
   // References for smooth scrolling
-  const previewSectionRef = useRef<HTMLDivElement>(null);
+  const sizeSectionRef = useRef<HTMLDivElement>(null);
+  const bookSpreadSectionRef = useRef<HTMLDivElement>(null);
+  const occasionSectionRef = useRef<HTMLDivElement>(null);
   const templatesSectionRef = useRef<HTMLDivElement>(null);
   const addOnsSectionRef = useRef<HTMLDivElement>(null);
   const summarySectionRef = useRef<HTMLDivElement>(null);
@@ -98,39 +105,123 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
   const isComplete = selectedSpreadIds.length === requiredSpreadsCount;
   const remainingSpreads = Math.max(0, requiredSpreadsCount - selectedSpreadIds.length);
 
+  // Dynamic Book Pages for the 3D FlipBook
+  // Dynamically matches the exact selected package size (8, 12, 16, or 20 pages)
+  const dynamicBookPages = useMemo<BookPage[]>(() => {
+    const totalPages = currentPackage.totalPages;
+    const spreadsCount = currentPackage.spreadsCount;
+    const pagesList: BookPage[] = [];
+
+    // 1. Page 1: Fixed Front Cover
+    pagesList.push({
+      id: `custom-cover-front-${currentOccasion?.id || 'studio'}`,
+      pageNumber: 1,
+      side: 'standalone',
+      templateId: 'cover',
+      title: currentOccasion?.frontCoverTitle || 'Custom Keepsake Magazine',
+      referenceImage: currentOccasion?.frontCoverImage || '/products/magazine_vogue_cover.jpg',
+      photos: [],
+      texts: [],
+      decorations: {
+        showFolio: false,
+      },
+    });
+
+    // 2. Pages 2 to totalPages - 1: Inside Spreads (Pairs of Left & Right Pages)
+    for (let sIdx = 0; sIdx < spreadsCount; sIdx++) {
+      const leftPageNum = sIdx * 2 + 2;
+      const rightPageNum = sIdx * 2 + 3;
+      const template = selectedSpreadTemplates[sIdx];
+
+      if (template) {
+        // FILLED Left Page
+        pagesList.push({
+          id: `custom-spread-${sIdx + 1}-left-${template.id}`,
+          pageNumber: leftPageNum,
+          side: 'left',
+          templateId: template.id,
+          title: template.leftPageTitle,
+          referenceImage: template.leftPageImage,
+          photos: [],
+          texts: [],
+          decorations: {
+            showFolio: true,
+            folioText: `${template.name} • Spread ${sIdx + 1}`,
+          },
+        });
+
+        // FILLED Right Page
+        pagesList.push({
+          id: `custom-spread-${sIdx + 1}-right-${template.id}`,
+          pageNumber: rightPageNum,
+          side: 'right',
+          templateId: template.id,
+          title: template.rightPageTitle,
+          referenceImage: template.rightPageImage,
+          photos: [],
+          texts: [],
+          decorations: {
+            showFolio: true,
+            folioText: `${template.name} • Spread ${sIdx + 1}`,
+          },
+        });
+      } else {
+        // EMPTY Left Page Slot
+        pagesList.push({
+          id: `custom-spread-${sIdx + 1}-left-empty`,
+          pageNumber: leftPageNum,
+          side: 'left',
+          templateId: 'empty-slot',
+          title: `Spread ${sIdx + 1} (Left Page)`,
+          photos: [],
+          texts: [],
+          decorations: {
+            showFolio: true,
+            folioText: `Spread ${sIdx + 1} of ${spreadsCount}`,
+          },
+        });
+
+        // EMPTY Right Page Slot
+        pagesList.push({
+          id: `custom-spread-${sIdx + 1}-right-empty`,
+          pageNumber: rightPageNum,
+          side: 'right',
+          templateId: 'empty-slot',
+          title: `Spread ${sIdx + 1} (Right Page)`,
+          photos: [],
+          texts: [],
+          decorations: {
+            showFolio: true,
+            folioText: `Spread ${sIdx + 1} of ${spreadsCount}`,
+          },
+        });
+      }
+    }
+
+    // 3. Page totalPages: Fixed Back Cover
+    pagesList.push({
+      id: `custom-cover-back-${currentOccasion?.id || 'studio'}`,
+      pageNumber: totalPages,
+      side: 'standalone',
+      templateId: 'back-cover',
+      title: 'Artisan Magz Studio Back Cover',
+      referenceImage: currentOccasion?.backCoverImage || '/products/artisan_logo_horizontal.png',
+      photos: [],
+      texts: [],
+      decorations: {
+        showFolio: false,
+      },
+    });
+
+    return pagesList;
+  }, [currentPackage, currentOccasion, selectedSpreadTemplates]);
+
   // Pricing
   const basePrice = currentPackage.price;
   const addOnPrice = currentAddOn.price;
   const totalPrice = basePrice + addOnPrice;
 
-  // Handle Occasion Selection
-  const handleSelectOccasion = (occasionId: CustomOccasionId) => {
-    if (selectedOccasionId === occasionId) return;
-
-    if (selectedSpreadIds.length > 0) {
-      setPendingOccasionId(occasionId);
-      setShowOccasionChangeModal(true);
-    } else {
-      setSelectedOccasionId(occasionId);
-    }
-  };
-
-  const confirmOccasionChange = () => {
-    if (pendingOccasionId) {
-      setSelectedOccasionId(pendingOccasionId);
-      setSelectedSpreadIds([]);
-      setPendingOccasionId(null);
-      showToast('Occasion updated. Template selections have been reset.', 'info');
-    }
-    setShowOccasionChangeModal(false);
-  };
-
-  const cancelOccasionChange = () => {
-    setPendingOccasionId(null);
-    setShowOccasionChangeModal(false);
-  };
-
-  // Handle Package Selection
+  // Handle Package Selection (Step 1)
   const handleSelectPackage = (pkg: MagazinePackage) => {
     if (pkg.id === selectedPackageId) return;
 
@@ -143,11 +234,42 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
         `Switched to ${pkg.name}. Kept first ${newSpreadCount} spreads.`,
         'info'
       );
+    } else {
+      showToast(`Updated magazine size to ${pkg.name} (${pkg.totalPages} Pages).`, 'info');
     }
     setSelectedPackageId(pkg.id);
+    setTargetFlipPage(0);
   };
 
-  // Handle Template Selection
+  // Handle Occasion Selection (Step 2)
+  const handleSelectOccasion = (occasionId: CustomOccasionId) => {
+    if (selectedOccasionId === occasionId) return;
+
+    if (selectedSpreadIds.length > 0) {
+      setPendingOccasionId(occasionId);
+      setShowOccasionChangeModal(true);
+    } else {
+      setSelectedOccasionId(occasionId);
+      showToast(`Occasion set to ${CUSTOM_MAGAZINE_OCCASIONS.find(o => o.id === occasionId)?.name}!`, 'info');
+    }
+  };
+
+  const confirmOccasionChange = () => {
+    if (pendingOccasionId) {
+      setSelectedOccasionId(pendingOccasionId);
+      setSelectedSpreadIds([]);
+      setPendingOccasionId(null);
+      showToast('Occasion updated. Spread selections have been reset.', 'info');
+    }
+    setShowOccasionChangeModal(false);
+  };
+
+  const cancelOccasionChange = () => {
+    setPendingOccasionId(null);
+    setShowOccasionChangeModal(false);
+  };
+
+  // Handle Template Selection (Step 3)
   const handleToggleTemplate = (template: SpreadTemplate) => {
     const isAlreadySelected = selectedSpreadIds.includes(template.id);
 
@@ -164,14 +286,18 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
         );
         return;
       }
+      const newIndex = selectedSpreadIds.length;
       setSelectedSpreadIds((prev) => [...prev, template.id]);
-      showToast(`Added "${template.name}" to Spread ${selectedSpreadIds.length + 1}!`, 'success');
+      showToast(`Added "${template.name}" to Spread ${newIndex + 1}!`, 'success');
+
+      // Flip 3D viewer directly to the new spread (page 2*newIndex + 2)
+      setTargetFlipPage(newIndex * 2 + 1);
 
       // If this completes the layout, smoothly scroll to completion/Add-ons
-      if (selectedSpreadIds.length + 1 === requiredSpreadsCount) {
+      if (newIndex + 1 === requiredSpreadsCount) {
         setTimeout(() => {
           addOnsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 500);
+        }, 600);
       }
     }
   };
@@ -186,11 +312,11 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
     }
   };
 
-  // Add Custom Magazine to Cart
+  // Add Custom Magazine to Cart or Direct Checkout
   const handleAddToCartAndCheckout = (directCheckout = true) => {
     if (!selectedOccasionId) {
-      showToast('Please choose an occasion for your magazine first.', 'info');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast('Please choose an occasion for your magazine first in Step 2.', 'info');
+      occasionSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
@@ -236,6 +362,8 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
 
     if (directCheckout) {
       onCheckout();
+    } else {
+      openCart();
     }
   };
 
@@ -268,25 +396,336 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
               favourite memories.
             </p>
           </div>
+
+          {/* ========================================================================= */}
+          {/* HOW IT WORKS PROCESS SECTION (Directly after heading & supporting text) */}
+          {/* ========================================================================= */}
+          <div className="mt-8 pt-8 border-t border-taupe-200/60">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between mb-4 gap-1">
+              <div className="flex items-center gap-2">
+                <span className="flex h-2 w-2 rounded-full bg-roseGold" />
+                <h2 className="font-serif text-xl sm:text-2xl font-bold text-wine-900">
+                  How It Works
+                </h2>
+              </div>
+              <p className="text-xs text-charcoal/60 font-sans">
+                Follow these 5 simple steps to craft your bespoke print keepsake
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+              {/* Step 1 Card */}
+              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
+                    1
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
+                    Step 1
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
+                  Select Pages
+                </h3>
+                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
+                  Choose 8, 12, 16, or 20 total pages for your custom magazine size.
+                </p>
+              </div>
+
+              {/* Step 2 Card */}
+              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
+                    2
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
+                    Step 2
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
+                  Choose Occasion
+                </h3>
+                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
+                  Pick Birthday, Couple, Friends, Wedding, Travel, or Just Because.
+                </p>
+              </div>
+
+              {/* Step 3 Card */}
+              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
+                    3
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
+                    Step 3
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
+                  Pick Templates
+                </h3>
+                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
+                  Select curated 2-page spreads that match your chosen total pages.
+                </p>
+              </div>
+
+              {/* Step 4 Card */}
+              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
+                    4
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-roseGold font-sans">
+                    Step 4
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
+                  Add Gifting Extras
+                </h3>
+                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
+                  Opt for a luxury gift box or wax-sealed letter for an unforgettable gift.
+                </p>
+              </div>
+
+              {/* Step 5 Card */}
+              <div className="bg-white/80 backdrop-blur-xs rounded-xl p-4 border border-taupe-200/80 shadow-2xs hover:shadow-soft transition-all">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="w-6 h-6 rounded-full bg-wine-900 text-white text-xs font-bold font-sans flex items-center justify-center tabular-nums">
+                    5
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-wine-900 font-sans">
+                    Step 5
+                  </span>
+                </div>
+                <h3 className="font-serif font-bold text-sm text-wine-900 mb-1">
+                  Live 3D Book &amp; Print
+                </h3>
+                <p className="text-xs text-charcoal/70 font-sans leading-relaxed">
+                  Watch your book fill up in real time, place order, and we print &amp; deliver.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 space-y-16">
         {/* ========================================================================= */}
-        {/* STEP 1: CHOOSE YOUR OCCASION */}
+        {/* STEP 1: CHOOSE YOUR MAGAZINE SIZE (NUMBER OF PAGES) */}
         {/* ========================================================================= */}
-        <section id="step-1-occasion" className="space-y-6">
-          <div className="flex items-baseline justify-between border-b border-taupe-200/60 pb-3">
+        <section ref={sizeSectionRef} id="step-1-size" className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-taupe-200/60 pb-3 gap-2">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-roseGold">
+              <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
                 Step 1 of 5
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-wine-900 mt-1">
+                Choose Your Magazine Size
+              </h2>
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-charcoal/70 font-sans">
+              <Layers className="w-3.5 h-3.5 text-roseGold" />
+              Formula: (Total Pages - 2) / 2 spreads
+            </span>
+          </div>
+
+          <p className="text-sm text-charcoal/70 max-w-3xl font-sans">
+            Every magazine features <strong>2 fixed cover pages</strong> (1 Front Cover + 1 Back
+            Cover). Inside pages are curated as <strong>2-page side-by-side spreads</strong>.
+            Select your preferred length below.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {CUSTOM_MAGAZINE_PACKAGES.map((pkg) => {
+              const isSelected = selectedPackageId === pkg.id;
+              return (
+                <button
+                  key={pkg.id}
+                  onClick={() => handleSelectPackage(pkg)}
+                  className={`group text-left p-5 rounded-xl border transition-all relative flex flex-col justify-between cursor-pointer ${
+                    isSelected
+                      ? 'border-roseGold bg-roseGold/5 shadow-md ring-1 ring-roseGold'
+                      : 'border-taupe-200/80 bg-white hover:border-roseGold/50 hover:shadow-sm'
+                  }`}
+                >
+                  {pkg.badge && (
+                    <span
+                      className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full font-sans ${
+                        isSelected ? 'bg-roseGold text-white' : 'bg-blush-100 text-roseGold'
+                      }`}
+                    >
+                      {pkg.badge}
+                    </span>
+                  )}
+
+                  <div>
+                    <h3 className="font-serif text-2xl font-bold text-wine-900">
+                      {pkg.name}
+                    </h3>
+                    <p className="text-xs font-bold text-roseGold uppercase tracking-wide mt-0.5 font-sans">
+                      {pkg.spreadsCount} Customizable Spreads
+                    </p>
+
+                    <div className="mt-3 flex items-baseline gap-2">
+                      <span className="font-serif text-2xl font-bold text-wine-900 tabular-nums">
+                        ₹{pkg.price.toLocaleString('en-IN')}
+                      </span>
+                      <span className="text-xs text-charcoal/50 line-through tabular-nums font-sans">
+                        ₹{pkg.originalPrice.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+
+                    <div className="mt-4 p-2.5 rounded-lg bg-[#FAF2EC] text-xs text-wine-900/80 leading-relaxed font-sans">
+                      <p className="font-medium text-wine-900">
+                        {pkg.spreadsCount} Spreads = {pkg.spreadsCount * 2} Inside Pages
+                      </p>
+                      <p className="text-[11px] text-charcoal/70 mt-0.5">
+                        + 1 Front Cover + 1 Back Cover
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 pt-3 border-t border-taupe-200/40 flex items-center justify-between text-xs font-semibold font-sans">
+                    <span className={isSelected ? 'text-roseGold font-bold' : 'text-charcoal/60'}>
+                      {isSelected ? 'Active Selection' : 'Select Size'}
+                    </span>
+                    {isSelected && <Check className="w-4 h-4 text-roseGold" />}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ========================================================================= */}
+          {/* INTERACTIVE 3D BOOK SPREAD (Directly below Number of Pages option) */}
+          {/* Dynamically scales to 8, 12, 16, or 20 pages; starts empty & fills up */}
+          {/* ========================================================================= */}
+          <div
+            ref={bookSpreadSectionRef}
+            className="mt-8 rounded-3xl bg-white border border-taupe-200/90 p-5 sm:p-8 shadow-soft"
+          >
+            {/* Header / Spread Status Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-taupe-200/70 pb-5">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-roseGold animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
+                    Interactive 3D Book Spread
+                  </span>
+                </div>
+                <h3 className="font-serif text-2xl font-bold text-wine-900 mt-1">
+                  {currentPackage.name} Magazine ({currentPackage.totalPages} Pages Spread)
+                </h3>
+                <p className="text-xs text-charcoal/70 mt-0.5 font-sans">
+                  {selectedSpreadIds.length === 0
+                    ? `Currently showing empty layout. As you select templates in Step 3, they will appear here in real-time!`
+                    : `${selectedSpreadIds.length} of ${requiredSpreadsCount} inside spreads filled. Drag page corners or click arrows to flip!`}
+                </p>
+              </div>
+
+              {/* Progress Counters & Bar */}
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="text-xs font-bold text-wine-900 font-sans tabular-nums">
+                    {selectedSpreadIds.length} / {requiredSpreadsCount} Spreads Selected
+                  </p>
+                  <p className="text-[11px] text-charcoal/60 font-sans tabular-nums">
+                    {selectedSpreadIds.length * 2 + 2} of {currentPackage.totalPages} Pages Filled
+                  </p>
+                </div>
+
+                <div className="w-24 sm:w-32 bg-taupe-100 rounded-full h-2.5 overflow-hidden">
+                  <div
+                    className="bg-roseGold h-full transition-all duration-300"
+                    style={{
+                      width: `${(selectedSpreadIds.length / requiredSpreadsCount) * 100}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* The 3D Page-Flip Book Stage (Tu Chahiye Magazine component) */}
+            <div className="py-4">
+              <InteractiveFlipBook
+                pages={dynamicBookPages}
+                targetPage={targetFlipPage}
+                isEditable={false}
+              />
+            </div>
+
+            {/* Quick Spread Navigation Jump Pills */}
+            <div className="mt-4 pt-4 border-t border-taupe-200/60">
+              <div className="flex items-center justify-between text-xs text-charcoal/70 mb-2 font-sans">
+                <span className="font-semibold text-wine-900">Jump to Spread:</span>
+                <span className="text-[11px] text-charcoal/50">Click any spread to inspect</span>
+              </div>
+
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-taupe-200">
+                {/* Front Cover Button */}
+                <button
+                  type="button"
+                  onClick={() => setTargetFlipPage(0)}
+                  className="px-3 py-1.5 rounded-lg border border-taupe-200 bg-white hover:bg-cream-100 text-xs font-sans font-medium text-charcoal whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95"
+                >
+                  Page 1 (Front Cover)
+                </button>
+
+                {/* Inside Spreads Buttons */}
+                {Array.from({ length: requiredSpreadsCount }).map((_, sIdx) => {
+                  const isFilled = Boolean(selectedSpreadTemplates[sIdx]);
+                  const leftP = sIdx * 2 + 2;
+                  const rightP = sIdx * 2 + 3;
+                  const targetPageIdx = sIdx * 2 + 1;
+
+                  return (
+                    <button
+                      key={sIdx}
+                      type="button"
+                      onClick={() => setTargetFlipPage(targetPageIdx)}
+                      className={`px-3 py-1.5 rounded-lg border text-xs font-sans whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95 flex items-center gap-1.5 ${
+                        isFilled
+                          ? 'border-roseGold bg-roseGold/10 text-wine-900 font-semibold'
+                          : 'border-dashed border-taupe-300 bg-white text-charcoal/60 hover:text-charcoal'
+                      }`}
+                    >
+                      <span className="tabular-nums">Spread {sIdx + 1} (p.{leftP}–{rightP})</span>
+                      {isFilled ? (
+                        <Check className="w-3 h-3 text-roseGold" />
+                      ) : (
+                        <span className="text-[10px] text-rose-500 font-medium">Empty</span>
+                      )}
+                    </button>
+                  );
+                })}
+
+                {/* Back Cover Button */}
+                <button
+                  type="button"
+                  onClick={() => setTargetFlipPage(currentPackage.totalPages - 1)}
+                  className="px-3 py-1.5 rounded-lg border border-taupe-200 bg-white hover:bg-cream-100 text-xs font-sans font-medium text-charcoal whitespace-nowrap cursor-pointer transition shadow-2xs active:scale-95"
+                >
+                  Page {currentPackage.totalPages} (Back Cover)
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* STEP 2: CHOOSE YOUR OCCASION */}
+        {/* ========================================================================= */}
+        <section ref={occasionSectionRef} id="step-2-occasion" className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-taupe-200/60 pb-3 gap-2">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-roseGold font-sans">
+                Step 2 of 5
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-wine-900 mt-1">
                 What is your magazine for?
               </h2>
             </div>
             {currentOccasion && (
-              <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-roseGold">
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-roseGold font-sans">
                 <Check className="w-3.5 h-3.5 text-roseGold" />
                 {currentOccasion.name} Selected
               </span>
@@ -305,7 +744,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                 <button
                   key={occ.id}
                   onClick={() => handleSelectOccasion(occ.id)}
-                  className={`group relative text-left p-4 rounded-xl border transition-all flex flex-col justify-between h-full ${
+                  className={`group relative text-left p-4 rounded-xl border transition-all flex flex-col justify-between h-full cursor-pointer ${
                     isSelected
                       ? 'border-roseGold bg-roseGold/5 shadow-md ring-1 ring-roseGold'
                       : 'border-taupe-200/80 bg-white hover:border-roseGold/50 hover:shadow-sm'
@@ -313,7 +752,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                 >
                   {occ.badge && (
                     <span
-                      className={`absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      className={`absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full font-sans ${
                         isSelected
                           ? 'bg-roseGold text-white'
                           : 'bg-taupe-100 text-charcoal/70 group-hover:bg-roseGold/10 group-hover:text-roseGold'
@@ -341,7 +780,7 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                     </p>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-taupe-200/40 flex items-center justify-between text-xs font-semibold">
+                  <div className="mt-4 pt-3 border-t border-taupe-200/40 flex items-center justify-between text-xs font-semibold font-sans">
                     <span className={isSelected ? 'text-roseGold font-bold' : 'text-charcoal/60'}>
                       {isSelected ? 'Selected' : 'Choose'}
                     </span>
@@ -351,318 +790,6 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
               );
             })}
           </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* STEP 2: CHOOSE YOUR MAGAZINE SIZE */}
-        {/* ========================================================================= */}
-        <section id="step-2-package" className="space-y-6">
-          <div className="flex items-baseline justify-between border-b border-taupe-200/60 pb-3">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-roseGold">
-                Step 2 of 5
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-wine-900 mt-1">
-                Choose Your Magazine Size
-              </h2>
-            </div>
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-charcoal/70">
-              <Layers className="w-3.5 h-3.5 text-roseGold" />
-              Formula: (Total Pages - 2) / 2 spreads
-            </span>
-          </div>
-
-          <p className="text-sm text-charcoal/70 max-w-3xl font-sans">
-            Every magazine features <strong>2 fixed cover pages</strong> (1 Front Cover + 1 Back
-            Cover). Inside pages are curated as <strong>2-page side-by-side spreads</strong>.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {CUSTOM_MAGAZINE_PACKAGES.map((pkg) => {
-              const isSelected = selectedPackageId === pkg.id;
-              return (
-                <button
-                  key={pkg.id}
-                  onClick={() => handleSelectPackage(pkg)}
-                  className={`group text-left p-5 rounded-xl border transition-all relative flex flex-col justify-between ${
-                    isSelected
-                      ? 'border-roseGold bg-roseGold/5 shadow-md ring-1 ring-roseGold'
-                      : 'border-taupe-200/80 bg-white hover:border-roseGold/50 hover:shadow-sm'
-                  }`}
-                >
-                  {pkg.badge && (
-                    <span
-                      className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isSelected ? 'bg-roseGold text-white' : 'bg-blush-100 text-roseGold'
-                      }`}
-                    >
-                      {pkg.badge}
-                    </span>
-                  )}
-
-                  <div>
-                    <h3 className="font-serif text-2xl font-bold text-wine-900">
-                      {pkg.name}
-                    </h3>
-                    <p className="text-xs font-bold text-roseGold uppercase tracking-wide mt-0.5">
-                      {pkg.spreadsCount} Customizable Spreads
-                    </p>
-
-                    <div className="mt-3 flex items-baseline gap-2">
-                      <span className="font-serif text-2xl font-bold text-wine-900 tabular-nums">
-                        ₹{pkg.price.toLocaleString('en-IN')}
-                      </span>
-                      <span className="text-xs text-charcoal/50 line-through tabular-nums">
-                        ₹{pkg.originalPrice.toLocaleString('en-IN')}
-                      </span>
-                    </div>
-
-                    <div className="mt-4 p-2.5 rounded-lg bg-[#FAF2EC] text-xs text-wine-900/80 leading-relaxed font-sans">
-                      <p className="font-medium text-wine-900">
-                        {pkg.spreadsCount} Spreads = {pkg.spreadsCount * 2} Inside Pages
-                      </p>
-                      <p className="text-[11px] text-charcoal/70 mt-0.5">
-                        + 1 Front Cover + 1 Back Cover
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-5 pt-3 border-t border-taupe-200/40 flex items-center justify-between text-xs font-semibold">
-                    <span className={isSelected ? 'text-roseGold font-bold' : 'text-charcoal/60'}>
-                      {isSelected ? 'Active Package' : 'Select Package'}
-                    </span>
-                    {isSelected && <Check className="w-4 h-4 text-roseGold" />}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* LIVE MAGAZINE PREVIEW (CRITICAL VISUAL COMPONENT) */}
-        {/* ========================================================================= */}
-        <section
-          ref={previewSectionRef}
-          id="live-magazine-preview"
-          className="bg-white rounded-2xl border border-taupe-200/80 p-5 sm:p-7 shadow-sm space-y-6"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-taupe-200/60 pb-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-roseGold">
-                  Live Magazine Preview
-                </span>
-              </div>
-              <h2 className="font-serif text-2xl font-bold text-wine-900 mt-1">
-                Your Magazine Layout Sequence
-              </h2>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-xs font-bold text-wine-900 font-sans">
-                  {selectedSpreadIds.length} of {requiredSpreadsCount} Spreads Selected
-                </p>
-                <p className="text-[11px] text-charcoal/60 font-sans tabular-nums">
-                  {selectedSpreadIds.length * 2 + 2} of {currentPackage.totalPages} Pages Filled
-                </p>
-              </div>
-
-              {/* Visual Progress Bar */}
-              <div className="w-24 sm:w-32 bg-taupe-100 rounded-full h-2.5 overflow-hidden">
-                <div
-                  className="bg-roseGold h-full transition-all duration-300"
-                  style={{
-                    width: `${(selectedSpreadIds.length / requiredSpreadsCount) * 100}%`,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {!selectedOccasionId || !currentOccasion ? (
-            <div className="py-12 px-4 text-center rounded-xl bg-[#FAF2EC]/60 border border-dashed border-roseGold/30">
-              <BookOpen className="w-10 h-10 text-roseGold/60 mx-auto mb-3" />
-              <h3 className="font-serif text-lg font-bold text-wine-900">
-                Choose an Occasion to View Your Magazine Layout
-              </h3>
-              <p className="text-xs text-charcoal/70 mt-1 max-w-md mx-auto font-sans">
-                Please select an occasion category above (Step 1) to generate your custom front cover,
-                inside spreads, and back cover.
-              </p>
-              <button
-                onClick={() => {
-                  const el = document.getElementById('step-1-occasion');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-roseGold hover:underline"
-              >
-                Go to Step 1 <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          ) : (
-            <div>
-              {/* Horizontal Scrollable Spread Carousel */}
-              <div className="flex gap-4 overflow-x-auto pb-4 pt-2 scrollbar-thin scrollbar-thumb-taupe-200">
-                {/* 1. FIXED FRONT COVER */}
-                <div className="flex-shrink-0 w-44 sm:w-52 flex flex-col">
-                  <div className="relative aspect-[3/4] rounded-lg overflow-hidden border-2 border-wine-900/20 bg-taupe-100 shadow-sm group">
-                    <img
-                      src={currentOccasion.frontCoverImage}
-                      alt={currentOccasion.frontCoverTitle}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-between">
-                      <span className="self-start text-[9px] font-bold bg-white/90 text-wine-900 px-2 py-0.5 rounded shadow">
-                        Fixed Front Cover
-                      </span>
-                      <div>
-                        <p className="text-[10px] text-white/80 font-sans">Page 1</p>
-                        <h4 className="font-serif font-bold text-white text-xs sm:text-sm leading-tight">
-                          {currentOccasion.frontCoverTitle}
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-[11px] font-bold text-wine-900 text-center mt-2 font-serif">
-                    [ FRONT COVER ]
-                  </p>
-                  <p className="text-[10px] text-charcoal/60 text-center font-sans">
-                    Pre-designed Cover
-                  </p>
-                </div>
-
-                {/* 2. CUSTOMIZABLE INSIDE SPREADS */}
-                {Array.from({ length: requiredSpreadsCount }).map((_, spreadIdx) => {
-                  const template = selectedSpreadTemplates[spreadIdx];
-                  const spreadNum = spreadIdx + 1;
-                  const leftPageNum = spreadIdx * 2 + 2;
-                  const rightPageNum = spreadIdx * 2 + 3;
-
-                  return (
-                    <div key={`spread-slot-${spreadNum}`} className="flex-shrink-0 w-64 sm:w-72 flex flex-col">
-                      {template ? (
-                        // FILLED SPREAD
-                        <div className="relative aspect-[16/10] rounded-lg overflow-hidden border-2 border-roseGold bg-[#FAF2EC] shadow-sm flex flex-col justify-between p-2 group">
-                          {/* Side by side mini pages */}
-                          <div className="grid grid-cols-2 gap-1.5 h-full">
-                            <div className="relative rounded overflow-hidden bg-white border border-taupe-200">
-                              <img
-                                src={template.leftPageImage}
-                                alt={template.leftPageTitle}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                              />
-                              <div className="absolute bottom-1 left-1 right-1 bg-black/60 rounded px-1 py-0.5 text-[8px] text-white truncate font-sans">
-                                p.{leftPageNum} {template.leftPageTitle}
-                              </div>
-                            </div>
-
-                            <div className="relative rounded overflow-hidden bg-white border border-taupe-200">
-                              <img
-                                src={template.rightPageImage}
-                                alt={template.rightPageTitle}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                              />
-                              <div className="absolute bottom-1 left-1 right-1 bg-black/60 rounded px-1 py-0.5 text-[8px] text-white truncate font-sans">
-                                p.{rightPageNum} {template.rightPageTitle}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Quick Remove Button */}
-                          <button
-                            onClick={() => handleRemoveSpreadByIndex(spreadIdx)}
-                            className="absolute top-1.5 right-1.5 p-1 rounded-full bg-white/90 hover:bg-rose-50 text-charcoal/70 hover:text-rose-600 shadow transition-colors"
-                            title="Remove this spread"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ) : (
-                        // EMPTY SPREAD PLACEHOLDER
-                        <button
-                          onClick={() => {
-                            templatesSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-                          }}
-                          className="aspect-[16/10] rounded-lg border-2 border-dashed border-taupe-300 hover:border-roseGold bg-taupe-50/50 hover:bg-roseGold/5 transition-all flex flex-col items-center justify-center p-4 text-center group"
-                        >
-                          <div className="w-8 h-8 rounded-full bg-white group-hover:bg-roseGold group-hover:text-white text-roseGold flex items-center justify-center shadow-sm transition-colors mb-2">
-                            <Plus className="w-4 h-4" />
-                          </div>
-                          <span className="font-serif font-bold text-xs sm:text-sm text-wine-900 group-hover:text-roseGold">
-                            [+] Choose Design
-                          </span>
-                          <span className="text-[10px] text-charcoal/60 mt-0.5 font-sans">
-                            Spread {spreadNum} (Pages {leftPageNum}–{rightPageNum})
-                          </span>
-                        </button>
-                      )}
-
-                      <p className="text-[11px] font-bold text-wine-900 text-center mt-2 font-serif truncate">
-                        {template ? template.name : `[ Spread ${spreadNum} ]`}
-                      </p>
-                      <p className="text-[10px] text-charcoal/60 text-center font-sans">
-                        Pages {leftPageNum} & {rightPageNum}
-                      </p>
-                    </div>
-                  );
-                })}
-
-                {/* 3. FIXED BACK COVER */}
-                <div className="flex-shrink-0 w-44 sm:w-52 flex flex-col">
-                  <div className="relative aspect-[3/4] rounded-lg overflow-hidden border-2 border-wine-900/20 bg-taupe-100 shadow-sm group">
-                    <img
-                      src={currentOccasion.backCoverImage}
-                      alt="Back Cover"
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-between">
-                      <span className="self-start text-[9px] font-bold bg-white/90 text-wine-900 px-2 py-0.5 rounded shadow">
-                        Fixed Back Cover
-                      </span>
-                      <div>
-                        <p className="text-[10px] text-white/80 font-sans">
-                          Page {currentPackage.totalPages}
-                        </p>
-                        <h4 className="font-serif font-bold text-white text-xs sm:text-sm leading-tight">
-                          Artisan Magz Studio
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-[11px] font-bold text-wine-900 text-center mt-2 font-serif">
-                    [ BACK COVER ]
-                  </p>
-                  <p className="text-[10px] text-charcoal/60 text-center font-sans">
-                    Pre-designed Back
-                  </p>
-                </div>
-              </div>
-
-              {/* Layout Helper Note */}
-              <div className="mt-4 pt-3 border-t border-taupe-200/50 flex flex-col sm:flex-row items-center justify-between text-xs text-charcoal/70 gap-2 font-sans">
-                <span className="inline-flex items-center gap-1.5">
-                  <Info className="w-3.5 h-3.5 text-roseGold" />
-                  Inside spreads are displayed in the exact order selected below.
-                </span>
-                {isComplete ? (
-                  <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 inline-flex items-center gap-1">
-                    <Check className="w-3.5 h-3.5" /> All {requiredSpreadsCount} Spreads Selected!
-                  </span>
-                ) : (
-                  <span className="text-roseGold font-semibold">
-                    {remainingSpreads} more {remainingSpreads === 1 ? 'spread' : 'spreads'} needed
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
         </section>
 
         {/* ========================================================================= */}
@@ -690,16 +817,16 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
 
           {!selectedOccasionId ? (
             <div className="p-8 text-center rounded-xl bg-white border border-taupe-200/80 shadow-sm">
+              <BookOpen className="w-8 h-8 text-roseGold/60 mx-auto mb-2" />
               <p className="text-sm text-charcoal/70 font-sans">
-                Templates are filtered based on your occasion. Please{' '}
+                Inside spread templates are filtered based on your occasion. Please{' '}
                 <button
                   onClick={() => {
-                    const el = document.getElementById('step-1-occasion');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    occasionSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="text-roseGold font-bold underline"
+                  className="text-roseGold font-bold underline cursor-pointer"
                 >
-                  choose an occasion in Step 1
+                  choose an occasion in Step 2
                 </button>{' '}
                 to reveal curated spread templates.
               </p>
@@ -1102,28 +1229,43 @@ export const CreateYourOwnMagazine: React.FC<CreateYourOwnMagazineProps> = ({
                     <span className="font-serif text-2xl font-bold text-wine-900 tabular-nums">
                       ₹{totalPrice.toLocaleString('en-IN')}
                     </span>
-                    <p className="text-[10px] text-charcoal/60">Includes all taxes</p>
+                    <p className="text-[10px] text-charcoal/60 font-sans">Includes all taxes</p>
                   </div>
                 </div>
               </div>
 
-              {/* Checkout CTA */}
-              <div className="space-y-2.5">
+              {/* Checkout Action Buttons */}
+              <div className="space-y-3">
                 <button
-                  onClick={() => handleAddToCartAndCheckout(true)}
+                  type="button"
+                  onClick={() => handleAddToCartAndCheckout(false)}
                   disabled={!isComplete}
-                  className={`w-full py-3.5 px-6 rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 ${
+                  className={`w-full py-3 px-5 rounded-xl font-semibold text-xs border-2 transition-all flex items-center justify-center gap-2 font-sans cursor-pointer ${
                     isComplete
-                      ? 'bg-roseGold hover:bg-roseGold-dark text-white hover:shadow-lg'
-                      : 'bg-taupe-200 text-charcoal/40 cursor-not-allowed'
+                      ? 'border-charcoal bg-white text-charcoal hover:bg-cream-100'
+                      : 'border-taupe-200 bg-taupe-50 text-charcoal/40 cursor-not-allowed'
                   }`}
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Continue to Checkout</span>
+                  <span>Add to Cart</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleAddToCartAndCheckout(true)}
+                  disabled={!isComplete}
+                  className={`w-full py-3.5 px-6 rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 font-sans ${
+                    isComplete
+                      ? 'bg-roseGold hover:bg-roseGold-dark text-white hover:shadow-lg cursor-pointer'
+                      : 'bg-taupe-200 text-charcoal/40 cursor-not-allowed'
+                  }`}
+                >
+                  <Zap className="w-4 h-4 text-roseGold-light" />
+                  <span>Buy It Now &amp; Checkout</span>
                 </button>
 
                 {!isComplete && (
-                  <p className="text-[11px] text-rose-600 text-center font-sans font-medium">
+                  <p className="text-[11px] text-rose-600 text-center font-sans font-medium tabular-nums">
                     ⚠️ Complete all {requiredSpreadsCount} spreads to proceed ({remainingSpreads}{' '}
                     remaining)
                   </p>
