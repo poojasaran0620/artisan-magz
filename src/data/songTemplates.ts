@@ -1,6 +1,7 @@
 import type { BookPage } from '../types/book';
 import {
   SONGS_BOOK_PAGES,
+  SORANTIKA_BOOK_PAGES,
   CHAAR_KADAM_BOOK_PAGES,
   INITIAL_5_PAGE_BOOK,
 } from './bookTemplates.ts';
@@ -64,15 +65,29 @@ export const SONG_MAGAZINE_TEMPLATES: SongTemplateItem[] = [
   {
     id: 'tu-chahiye',
     title: 'Tu Chahiye Magazine',
-    subtitle: 'SORANTIKA • Special Edition #123 • Romantic Song Keepsake',
+    subtitle: 'MY HOME • Special Edition #123 • Romantic Song Keepsake',
     songTitle: 'Tu Chahiye',
     badge: 'BEST SELLER',
     price: 700,
     originalPrice: 999,
-    coverImage: '/products/song-magazines/tu_chahiye_sorantika.jpg',
+    coverImage: '/templates/tu-chahiye/page_1.jpg',
     category: 'Romantic',
     pages: SONGS_BOOK_PAGES,
     description: 'Transform your unforgettable romantic journey into a song magazine with lyrics from Tu Chahiye.',
+    details: DEFAULT_DETAILS,
+  },
+  {
+    id: 'sorantika',
+    title: 'Sorantika Magazine',
+    subtitle: 'SPECIAL EDITION #123 • you feel like home<3',
+    songTitle: 'Sorantika',
+    badge: 'NEW RELEASE',
+    price: 700,
+    originalPrice: 999,
+    coverImage: '/templates/sorantika/page_1.jpg',
+    category: 'Romantic',
+    pages: SORANTIKA_BOOK_PAGES,
+    description: 'Bespoke 12-page couple keepsake magazine featuring 12 customized memory spreads and love letter dedication.',
     details: DEFAULT_DETAILS,
   },
   {

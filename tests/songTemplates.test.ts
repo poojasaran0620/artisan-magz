@@ -9,6 +9,7 @@ describe('Song Magazine Templates System', () => {
 
     const ids = SONG_MAGAZINE_TEMPLATES.map((t) => t.id);
     assert.ok(ids.includes('tu-chahiye'), 'Must include Tu Chahiye');
+    assert.ok(ids.includes('sorantika'), 'Must include Sorantika');
     assert.ok(ids.includes('chaar-kadam'), 'Must include Chaar Kadam');
     assert.ok(ids.includes('shayarana'), 'Must include Shayarana');
     assert.ok(ids.includes('normal-magazine'), 'Must include Normal Magazine');

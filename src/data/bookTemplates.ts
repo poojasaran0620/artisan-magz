@@ -722,382 +722,603 @@ export const CHAAR_KADAM_BOOK_PAGES: BookPage[] = [
  * - Page 13: Inside Back Cover Blank / Empty (Spread 6 Right)
  */
 export const SONGS_BOOK_PAGES: BookPage[] = [
-  // Page 1: Standalone Front Cover
   {
-    id: 'sb-page-1',
-    pageNumber: 1,
-    side: 'standalone',
-    templateId: 'tu-chahiye-cover',
-    title: 'SORANTIKA • Special Edition #123',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/products/song-magazines/tu_chahiye_sorantika.jpg',
-    photos: [
+    "id": "sb-page-1",
+    "pageNumber": 1,
+    "side": "standalone",
+    "templateId": "tu-chahiye-cover",
+    "title": "MY HOME • Special Edition #123",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_1.jpg",
+    "photos": [
       {
-        id: 'sb-p1-hero',
-        label: 'Cover Couple Portrait',
-        url: '/products/song-magazines/tu_chahiye_sorantika.jpg',
-        aspectRatio: '3/4',
-        borderStyle: 'none',
-      },
+        "id": "sb-p1-hero",
+        "label": "Cover Couple Portrait",
+        "url": "/templates/tu-chahiye/page_1.jpg",
+        "aspectRatio": "3/4",
+        "borderStyle": "none"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p1-masthead',
-        type: 'headline',
-        content: 'SORANTIKA',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#FFFFFF',
-      },
-      {
-        id: 'sb-p1-sub',
-        type: 'subheading',
-        content: 'SPECIAL EDITION #123 • I LOVE YOU',
-        fontFamily: 'sans',
-        alignment: 'center',
-        color: '#FFFFFF',
-      },
-      {
-        id: 'sb-p1-quote',
-        type: 'quote',
-        content: 'you feel like home<3',
-        fontFamily: 'serif',
-        isItalic: true,
-        alignment: 'center',
-        color: '#FFFFFF',
-      },
-    ],
+        "id": "sb-p1-masthead",
+        "type": "headline",
+        "content": "MY HOME",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#FFFFFF"
+      }
+    ]
   },
+  {
+    "id": "sb-page-2",
+    "pageNumber": 2,
+    "side": "left",
+    "templateId": "tu-chahiye-inside-cover",
+    "title": "A Little Surprise • Dedication Note",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_2.jpg",
+    "photos": [
+      {
+        "id": "sb-p2-envelope",
+        "label": "A Little Surprise Has Just Arrived",
+        "url": "/templates/tu-chahiye/page_2.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-3",
+    "pageNumber": 3,
+    "side": "right",
+    "templateId": "tu-chahiye-page-3",
+    "title": "KOI AUR dooja • kyun MUJHE",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_3.jpg",
+    "photos": [
+      {
+        "id": "sb-p3-1",
+        "label": "Koi Aur Dooja Kyun Mujhe",
+        "url": "/templates/tu-chahiye/page_3.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-4",
+    "pageNumber": 4,
+    "side": "left",
+    "templateId": "tu-chahiye-page-4",
+    "title": "NA TERE सिवा CHAIYE",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_4.jpg",
+    "photos": [
+      {
+        "id": "sb-p4-1",
+        "label": "Na Tere Siva Chaiye",
+        "url": "/templates/tu-chahiye/page_4.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-5",
+    "pageNumber": 5,
+    "side": "right",
+    "templateId": "tu-chahiye-page-5",
+    "title": "HAR सफ़र mein mujhe",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_5.jpg",
+    "photos": [
+      {
+        "id": "sb-p5-1",
+        "label": "Har Safar Mein Mujhe",
+        "url": "/templates/tu-chahiye/page_5.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-6",
+    "pageNumber": 6,
+    "side": "left",
+    "templateId": "tu-chahiye-page-6",
+    "title": "Tu hi रहनुमा chaiye",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_6.jpg",
+    "photos": [
+      {
+        "id": "sb-p6-1",
+        "label": "Tu Hi Rahnuma Chaiye",
+        "url": "/templates/tu-chahiye/page_6.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-7",
+    "pageNumber": 7,
+    "side": "right",
+    "templateId": "tu-chahiye-page-7",
+    "title": "JEENE को BAS मुझे",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_7.jpg",
+    "photos": [
+      {
+        "id": "sb-p7-1",
+        "label": "Jeene Ko Bas Mujhe",
+        "url": "/templates/tu-chahiye/page_7.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-8",
+    "pageNumber": 8,
+    "side": "left",
+    "templateId": "tu-chahiye-page-8",
+    "title": "Tu hi meherbaan chaiye",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_8.jpg",
+    "photos": [
+      {
+        "id": "sb-p8-1",
+        "label": "Tu Hi Meherbaan Chaiye",
+        "url": "/templates/tu-chahiye/page_8.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-9",
+    "pageNumber": 9,
+    "side": "right",
+    "templateId": "tu-chahiye-page-9",
+    "title": "HOOOO सीने में Agar TU दर्द है",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_9.jpg",
+    "photos": [
+      {
+        "id": "sb-p9-1",
+        "label": "Seene Mein Agar Tu Dard Hai",
+        "url": "/templates/tu-chahiye/page_9.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-10",
+    "pageNumber": 10,
+    "side": "left",
+    "templateId": "tu-chahiye-page-10",
+    "title": "ना koi दवा chaiye <3",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_10.jpg",
+    "photos": [
+      {
+        "id": "sb-p10-1",
+        "label": "Na Koi Dawa Chaiye",
+        "url": "/templates/tu-chahiye/page_10.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-11",
+    "pageNumber": 11,
+    "side": "right",
+    "templateId": "tu-chahiye-page-11",
+    "title": "i'll be there for you / by yours fav",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#8B0D15",
+    "referenceImage": "/templates/tu-chahiye/page_11.jpg",
+    "photos": [
+      {
+        "id": "sb-p11-1",
+        "label": "I'll Be There For You",
+        "url": "/templates/tu-chahiye/page_11.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  },
+  {
+    "id": "sb-page-12",
+    "pageNumber": 12,
+    "side": "standalone",
+    "templateId": "tu-chahiye-page-12",
+    "title": "Back Cover • Really Blessed to Have You In My Life",
+    "theme": "Tu Chahiye Song Book",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/tu-chahiye/page_12.jpg",
+    "photos": [
+      {
+        "id": "sb-p12-couple",
+        "label": "Really Blessed to Have You In My Life",
+        "url": "/templates/tu-chahiye/page_12.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": []
+  }
+];
 
-  // Page 2: Left of Spread 1
+/**
+ * Sorantika Special Edition Keepsake Book (12 Pages)
+ */
+export const SORANTIKA_BOOK_PAGES: BookPage[] = [
   {
-    id: 'sb-page-2',
-    pageNumber: 2,
-    side: 'left',
-    templateId: 'tu-chahiye-page-2',
-    title: 'HOTA HAI tu jo MILEE',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_2.jpg',
-    photos: [
+    "id": "sorantika-p1",
+    "pageNumber": 1,
+    "side": "standalone",
+    "templateId": "sorantika-cover",
+    "title": "SORANTIKA • Special Edition #123",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_1.jpg",
+    "photos": [
       {
-        id: 'sb-p2-hero',
-        label: 'Hota Hai Tu Jo Milee',
-        url: '/templates/tu-chahiye/page_2.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p1-hero",
+        "label": "Cover Couple Portrait",
+        "url": "/templates/sorantika/page_1.jpg",
+        "aspectRatio": "3/4",
+        "borderStyle": "none"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p2-song',
-        type: 'headline',
-        content: 'HOTA HAI tu jo MILEE',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#111111',
+        "id": "sor-p1-masthead",
+        "type": "headline",
+        "content": "SORANTIKA",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#FFFFFF"
       },
-    ],
+      {
+        "id": "sor-p1-sub",
+        "type": "subheading",
+        "content": "SPECIAL EDITION #123 • I LOVE YOU",
+        "fontFamily": "sans",
+        "alignment": "center",
+        "color": "#FFFFFF"
+      },
+      {
+        "id": "sor-p1-quote",
+        "type": "quote",
+        "content": "you feel like home<3",
+        "fontFamily": "serif",
+        "isItalic": true,
+        "alignment": "center",
+        "color": "#FFFFFF"
+      }
+    ]
   },
-
-  // Page 3: Right of Spread 1
   {
-    id: 'sb-page-3',
-    pageNumber: 3,
-    side: 'right',
-    templateId: 'tu-chahiye-page-3',
-    title: 'HAR dafa vahi jaadu',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_3.jpg',
-    photos: [
+    "id": "sorantika-p2",
+    "pageNumber": 2,
+    "side": "left",
+    "templateId": "sorantika-page-2",
+    "title": "HOTA HAI tu jo MILEE",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_2.jpg",
+    "photos": [
       {
-        id: 'sb-p3-hero',
-        label: 'Har Dafa Vahi Jaadu',
-        url: '/templates/tu-chahiye/page_3.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p2-hero",
+        "label": "Hota Hai Tu Jo Milee",
+        "url": "/templates/sorantika/page_2.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p3-song',
-        type: 'headline',
-        content: 'HAR dafa vahi jaadu',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#654321',
-      },
-    ],
+        "id": "sor-p2-song",
+        "type": "headline",
+        "content": "HOTA HAI tu jo MILEE",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#111111"
+      }
+    ]
   },
-
-  // Page 4: Left of Spread 2
   {
-    id: 'sb-page-4',
-    pageNumber: 4,
-    side: 'left',
-    templateId: 'tu-chahiye-page-4',
-    title: 'HOOOO, SAB SAWAR jaata hai <3',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_4.jpg',
-    photos: [
+    "id": "sorantika-p3",
+    "pageNumber": 3,
+    "side": "right",
+    "templateId": "sorantika-page-3",
+    "title": "HAR dafa vahi jaadu",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_3.jpg",
+    "photos": [
       {
-        id: 'sb-p4-hero',
-        label: 'Sab Sawar Jaata Hai',
-        url: '/templates/tu-chahiye/page_4.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p3-hero",
+        "label": "Har Dafa Vahi Jaadu",
+        "url": "/templates/sorantika/page_3.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p4-song',
-        type: 'headline',
-        content: 'HOOOO, SAB SAWAR jaata hai <3',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#6B3A4C',
-      },
-    ],
+        "id": "sor-p3-song",
+        "type": "headline",
+        "content": "HAR dafa vahi jaadu",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#654321"
+      }
+    ]
   },
-
-  // Page 5: Right of Spread 2
   {
-    id: 'sb-page-5',
-    pageNumber: 5,
-    side: 'right',
-    templateId: 'tu-chahiye-page-5',
-    title: 'yaaaraa ANDAR MERE',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_5.jpg',
-    photos: [
+    "id": "sorantika-p4",
+    "pageNumber": 4,
+    "side": "left",
+    "templateId": "sorantika-page-4",
+    "title": "HOOOO, SAB SAWAR jaata hai <3",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_4.jpg",
+    "photos": [
       {
-        id: 'sb-p5-hero',
-        label: 'Yaara Andar Mere',
-        url: '/templates/tu-chahiye/page_5.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p4-hero",
+        "label": "Sab Sawar Jaata Hai",
+        "url": "/templates/sorantika/page_4.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p5-song',
-        type: 'headline',
-        content: 'yaaaraa ANDAR MERE',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#5B374D',
-      },
-    ],
+        "id": "sor-p4-song",
+        "type": "headline",
+        "content": "HOOOO, SAB SAWAR jaata hai <3",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#6B3A4C"
+      }
+    ]
   },
-
-  // Page 6: Left of Spread 3
   {
-    id: 'sb-page-6',
-    pageNumber: 6,
-    side: 'left',
-    templateId: 'tu-chahiye-page-6',
-    title: 'EK lamhe mein KITNI',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_6.jpg',
-    photos: [
+    "id": "sorantika-p5",
+    "pageNumber": 5,
+    "side": "right",
+    "templateId": "sorantika-page-5",
+    "title": "yaaaraa ANDAR MERE",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_5.jpg",
+    "photos": [
       {
-        id: 'sb-p6-hero',
-        label: 'Ek Lamhe Mein Kitni',
-        url: '/templates/tu-chahiye/page_6.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p5-hero",
+        "label": "Yaara Andar Mere",
+        "url": "/templates/sorantika/page_5.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p6-song',
-        type: 'headline',
-        content: 'EK lamhe mein KITNI',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#8B0D15',
-      },
-    ],
+        "id": "sor-p5-song",
+        "type": "headline",
+        "content": "yaaaraa ANDAR MERE",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#5B374D"
+      }
+    ]
   },
-
-  // Page 7: Right of Spread 3
   {
-    id: 'sb-page-7',
-    pageNumber: 7,
-    side: 'right',
-    templateId: 'tu-chahiye-page-7',
-    title: 'yaadein<3 banjaati Hai',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_7.jpg',
-    photos: [
+    "id": "sorantika-p6",
+    "pageNumber": 6,
+    "side": "left",
+    "templateId": "sorantika-page-6",
+    "title": "EK lamhe mein KITNI",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_6.jpg",
+    "photos": [
       {
-        id: 'sb-p7-hero',
-        label: 'Yaadein Banjaati Hai',
-        url: '/templates/tu-chahiye/page_7.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p6-hero",
+        "label": "Ek Lamhe Mein Kitni",
+        "url": "/templates/sorantika/page_6.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p7-song',
-        type: 'headline',
-        content: 'yaadein<3 banjaati Hai',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#6A1B29',
-      },
-    ],
+        "id": "sor-p6-song",
+        "type": "headline",
+        "content": "EK lamhe mein KITNI",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#8B0D15"
+      }
+    ]
   },
-
-  // Page 8: Left of Spread 4
   {
-    id: 'sb-page-8',
-    pageNumber: 8,
-    side: 'left',
-    templateId: 'tu-chahiye-page-8',
-    title: 'Main itna hasti hu • AANKHEIN bhar aati hai',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_8.jpg',
-    photos: [
+    "id": "sorantika-p7",
+    "pageNumber": 7,
+    "side": "right",
+    "templateId": "sorantika-page-7",
+    "title": "yaadein<3 banjaati Hai",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_7.jpg",
+    "photos": [
       {
-        id: 'sb-p8-hero',
-        label: 'Main Itna Hasti Hu',
-        url: '/templates/tu-chahiye/page_8.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p7-hero",
+        "label": "Yaadein Banjaati Hai",
+        "url": "/templates/sorantika/page_7.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p8-song',
-        type: 'headline',
-        content: 'Main itna hasti hu • AANKHEIN bhar aati hai',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#7D2235',
-      },
-    ],
+        "id": "sor-p7-song",
+        "type": "headline",
+        "content": "yaadein<3 banjaati Hai",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#6A1B29"
+      }
+    ]
   },
-
-  // Page 9: Right of Spread 4
   {
-    id: 'sb-page-9',
-    pageNumber: 9,
-    side: 'right',
-    templateId: 'tu-chahiye-page-9',
-    title: 'mainu ishq TERA lae dooba<3',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_9.jpg',
-    photos: [
+    "id": "sorantika-p8",
+    "pageNumber": 8,
+    "side": "left",
+    "templateId": "sorantika-page-8",
+    "title": "Main itna hasti hu • AANKHEIN bhar aati hai",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_8.jpg",
+    "photos": [
       {
-        id: 'sb-p9-hero',
-        label: 'Mainu Ishq Tera Lae Dooba',
-        url: '/templates/tu-chahiye/page_9.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p8-hero",
+        "label": "Main Itna Hasti Hu",
+        "url": "/templates/sorantika/page_8.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p9-song',
-        type: 'headline',
-        content: 'mainu ishq TERA lae dooba<3',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#6A1B29',
-      },
-    ],
+        "id": "sor-p8-song",
+        "type": "headline",
+        "content": "Main itna hasti hu • AANKHEIN bhar aati hai",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#7D2235"
+      }
+    ]
   },
-
-  // Page 10: Left of Spread 5
   {
-    id: 'sb-page-10',
-    pageNumber: 10,
-    side: 'left',
-    templateId: 'tu-chahiye-page-10',
-    title: 'Forever Together • Postage Stamp Moments',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_10.jpg',
-    photos: [
+    "id": "sorantika-p9",
+    "pageNumber": 9,
+    "side": "right",
+    "templateId": "sorantika-page-9",
+    "title": "mainu ishq TERA lae dooba<3",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_9.jpg",
+    "photos": [
       {
-        id: 'sb-p10-hero',
-        label: 'Wedding & Celebrations Postage Stamps',
-        url: '/templates/tu-chahiye/page_10.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p9-hero",
+        "label": "Mainu Ishq Tera Lae Dooba",
+        "url": "/templates/sorantika/page_9.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p10-song',
-        type: 'headline',
-        content: 'Forever Together',
-        fontFamily: 'serif',
-        alignment: 'center',
-        color: '#8B0D15',
-      },
-    ],
+        "id": "sor-p9-song",
+        "type": "headline",
+        "content": "mainu ishq TERA lae dooba<3",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#6A1B29"
+      }
+    ]
   },
-
-  // Page 11: Right of Spread 5
   {
-    id: 'sb-page-11',
-    pageNumber: 11,
-    side: 'right',
-    templateId: 'tu-chahiye-page-11',
-    title: 'TAXES • Life Time Subscription',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_11.jpg',
-    photos: [
+    "id": "sorantika-p10",
+    "pageNumber": 10,
+    "side": "left",
+    "templateId": "sorantika-page-10",
+    "title": "Forever Together • Postage Stamp Moments",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_10.jpg",
+    "photos": [
       {
-        id: 'sb-p11-hero',
-        label: 'Taxes Life Time Subscription Receipt',
-        url: '/templates/tu-chahiye/page_11.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p10-hero",
+        "label": "Wedding & Celebrations Postage Stamps",
+        "url": "/templates/sorantika/page_10.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p11-song',
-        type: 'headline',
-        content: 'TAXES • LIFE TIME SUBSCRIPTION',
-        fontFamily: 'sans',
-        alignment: 'center',
-        color: '#111111',
-      },
-    ],
+        "id": "sor-p10-song",
+        "type": "headline",
+        "content": "Forever Together",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "color": "#8B0D15"
+      }
+    ]
   },
-
-  // Page 12: Standalone Back Cover
   {
-    id: 'sb-page-12',
-    pageNumber: 12,
-    side: 'standalone',
-    templateId: 'tu-chahiye-page-12',
-    title: "Back Cover • And Maybe That's What Love Really Is",
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_12.jpg',
-    photos: [
+    "id": "sorantika-p11",
+    "pageNumber": 11,
+    "side": "right",
+    "templateId": "sorantika-page-11",
+    "title": "TAXES • Life Time Subscription",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_11.jpg",
+    "photos": [
       {
-        id: 'sb-p12-letter',
-        label: 'Love Letter Red Envelope',
-        url: '/templates/tu-chahiye/page_12.jpg',
-        aspectRatio: '3/4',
-      },
+        "id": "sor-p11-hero",
+        "label": "Taxes Life Time Subscription Receipt",
+        "url": "/templates/sorantika/page_11.jpg",
+        "aspectRatio": "3/4"
+      }
     ],
-    texts: [
+    "texts": [
       {
-        id: 'sb-p12-letter',
-        type: 'body',
-        content: "And maybe that's what really love is... the feeling of being chosen every single day",
-        fontFamily: 'serif',
-        alignment: 'center',
-        isItalic: true,
-        color: '#2D2622',
-      },
-    ],
+        "id": "sor-p11-song",
+        "type": "headline",
+        "content": "TAXES • LIFE TIME SUBSCRIPTION",
+        "fontFamily": "sans",
+        "alignment": "center",
+        "color": "#111111"
+      }
+    ]
   },
+  {
+    "id": "sorantika-p12",
+    "pageNumber": 12,
+    "side": "standalone",
+    "templateId": "sorantika-page-12",
+    "title": "Back Cover • And Maybe That's What Love Really Is",
+    "theme": "Sorantika Keepsake Edition",
+    "backgroundColor": "#FAF8F5",
+    "referenceImage": "/templates/sorantika/page_12.jpg",
+    "photos": [
+      {
+        "id": "sor-p12-letter",
+        "label": "Love Letter Red Envelope",
+        "url": "/templates/sorantika/page_12.jpg",
+        "aspectRatio": "3/4"
+      }
+    ],
+    "texts": [
+      {
+        "id": "sor-p12-letter",
+        "type": "body",
+        "content": "And maybe that's what really love is... the feeling of being chosen every single day",
+        "fontFamily": "serif",
+        "alignment": "center",
+        "isItalic": true,
+        "color": "#2D2622"
+      }
+    ]
+  }
 ];
