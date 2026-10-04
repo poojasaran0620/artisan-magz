@@ -125,8 +125,8 @@ describe('Multi-Page Physical Book Spread System', () => {
     assert.equal(spreads[5].rightPage?.referenceImage, '/templates/chaar-kadam/page_11.webp');
   });
 
-  test('SONGS_BOOK_PAGES correctly maps the user uploaded custom pages across 13 pages', () => {
-    assert.equal(SONGS_BOOK_PAGES.length, 13);
+  test('SONGS_BOOK_PAGES correctly maps the user uploaded custom pages across 12 pages', () => {
+    assert.equal(SONGS_BOOK_PAGES.length, 12);
 
     const spreads = buildBookSpreads(SONGS_BOOK_PAGES);
     assert.equal(spreads.length, 7);
@@ -139,13 +139,13 @@ describe('Multi-Page Physical Book Spread System', () => {
       spreads[0].rightPage?.referenceImage === '/templates/tu-chahiye/page_1.jpg'
     );
 
-    // Spread 1: Left envelope note, Right "KOI AUR dooja"
+    // Spread 1: Left "HOTA HAI tu jo MILEE", Right "HAR dafa vahi jaadu"
     assert.equal(spreads[1].type, 'dual');
     assert.equal(spreads[1].label, 'Pages 2–3');
     assert.equal(spreads[1].leftPage?.referenceImage, '/templates/tu-chahiye/page_2.jpg');
     assert.equal(spreads[1].rightPage?.referenceImage, '/templates/tu-chahiye/page_3.jpg');
 
-    // Spread 2: Left "NA TERE सिवा CHAIYE", Right "HAR सफ़र mein mujhe"
+    // Spread 2: Left "HOOOO, SAB SAWAR jaata hai <3", Right Spread 2
     assert.equal(spreads[2].type, 'dual');
     assert.equal(spreads[2].label, 'Pages 4–5');
     assert.equal(spreads[2].leftPage?.referenceImage, '/templates/tu-chahiye/page_4.jpg');
@@ -169,11 +169,10 @@ describe('Multi-Page Physical Book Spread System', () => {
     assert.equal(spreads[5].leftPage?.referenceImage, '/templates/tu-chahiye/page_10.jpg');
     assert.equal(spreads[5].rightPage?.referenceImage, '/templates/tu-chahiye/page_11.jpg');
 
-    // Spread 6: Left "Really blessed to have you in my life", Right blank inside back cover
-    assert.equal(spreads[6].type, 'dual');
-    assert.equal(spreads[6].label, 'Pages 12–13');
+    // Spread 6: Standalone Page 12 (Back Cover)
+    assert.equal(spreads[6].type, 'single');
+    assert.equal(spreads[6].label, 'Page 12 (Back Cover)');
     assert.equal(spreads[6].leftPage?.referenceImage, '/templates/tu-chahiye/page_12.jpg');
-    assert.equal(spreads[6].rightPage?.referenceImage, '/templates/tu-chahiye/page_13.webp');
   });
 });
 

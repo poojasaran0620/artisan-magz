@@ -770,25 +770,34 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     ],
   },
 
-  // Page 2: Inside Front Cover (Left of Spread 1)
+  // Page 2: Left of Spread 1
   {
     id: 'sb-page-2',
     pageNumber: 2,
     side: 'left',
-    templateId: 'tu-chahiye-inside-cover',
-    title: 'A Little Surprise • Dedication Note',
+    templateId: 'tu-chahiye-page-2',
+    title: 'HOTA HAI tu jo MILEE',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_2.jpg',
     photos: [
       {
-        id: 'sb-p2-envelope',
-        label: 'A Little Surprise Has Just Arrived',
+        id: 'sb-p2-hero',
+        label: 'Hota Hai Tu Jo Milee',
         url: '/templates/tu-chahiye/page_2.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p2-song',
+        type: 'headline',
+        content: 'HOTA HAI tu jo MILEE',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#111111',
+      },
+    ],
   },
 
   // Page 3: Right of Spread 1
@@ -797,19 +806,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 3,
     side: 'right',
     templateId: 'tu-chahiye-page-3',
-    title: 'KOI AUR dooja • kyun MUJHE',
+    title: 'HAR dafa vahi jaadu',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_3.jpg',
     photos: [
       {
-        id: 'sb-p3-1',
-        label: 'Koi Aur Dooja Kyun Mujhe',
+        id: 'sb-p3-hero',
+        label: 'Har Dafa Vahi Jaadu',
         url: '/templates/tu-chahiye/page_3.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p3-song',
+        type: 'headline',
+        content: 'HAR dafa vahi jaadu',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#654321',
+      },
+    ],
   },
 
   // Page 4: Left of Spread 2
@@ -818,19 +836,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 4,
     side: 'left',
     templateId: 'tu-chahiye-page-4',
-    title: 'NA TERE सिवा CHAIYE',
+    title: 'HOOOO, SAB SAWAR jaata hai <3',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_4.jpg',
     photos: [
       {
-        id: 'sb-p4-1',
-        label: 'Na Tere Siva Chaiye',
+        id: 'sb-p4-hero',
+        label: 'Sab Sawar Jaata Hai',
         url: '/templates/tu-chahiye/page_4.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p4-song',
+        type: 'headline',
+        content: 'HOOOO, SAB SAWAR jaata hai <3',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#6B3A4C',
+      },
+    ],
   },
 
   // Page 5: Right of Spread 2
@@ -980,13 +1007,13 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     texts: [],
   },
 
-  // Page 12: Left of Spread 6
+  // Page 12: Standalone Back Cover
   {
     id: 'sb-page-12',
     pageNumber: 12,
-    side: 'left',
+    side: 'standalone',
     templateId: 'tu-chahiye-page-12',
-    title: 'Really Blessed to Have You In My Life',
+    title: 'Back Cover • Really Blessed to Have You In My Life',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_12.jpg',
@@ -998,20 +1025,6 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
-  },
-
-  // Page 13: Right of Spread 6 (Empty / Blank Inside Back Cover)
-  {
-    id: 'sb-page-13',
-    pageNumber: 13,
-    side: 'right',
-    templateId: 'tu-chahiye-page-13',
-    title: 'Inside Back Cover (Blank)',
-    theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#FAF8F5',
-    referenceImage: '/templates/tu-chahiye/page_13.webp',
-    photos: [],
     texts: [],
   },
 ];
