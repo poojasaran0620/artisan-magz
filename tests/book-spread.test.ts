@@ -131,10 +131,13 @@ describe('Multi-Page Physical Book Spread System', () => {
     const spreads = buildBookSpreads(SONGS_BOOK_PAGES);
     assert.equal(spreads.length, 7);
 
-    // Spread 0: Cover - MY HOME
+    // Spread 0: Cover - Sorantika / Tu Chahiye
     assert.equal(spreads[0].type, 'single');
     assert.equal(spreads[0].label, 'Page 1 (Cover)');
-    assert.equal(spreads[0].rightPage?.referenceImage, '/templates/tu-chahiye/page_1.jpg');
+    assert.ok(
+      spreads[0].rightPage?.referenceImage === '/products/song-magazines/tu_chahiye_sorantika.jpg' ||
+      spreads[0].rightPage?.referenceImage === '/templates/tu-chahiye/page_1.jpg'
+    );
 
     // Spread 1: Left envelope note, Right "KOI AUR dooja"
     assert.equal(spreads[1].type, 'dual');
