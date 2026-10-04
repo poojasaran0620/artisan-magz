@@ -986,19 +986,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 9,
     side: 'right',
     templateId: 'tu-chahiye-page-9',
-    title: 'HOOOO सीने में Agar TU दर्द है',
+    title: 'mainu ishq TERA lae dooba<3',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_9.jpg',
     photos: [
       {
-        id: 'sb-p9-1',
-        label: 'Seene Mein Agar Tu Dard Hai',
+        id: 'sb-p9-hero',
+        label: 'Mainu Ishq Tera Lae Dooba',
         url: '/templates/tu-chahiye/page_9.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p9-song',
+        type: 'headline',
+        content: 'mainu ishq TERA lae dooba<3',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#6A1B29',
+      },
+    ],
   },
 
   // Page 10: Left of Spread 5
@@ -1007,19 +1016,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 10,
     side: 'left',
     templateId: 'tu-chahiye-page-10',
-    title: 'ना koi दवा chaiye <3',
+    title: 'Forever Together • Postage Stamp Moments',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_10.jpg',
     photos: [
       {
-        id: 'sb-p10-1',
-        label: 'Na Koi Dawa Chaiye',
+        id: 'sb-p10-hero',
+        label: 'Wedding & Celebrations Postage Stamps',
         url: '/templates/tu-chahiye/page_10.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p10-song',
+        type: 'headline',
+        content: 'Forever Together',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#8B0D15',
+      },
+    ],
   },
 
   // Page 11: Right of Spread 5
@@ -1028,19 +1046,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 11,
     side: 'right',
     templateId: 'tu-chahiye-page-11',
-    title: "i'll be there for you / by yours fav",
+    title: 'TAXES • Life Time Subscription',
     theme: 'Tu Chahiye Song Book',
-    backgroundColor: '#8B0D15',
+    backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_11.jpg',
     photos: [
       {
-        id: 'sb-p11-1',
-        label: "I'll Be There For You",
+        id: 'sb-p11-hero',
+        label: 'Taxes Life Time Subscription Receipt',
         url: '/templates/tu-chahiye/page_11.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p11-song',
+        type: 'headline',
+        content: 'TAXES • LIFE TIME SUBSCRIPTION',
+        fontFamily: 'sans',
+        alignment: 'center',
+        color: '#111111',
+      },
+    ],
   },
 
   // Page 12: Standalone Back Cover
@@ -1049,18 +1076,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 12,
     side: 'standalone',
     templateId: 'tu-chahiye-page-12',
-    title: 'Back Cover • Really Blessed to Have You In My Life',
+    title: "Back Cover • And Maybe That's What Love Really Is",
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_12.jpg',
     photos: [
       {
-        id: 'sb-p12-couple',
-        label: 'Really Blessed to Have You In My Life',
+        id: 'sb-p12-letter',
+        label: 'Love Letter Red Envelope',
         url: '/templates/tu-chahiye/page_12.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p12-letter',
+        type: 'body',
+        content: "And maybe that's what really love is... the feeling of being chosen every single day",
+        fontFamily: 'serif',
+        alignment: 'center',
+        isItalic: true,
+        color: '#2D2622',
+      },
+    ],
   },
 ];

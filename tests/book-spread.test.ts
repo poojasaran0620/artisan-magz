@@ -157,19 +157,19 @@ describe('Multi-Page Physical Book Spread System', () => {
     assert.equal(spreads[3].leftPage?.referenceImage, '/templates/tu-chahiye/page_6.jpg');
     assert.equal(spreads[3].rightPage?.referenceImage, '/templates/tu-chahiye/page_7.jpg');
 
-    // Spread 4: Left "Main itna hasti hu", Right Spread 4
+    // Spread 4: Left "Main itna hasti hu", Right "mainu ishq TERA lae dooba<3"
     assert.equal(spreads[4].type, 'dual');
     assert.equal(spreads[4].label, 'Pages 8–9');
     assert.equal(spreads[4].leftPage?.referenceImage, '/templates/tu-chahiye/page_8.jpg');
     assert.equal(spreads[4].rightPage?.referenceImage, '/templates/tu-chahiye/page_9.jpg');
 
-    // Spread 5: Left "ना koi दवा chaiye <3", Right "i'll be there for you"
+    // Spread 5: Left "Forever Together", Right "TAXES • Life Time Subscription"
     assert.equal(spreads[5].type, 'dual');
     assert.equal(spreads[5].label, 'Pages 10–11');
     assert.equal(spreads[5].leftPage?.referenceImage, '/templates/tu-chahiye/page_10.jpg');
     assert.equal(spreads[5].rightPage?.referenceImage, '/templates/tu-chahiye/page_11.jpg');
 
-    // Spread 6: Standalone Page 12 (Back Cover)
+    // Spread 6: Standalone Page 12 (Back Cover - Red Envelope Letter)
     assert.equal(spreads[6].type, 'single');
     assert.equal(spreads[6].label, 'Page 12 (Back Cover)');
     assert.equal(spreads[6].leftPage?.referenceImage, '/templates/tu-chahiye/page_12.jpg');
