@@ -866,19 +866,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 5,
     side: 'right',
     templateId: 'tu-chahiye-page-5',
-    title: 'HAR सफ़र mein mujhe',
+    title: 'yaaaraa ANDAR MERE',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_5.jpg',
     photos: [
       {
-        id: 'sb-p5-1',
-        label: 'Har Safar Mein Mujhe',
+        id: 'sb-p5-hero',
+        label: 'Yaara Andar Mere',
         url: '/templates/tu-chahiye/page_5.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p5-song',
+        type: 'headline',
+        content: 'yaaaraa ANDAR MERE',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#5B374D',
+      },
+    ],
   },
 
   // Page 6: Left of Spread 3
@@ -887,19 +896,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 6,
     side: 'left',
     templateId: 'tu-chahiye-page-6',
-    title: 'Tu hi रहनुमा chaiye',
+    title: 'EK lamhe mein KITNI',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_6.jpg',
     photos: [
       {
-        id: 'sb-p6-1',
-        label: 'Tu Hi Rahnuma Chaiye',
+        id: 'sb-p6-hero',
+        label: 'Ek Lamhe Mein Kitni',
         url: '/templates/tu-chahiye/page_6.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p6-song',
+        type: 'headline',
+        content: 'EK lamhe mein KITNI',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#8B0D15',
+      },
+    ],
   },
 
   // Page 7: Right of Spread 3
@@ -908,19 +926,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 7,
     side: 'right',
     templateId: 'tu-chahiye-page-7',
-    title: 'JEENE को BAS मुझे',
+    title: 'yaadein<3 banjaati Hai',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_7.jpg',
     photos: [
       {
-        id: 'sb-p7-1',
-        label: 'Jeene Ko Bas Mujhe',
+        id: 'sb-p7-hero',
+        label: 'Yaadein Banjaati Hai',
         url: '/templates/tu-chahiye/page_7.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p7-song',
+        type: 'headline',
+        content: 'yaadein<3 banjaati Hai',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#6A1B29',
+      },
+    ],
   },
 
   // Page 8: Left of Spread 4
@@ -929,19 +956,28 @@ export const SONGS_BOOK_PAGES: BookPage[] = [
     pageNumber: 8,
     side: 'left',
     templateId: 'tu-chahiye-page-8',
-    title: 'Tu hi meherbaan chaiye',
+    title: 'Main itna hasti hu • AANKHEIN bhar aati hai',
     theme: 'Tu Chahiye Song Book',
     backgroundColor: '#FAF8F5',
     referenceImage: '/templates/tu-chahiye/page_8.jpg',
     photos: [
       {
-        id: 'sb-p8-1',
-        label: 'Tu Hi Meherbaan Chaiye',
+        id: 'sb-p8-hero',
+        label: 'Main Itna Hasti Hu',
         url: '/templates/tu-chahiye/page_8.jpg',
         aspectRatio: '3/4',
       },
     ],
-    texts: [],
+    texts: [
+      {
+        id: 'sb-p8-song',
+        type: 'headline',
+        content: 'Main itna hasti hu • AANKHEIN bhar aati hai',
+        fontFamily: 'serif',
+        alignment: 'center',
+        color: '#7D2235',
+      },
+    ],
   },
 
   // Page 9: Right of Spread 4

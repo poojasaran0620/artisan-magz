@@ -145,19 +145,19 @@ describe('Multi-Page Physical Book Spread System', () => {
     assert.equal(spreads[1].leftPage?.referenceImage, '/templates/tu-chahiye/page_2.jpg');
     assert.equal(spreads[1].rightPage?.referenceImage, '/templates/tu-chahiye/page_3.jpg');
 
-    // Spread 2: Left "HOOOO, SAB SAWAR jaata hai <3", Right Spread 2
+    // Spread 2: Left "HOOOO, SAB SAWAR jaata hai <3", Right "yaaaraa ANDAR MERE"
     assert.equal(spreads[2].type, 'dual');
     assert.equal(spreads[2].label, 'Pages 4–5');
     assert.equal(spreads[2].leftPage?.referenceImage, '/templates/tu-chahiye/page_4.jpg');
     assert.equal(spreads[2].rightPage?.referenceImage, '/templates/tu-chahiye/page_5.jpg');
 
-    // Spread 3: Left "Tu hi रहनुमा chaiye", Right "JEENE को BAS मुझे"
+    // Spread 3: Left "EK lamhe mein KITNI", Right "yaadein<3 banjaati Hai"
     assert.equal(spreads[3].type, 'dual');
     assert.equal(spreads[3].label, 'Pages 6–7');
     assert.equal(spreads[3].leftPage?.referenceImage, '/templates/tu-chahiye/page_6.jpg');
     assert.equal(spreads[3].rightPage?.referenceImage, '/templates/tu-chahiye/page_7.jpg');
 
-    // Spread 4: Left "Tu hi meherbaan chaiye", Right "HOOOO सीने में Agar TU दर्द है"
+    // Spread 4: Left "Main itna hasti hu", Right Spread 4
     assert.equal(spreads[4].type, 'dual');
     assert.equal(spreads[4].label, 'Pages 8–9');
     assert.equal(spreads[4].leftPage?.referenceImage, '/templates/tu-chahiye/page_8.jpg');
