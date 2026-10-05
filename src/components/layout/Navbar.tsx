@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Gift, Menu, X, Sparkles, User, Package, MapPin, ChevronDown, BookOpen } from 'lucide-react';
+import { ShoppingBag, Gift, Menu, X, Sparkles, User, Package, MapPin, ChevronDown, BookOpen, Mail } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { springs } from '../../styles/motion';
 import { BrandLogo } from '../ui/BrandLogo';
 import { UserMenuDropdown } from '../account/UserMenuDropdown';
-import { UserProfileIcon, ShoppingBagIcon } from '../ui/Icons';
+import { UserProfileIcon, ShoppingBagIcon, WhatsAppIcon } from '../ui/Icons';
 
 interface NavbarProps {
   onNavigate: (view: string, productId?: string) => void;
@@ -20,6 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
   const { user, isAuthenticated, openAuthModal, openOrdersModal, openAddressesModal, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -417,29 +418,78 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView, onOpenP
                     }`}
                   >
                     <span>Bulk Orders</span>
-                    <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-roseGold/10 text-roseGold">
-                      Corporate
-                    </span>
                   </button>
 
-                  {/* 6. WhatsApp Concierge */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      window.open(
-                        'https://wa.me/917000041053?text=Hi%20Artisan%20Magz!%20I%20have%20a%20question%20about%20your%20products.',
-                        '_blank'
-                      );
-                    }}
-                    className="flex items-center justify-between w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium text-charcoal hover:bg-cream-100/80 hover:text-roseGold transition cursor-pointer"
-                  >
-                    <span>WhatsApp Concierge</span>
-                    <span className="flex items-center gap-1.5 text-xs text-emerald-700 font-medium">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      Online
-                    </span>
-                  </button>
+                  {/* 6. Contact Us (Expandable) */}
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setIsContactOpen(!isContactOpen)}
+                      className={`flex items-center justify-between w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${
+                        isContactOpen
+                          ? 'bg-roseGold/10 text-roseGold font-semibold'
+                          : 'text-charcoal hover:bg-cream-100/80 hover:text-roseGold'
+                      }`}
+                    >
+                      <span>Contact Us</span>
+                      <ChevronDown
+                        className={`w-4 h-4 text-taupe-600 transition-transform duration-200 ${
+                          isContactOpen ? 'rotate-180 text-roseGold' : ''
+                        }`}
+                      />
+                    </button>
+
+                    <AnimatePresence>
+                      {isContactOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                          className="overflow-hidden pl-3 py-1.5 space-y-2 border-l-2 border-roseGold/30 ml-4 my-1.5"
+                        >
+                          {/* Option 1: WhatsApp */}
+                          <a
+                            href="https://wa.me/917000041053?text=Hi%20Artisan%20Magz!%20I%20have%20a%20question%20about%20your%20products."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-emerald-50/90 text-emerald-900 hover:bg-emerald-100 border border-emerald-200/60 transition cursor-pointer group"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <WhatsAppIcon className="w-4 h-4 text-[#25D366] shrink-0" />
+                              <div className="flex flex-col">
+                                <span className="font-bold text-emerald-950">Our WhatsApp</span>
+                                <span className="text-[10px] text-emerald-700/90 font-normal">+91 70000 41053</span>
+                              </div>
+                            </div>
+                            <span className="flex items-center gap-1 text-[10px] text-emerald-700 font-medium bg-emerald-100 px-2 py-0.5 rounded-full">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              Chat
+                            </span>
+                          </a>
+
+                          {/* Option 2: Email ID */}
+                          <a
+                            href="mailto:artisanmagz@gmail.com?subject=Artisan%20Magz%20Inquiry"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-cream-100/90 text-charcoal hover:bg-roseGold/10 hover:text-roseGold border border-taupe-200/60 transition cursor-pointer group"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <Mail className="w-4 h-4 text-roseGold shrink-0" />
+                              <div className="flex flex-col">
+                                <span className="font-bold text-charcoal group-hover:text-roseGold">Mail ID</span>
+                                <span className="text-[10px] text-taupe-600 font-normal">artisanmagz@gmail.com</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] text-roseGold font-semibold">
+                              Email →
+                            </span>
+                          </a>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
 
                 {/* Sheet Footer: User Account / Actions */}
