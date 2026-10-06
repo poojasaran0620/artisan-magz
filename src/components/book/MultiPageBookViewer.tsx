@@ -54,7 +54,6 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
 
   // State: selected song (null = show all song options grid)
   const [selectedSongId, setSelectedSongId] = useState<string | null>(initialSongId);
-  const [activeCategory, setActiveCategory] = useState<string>('All');
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'popular'>('default');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState<boolean>(false);
 
@@ -214,9 +213,6 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
   // Filter & sort song templates for gallery view
   const filteredTemplates = useMemo(() => {
     let list = [...SONG_MAGAZINE_TEMPLATES];
-    if (activeCategory !== 'All') {
-      list = list.filter((s) => s.category === activeCategory);
-    }
     if (sortBy === 'price-asc') {
       list.sort((a, b) => a.price - b.price);
     } else if (sortBy === 'price-desc') {
@@ -225,10 +221,7 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
       list.sort((a, b) => (b.badge === 'BEST SELLER' ? 1 : 0) - (a.badge === 'BEST SELLER' ? 1 : 0));
     }
     return list;
-  }, [activeCategory, sortBy]);
-
-  // Categories list
-  const categories = ['All', 'Romantic', 'Bollywood', 'Wedding', 'Special'];
+  }, [sortBy]);
 
   // =========================================================================
   // VIEW 1: SONG OPTIONS GALLERY (FIRST VIEW AS REQUESTED BY USER)
@@ -335,24 +328,6 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Category Filter Chips */}
-          <div className="max-w-4xl mx-auto flex items-center justify-center gap-1.5 sm:gap-2 mt-3 overflow-x-auto pb-1 scrollbar-none">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setActiveCategory(cat)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition cursor-pointer whitespace-nowrap ${
-                  activeCategory === cat
-                    ? 'bg-[#B76E79] text-white shadow-2xs'
-                    : 'bg-[#F2ECE4] text-[#4A3B32] hover:bg-[#EAE2D8]'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
           </div>
         </div>
 

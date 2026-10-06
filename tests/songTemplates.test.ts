@@ -42,4 +42,21 @@ describe('Song Magazine Templates System', () => {
       assert.ok(t.details.privacyPolicy.text, 'Must have privacy policy text');
     }
   });
+
+  test('MultiPageBookViewer does not render upper category filter line (Romantic, Bollywood, Wedding, Special)', async () => {
+    const fs = await import('node:fs');
+    const path = await import('node:path');
+    const viewerContent = fs.readFileSync(
+      path.resolve(process.cwd(), 'src/components/book/MultiPageBookViewer.tsx'),
+      'utf-8'
+    );
+    assert.ok(
+      !viewerContent.includes("['All', 'Romantic', 'Bollywood', 'Wedding', 'Special']"),
+      'Must remove categories array from MultiPageBookViewer'
+    );
+    assert.ok(
+      !viewerContent.includes('Category Filter Chips'),
+      'Must remove Category Filter Chips section from MultiPageBookViewer'
+    );
+  });
 });
