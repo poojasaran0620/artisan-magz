@@ -236,11 +236,8 @@ export const MultiPageBookViewer: React.FC<MultiPageBookViewerProps> = ({
           {/* Centered Page Title */}
           <div className="text-center mb-3">
             <h1 className="font-serif italic text-2xl sm:text-3xl text-[#2D2622] tracking-wide">
-              Magazines
+              Song Book
             </h1>
-            <p className="text-xs text-[#2D2622]/60 mt-0.5">
-              Choose your song template to preview interactive pages &amp; book spreads
-            </p>
           </div>
 
           {/* Action Row: ← All Categories & Default Sorting */}

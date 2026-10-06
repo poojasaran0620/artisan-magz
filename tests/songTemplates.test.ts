@@ -10,8 +10,12 @@ describe('Song Magazine Templates System', () => {
     const ids = SONG_MAGAZINE_TEMPLATES.map((t) => t.id);
     assert.ok(ids.includes('tu-chahiye'), 'Must include Tu Chahiye');
     assert.ok(ids.includes('sorantika'), 'Must include Sorantika');
+    assert.ok(ids.includes('our-forever'), 'Must include Our Forever');
+    assert.ok(!ids.includes('shayarana'), 'Must have removed Shayarana');
+    const sorantikaIndex = ids.indexOf('sorantika');
+    const ourForeverIndex = ids.indexOf('our-forever');
+    assert.equal(ourForeverIndex, sorantikaIndex + 1, 'Our Forever must be positioned immediately after Sorantika');
     assert.ok(ids.includes('chaar-kadam'), 'Must include Chaar Kadam');
-    assert.ok(ids.includes('shayarana'), 'Must include Shayarana');
     assert.ok(ids.includes('normal-magazine'), 'Must include Normal Magazine');
     assert.ok(ids.includes('wedding-magazine'), 'Must include Wedding Magazine');
     assert.ok(ids.includes('2-years-of-us'), 'Must include 2 Years of Us');
@@ -43,12 +47,18 @@ describe('Song Magazine Templates System', () => {
     }
   });
 
-  test('MultiPageBookViewer does not render upper category filter line (Romantic, Bollywood, Wedding, Special)', async () => {
+  test('MultiPageBookViewer renders Song Book heading and removes subtitle and category chips', async () => {
     const fs = await import('node:fs');
     const path = await import('node:path');
     const viewerContent = fs.readFileSync(
       path.resolve(process.cwd(), 'src/components/book/MultiPageBookViewer.tsx'),
       'utf-8'
+    );
+    assert.ok(/Song Book\s*<\/h1>/.test(viewerContent), 'Heading must be Song Book');
+    assert.ok(!/Magazines\s*<\/h1>/.test(viewerContent), 'Heading must not be Magazines');
+    assert.ok(
+      !viewerContent.includes('Choose your song template to preview interactive pages'),
+      'Subtitle line must be removed'
     );
     assert.ok(
       !viewerContent.includes("['All', 'Romantic', 'Bollywood', 'Wedding', 'Special']"),

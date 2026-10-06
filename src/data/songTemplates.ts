@@ -2,6 +2,7 @@ import type { BookPage } from '../types/book';
 import {
   SONGS_BOOK_PAGES,
   SORANTIKA_BOOK_PAGES,
+  OUR_FOREVER_BOOK_PAGES,
   CHAAR_KADAM_BOOK_PAGES,
   INITIAL_5_PAGE_BOOK,
 } from './bookTemplates.ts';
@@ -91,17 +92,17 @@ export const SONG_MAGAZINE_TEMPLATES: SongTemplateItem[] = [
     details: DEFAULT_DETAILS,
   },
   {
-    id: 'shayarana',
-    title: 'Shayarana magzine ( New Release )',
-    subtitle: 'Romantic Melody • Special Kiss-Mark Keepsake',
-    songTitle: 'Shayarana',
+    id: 'our-forever',
+    title: 'Our Forever Magazine',
+    subtitle: 'OUR FOREVER • Where every chapter begins with you • Special Edition #123',
+    songTitle: 'Tera Naam Doon',
     badge: 'NEW RELEASE',
     price: 700,
     originalPrice: 999,
-    coverImage: '/products/song-magazines/shayarana_magazine.jpg',
+    coverImage: '/templates/our-forever/page_1.jpg',
     category: 'Romantic',
-    pages: SONGS_BOOK_PAGES,
-    description: 'A whimsical and playful romantic song magazine celebrating unfiltered laughter and kisses.',
+    pages: OUR_FOREVER_BOOK_PAGES,
+    description: 'Bespoke couple song magazine featuring lyrics from Tera Naam Doon and heartfelt memory spreads.',
     details: DEFAULT_DETAILS,
   },
   {
